@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Wondershot</title>
+
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+    <!-- build:remove -->
+    <script src="http://localhost:35729/livereload.js"></script>
+    <!-- /build -->
+
+    <!-- build:js all.min.js -->
+    <!-- bower:js -->
+    <script src="vendor/eventemitter2/lib/eventemitter2.js"></script>
+    <script src="vendor/lodash/lodash.js"></script>
+    <script src="vendor/phaser/build/phaser.js"></script>
+    <!-- endinject -->
+    <!--<script src="thirdparty/phaser-ninja-physics.js"></script>-->
+    <script src="main.js"></script>
+    <!-- /build -->
+
+    <script>
+      window.onload = function() {
+        window.game = new Wondershot.Game();
+      };
+    </script>
+
+</body>
+</html>
