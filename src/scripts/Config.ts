@@ -5,5 +5,6 @@ module Wondershot {
     static const ProjectileSpeed = 300;
     static const RoundsVictory = 5;
     static const HighPrecisionMovements = true;
+    static const RockProjectileOffset = 30;
   }
 }

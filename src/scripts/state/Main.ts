@@ -1,8 +1,8 @@
 let pauseMenu = Wondershot.Components.PauseMenu;
 let scoreBoard = Wondershot.Components.ScoreBoard;
-    Projectiles = Wondershot.Components.Projectiles,
-    Player = Wondershot.Components.Player,
-    World = Wondershot.Components.World;
+Projectiles = Wondershot.Components.Projectiles,
+  PlayerManager = Wondershot.Components.PlayerManager,
+  World = Wondershot.Components.World;
 
 module Wondershot.State {
   export class Main extends Phaser.State {
@@ -16,9 +16,9 @@ module Wondershot.State {
         pauseMenu.init(game),
         scoreBoard.init(game),
         new World(game),
+        PlayerManager.init(game),
         Projectiles.init(game)
-        // new Player(game, 1)
-      ]
+      ];
     }
 
     preload() {
@@ -32,20 +32,21 @@ module Wondershot.State {
       }
     }
     create() {
-	    this.game.time.advancedTiming = true;
-
+      this.game.time.advancedTiming = true;
       this.game.physics.startSystem(Phaser.Physics.P2JS);
+      this.game.physics.p2.setImpactEvents(true); // TODO pas sûr que ça soit utile
       // this.game.physics.p2.applyGravity = false; // TODO pas encore besoin a priori
 
       this.game.worldMaterial = this.game.physics.p2.createMaterial('worldMaterial');
       //  4 trues = the 4 faces of the world in left, right, top, bottom order
       this.game.physics.p2.setWorldMaterial(this.game.worldMaterial, true, true, true, true);
 
+      this.game.rockProjectilesCollisionGroup = this.game.physics.p2.createCollisionGroup();
+
       this.initGroups();
+      this.initializeCollisionGroups();
 
-      // if !Wondershot.Components.Projectiles.init(this.game) return false;
-
-      this.initBattle(1);
+      //       this.stage.disableVisibilityChange = false; // met en pause le jeu si focus perdu et le reprends quand focus back
 
       for (let component of this.components) {
         if (component.create) {
@@ -53,17 +54,11 @@ module Wondershot.State {
         }
       }
     }
-    initBattle() {
-
-      this.game.stage.backgroundColor = '#91d49c';
-//       this.stage.disableVisibilityChange = false; // met en pause le jeu si focus perdu et le reprends quand focus back
-      this.game.input.gamepad.start();
-
-      this.game.players = [];
-      let player1 = new Player(this.game, 1);
-      this.game.players.push(player1);
-      this.components.push(player1);
-
+    initializeCollisionGroups() {
+      this.game.CollisionGroups = {};
+      this.game.CollisionGroups.World = this.game.physics.p2.createCollisionGroup();
+      this.game.CollisionGroups.Projectiles = this.game.physics.p2.createCollisionGroup();
+      this.game.CollisionGroups.Players = this.game.physics.p2.createCollisionGroup();
     }
     initGroups() {
       // triés par z-index
@@ -96,7 +91,7 @@ module Wondershot.State {
         }
       }
       // FPS
-      this.game.debug.text(this.game.time.fps, this.game.world.width-25, 14, "#f00");
+      this.game.debug.text(this.game.time.fps, this.game.world.width - 25, 14, "#f00");
     }
   }
 }

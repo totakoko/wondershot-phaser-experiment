@@ -21,7 +21,7 @@ module Wondershot.Components {
 
       this.pauseBar = this.game.Groups.Menus.add(new Phaser.Graphics(this.game));
       this.pauseBar.beginFill(0x000000, 0.2);
-      this.pauseBar.drawRect(0, this.game.world.height/2-50, this.game.world.width, 100);
+      this.pauseBar.drawRect(0, this.game.world.height / 2 - 50, this.game.world.width, 100);
 
       this.pauseText = this.game.Groups.Menus.add(
         new Phaser.Text(this.game, 0, 0, "PAUSE", {
@@ -31,13 +31,13 @@ module Wondershot.Components {
           boundsAlignV: "middle"
         })
       );
-      this.pauseText.setTextBounds(0, this.game.world.height/2-50, this.game.world.width, 100);
+      this.pauseText.setTextBounds(0, this.game.world.height / 2 - 50, this.game.world.width, 100);
 
       this.paused = false;
 
       this.update();
     }
-  
+
     static update() {
       if (this.paused) {
         this.game.Groups.Game.filters = [this.blurX, this.blurY];
