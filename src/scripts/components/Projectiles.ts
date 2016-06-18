@@ -1,3 +1,5 @@
+let CollisionManager = Wondershot.Components.CollisionManager;
+
 module Wondershot.Components {
   export class Projectiles {
     static const speed = Wondershot.Config.ProjectileSpeed;
@@ -16,13 +18,13 @@ module Wondershot.Components {
       this.projectiles = this.game.Groups.Projectiles;
 
       // this.initArrows();
-      this.initRocks();
+      this.initializeRockProjectiles();
     }
 
     static render() {
-      this.projectiles.forEachAlive(function(member) {
-        this.game.debug.body(member);
-      }, this);
+      // this.projectiles.forEachAlive(function(member) {
+      //   this.game.debug.body(member);
+      // }, this);
     }
 
     // static initArrows() {
@@ -44,30 +46,34 @@ module Wondershot.Components {
     //   }, this);
     // }
 
-    static initRocks() {
-      this.setupMaterial();
-      this.rockProjectiles = this.game.add.group(this.game.world, 'projectiles-rock');
-      this.rockProjectiles.createMultiple(50, 'projectile-rock');
-      this.rockProjectiles.forEach(function(projectile) {
+    static initializeRockProjectiles() {
+      this.setupRockMaterial();
+      [1, 2, 3, 4].forEach(this.initializeRockProjectilesForPlayer, this);
+    }
+    static initializeRockProjectilesForPlayer(playerNumber) {
+      let rockProjectiles = this['rockProjectiles'+playerNumber] = this.game.add.group(this.game.world, 'projectiles-rock');
+      rockProjectiles.createMultiple(10, 'projectile-rock');
+      rockProjectiles.forEach(function(projectile) {
         projectile.scale.setTo(0.3);
         projectile.visible = false;
       });
-      this.game.physics.p2.enable(this.rockProjectiles, Wondershot.Config.Debug);
-      this.rockProjectiles.forEach(function(projectile) {
+      this.game.physics.p2.enable(rockProjectiles, Wondershot.Config.Debug);
+      rockProjectiles.forEach(function(projectile) {
         projectile.body.setCircle(10);
         projectile.body.fixedRotation = true;
         projectile.body.setMaterial(this.rockProjectileMaterial);
-        projectile.body.setCollisionGroup(this.game.CollisionGroups.Projectiles);
-        projectile.body.collides(this.game.CollisionGroups.World, this.worldHitHandler, this);
-        projectile.body.collides(this.game.CollisionGroups.Players, this.playerHitHandler, this);
-        // projectile.body.data.damping = 0;
-        // projectile.body.onBeginContact.add(this.hitHandler, this);
+        // projectile.body.collides(this.game.CollisionGroups.World, this.worldHitHandler, this);
+        // projectile.body.collides(this.game.CollisionGroups.Players, this.playerHitHandler, this);
 
-        projectile.body.onBeginContact.add(this.hitHandler, this);
+        console.log('collision group : Projectile'+playerNumber);
+        projectile.body.setCollisionGroup(CollisionManager['Projectile'+playerNumber].id);
+        projectile.body.collides(CollisionManager['Projectile'+playerNumber].World, this.worldHitHandler, this);
+        projectile.body.collides(CollisionManager['Projectile'+playerNumber].OtherPlayers, this.playerHitHandler, this);
+        // projectile.body.data.damping = 0;
       }, this);
     }
 
-    static setupMaterial() {
+    static setupRockMaterial() {
       this.rockProjectileMaterial = game.physics.p2.createMaterial('rockProjectileMaterial');
       contactMaterial = game.physics.p2.createContactMaterial(this.rockProjectileMaterial, this.game.worldMaterial);
       contactMaterial.friction = 0;     // Friction to use in the contact of these two materials.
@@ -80,10 +86,18 @@ module Wondershot.Components {
     }
 
     static worldHitHandler(body, bodyB, shapeA, shapeB, equation) {
-      console.log('worldHitHandler', body.sprite.key);
+      // console.log('worldHitHandler', body.sprite.key);
+    }
+    static beginHitHandler(body, bodyB, shapeA, shapeB, equation) {
+      console.log('beginHitHandler', arguments);
+      return true;
+    }
+    static endHitHandler(body, bodyB, shapeA, shapeB, equation) {
+      console.log('endHitHandler', arguments);
     }
     static playerHitHandler(body, bodyB, shapeA, shapeB, equation) {
-      console.log('playerHitHandler', body.sprite.key);
+      // console.log('playerHitHandler', body.sprite.key);
+      body.sprite.alpha = 0.5;
       //  The block hit something.
       //
       //  This callback is sent 5 arguments:
@@ -98,7 +112,6 @@ module Wondershot.Components {
       console.log('rock projectile just hit');
       if (body) {
         if (body.sprite.key == 'player') {
-          body.sprite.alpha = 0.5;
         }
         result = 'You last hit: ' + body.sprite.key;
       } else {
@@ -117,7 +130,7 @@ module Wondershot.Components {
     }
 
     static throwRock(position, rotation, owner) {
-      let projectile = this.rockProjectiles.getFirstDead();
+      let projectile = this['rockProjectiles'+owner].getFirstDead();
       projectile.owner = owner;
       projectile.reset(position.x + Math.cos(rotation)*Wondershot.Config.RockProjectileOffset, position.y + Math.sin(rotation)*Wondershot.Config.RockProjectileOffset);
       projectile.body.rotation = rotation;

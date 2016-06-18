@@ -1,3 +1,5 @@
+let CollisionManager = Wondershot.Components.CollisionManager;
+
 module Wondershot.Components {
   export class World {
 
@@ -52,8 +54,8 @@ module Wondershot.Components {
       function setupWorldBody(entity) {
         entity.body.static = true;
         entity.body.setMaterial(this.game.worldMaterial);
-        entity.body.setCollisionGroup(this.game.CollisionGroups.World);
-        entity.body.collides([this.game.CollisionGroups.Players, this.game.CollisionGroups.Projectiles]);
+        entity.body.setCollisionGroup(CollisionManager.World.id);
+        entity.body.collides(CollisionManager.World.All);
       }
 
       this.loopVertical(wall);

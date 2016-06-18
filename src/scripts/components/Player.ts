@@ -1,4 +1,5 @@
-let pauseMenu = Wondershot.Components.PauseMenu;
+let pauseMenu = Wondershot.Components.PauseMenu,
+    CollisionManager = Wondershot.Components.CollisionManager;
 
 module Wondershot.Components {
   export class Player {
@@ -21,8 +22,10 @@ module Wondershot.Components {
       this.sprite.body.fixedRotation = true;
       this.sprite.body.damping = 1; // pas d'effet élastique sur les côtés
 
-      this.sprite.body.setCollisionGroup(this.game.CollisionGroups.Players);
-      this.sprite.body.collides([this.game.CollisionGroups.World, this.game.CollisionGroups.Projectiles]);
+      console.log('collision group : Player'+playerNumber);
+      this.sprite.body.setCollisionGroup(CollisionManager['Player'+playerNumber].id);
+      this.sprite.body.collides(CollisionManager['Player'+playerNumber].World);
+      this.sprite.body.collides(CollisionManager['Player'+playerNumber].OtherProjectiles);
 
       this.registerGamepadButtons();
     }

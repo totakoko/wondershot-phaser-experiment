@@ -1,15 +1,15 @@
-let pauseMenu = Wondershot.Components.PauseMenu;
-let scoreBoard = Wondershot.Components.ScoreBoard;
-Projectiles = Wondershot.Components.Projectiles,
-  PlayerManager = Wondershot.Components.PlayerManager,
-  World = Wondershot.Components.World;
+let pauseMenu = Wondershot.Components.PauseMenu,
+    scoreBoard = Wondershot.Components.ScoreBoard,
+    Projectiles = Wondershot.Components.Projectiles,
+    PlayerManager = Wondershot.Components.PlayerManager,
+    World = Wondershot.Components.World,
+    CollisionManager = Wondershot.Components.CollisionManager;
 
 module Wondershot.State {
   export class Main extends Phaser.State {
-    pad1;
-    indicator;
-    player;
     components = [];
+
+    // constructeur utilisé pour propager l'instance game partout
     constructor(game) {
       console.log('state constructor');
       this.components = [
@@ -19,6 +19,7 @@ module Wondershot.State {
         PlayerManager.init(game),
         Projectiles.init(game)
       ];
+      CollisionManager.init(game);
     }
 
     preload() {
@@ -41,10 +42,8 @@ module Wondershot.State {
       //  4 trues = the 4 faces of the world in left, right, top, bottom order
       this.game.physics.p2.setWorldMaterial(this.game.worldMaterial, true, true, true, true);
 
-      this.game.rockProjectilesCollisionGroup = this.game.physics.p2.createCollisionGroup();
-
       this.initGroups();
-      this.initializeCollisionGroups();
+      CollisionManager.createCollisionGroups();
 
       //       this.stage.disableVisibilityChange = false; // met en pause le jeu si focus perdu et le reprends quand focus back
 
@@ -53,12 +52,6 @@ module Wondershot.State {
           component.create();
         }
       }
-    }
-    initializeCollisionGroups() {
-      this.game.CollisionGroups = {};
-      this.game.CollisionGroups.World = this.game.physics.p2.createCollisionGroup();
-      this.game.CollisionGroups.Projectiles = this.game.physics.p2.createCollisionGroup();
-      this.game.CollisionGroups.Players = this.game.physics.p2.createCollisionGroup();
     }
     initGroups() {
       // triés par z-index
