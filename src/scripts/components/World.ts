@@ -12,7 +12,6 @@ module Wondershot.Components {
       this.game = game;
     }
     preload() {
-      this.game.load.image('starting-position', 'assets/images/croix.png');
       this.game.load.image('wall', 'assets/images/wall.png');
     }
     create() {
@@ -53,7 +52,7 @@ module Wondershot.Components {
       worldEntities.forEach(setupWorldBody, this);
       function setupWorldBody(entity) {
         entity.body.static = true;
-        entity.body.setMaterial(this.game.worldMaterial);
+        entity.body.setMaterial(CollisionManager.materials.World);
         entity.body.setCollisionGroup(CollisionManager.World.id);
         entity.body.collides(CollisionManager.World.All);
       }
@@ -61,15 +60,15 @@ module Wondershot.Components {
       this.loopVertical(wall);
       this.loopVertical(wall2, true);
 
-      let startingPositions = [
-        { x: 40, y: 120 },
-        { x: 280, y: 120 },
-        { x: 40, y: 580 },
-        { x: 280, y: 580 }
-      ];
-      startingPositions.forEach(function(position) {
-        this.game.Groups.Floor.create(position.x, position.y, 'starting-position', null);
-      }, this);
+      // let startingPositions = [
+      //   { x: 40, y: 120 },
+      //   { x: 280, y: 120 },
+      //   { x: 40, y: 580 },
+      //   { x: 280, y: 580 }
+      // ];
+      // startingPositions.forEach(function(position) {
+      //   this.game.Groups.Floor.create(position.x, position.y, 'starting-position', null);
+      // }, this);
 
     }
     update() {

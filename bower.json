@@ -2,8 +2,7 @@
   "name": "wondershot",
   "version": "0.1.0",
   "dependencies": {
-    "eventemitter2": "^1.0.0",
-    "lodash": "^4.11.2",
-    "phaser": "^v2.4.8"
+    "lodash": "4.11.2",
+    "phaser": "v2.5.0"
   }
 }

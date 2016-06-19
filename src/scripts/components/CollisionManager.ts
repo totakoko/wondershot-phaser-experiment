@@ -1,5 +1,6 @@
 module Wondershot.Components {
   export class CollisionManager {
+    static materials = {};
 
     static init(game) {
       this.game = game;
@@ -53,16 +54,34 @@ module Wondershot.Components {
       });
 
       Object.keys(groupList).forEach(function(groupName) {
-        console.debug('- %s', groupName);
+//         console.debug('- %s', groupName);
         let groupAliases = groupList[groupName];
         Object.keys(groupAliases).forEach(function(groupAlias) {
-          console.debug('  > %s', groupAlias);
+//           console.debug('  > %s', groupAlias);
           _this[groupName][groupAlias] = groupAliases[groupAlias].map(function(collisionGroupName) {
-            console.debug('    * %s', collisionGroupName);
+//             console.debug('    * %s', collisionGroupName);
             return _this[collisionGroupName].id;
           });
         });
       });
+    }
+
+    static createMaterials() {
+      this.materials.World = this.game.physics.p2.createMaterial('World');
+      this.materials.WeaponSlingshot = this.game.physics.p2.createMaterial('WeaponSlingshot');
+
+      this.createContactMaterials();
+    }
+
+    static createContactMaterials() {
+      let contactMaterial = game.physics.p2.createContactMaterial(this.materials.WeaponSlingshot, this.materials.World);
+      contactMaterial.friction = 0;     // Friction to use in the contact of these two materials.
+      contactMaterial.restitution = 1.0;  // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
+      contactMaterial.stiffness = 1e16;    // Stiffness of the resulting ContactEquation that this ContactMaterial generate.
+      contactMaterial.relaxation = 1;     // Relaxation of the resulting ContactEquation that this ContactMaterial generate.
+      contactMaterial.frictionStiffness = 1e16;    // Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
+      contactMaterial.frictionRelaxation = 0;     // Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
+      contactMaterial.surfaceVelocity = 0;        // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
     }
   }
 }

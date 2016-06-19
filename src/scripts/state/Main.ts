@@ -1,31 +1,29 @@
-let pauseMenu = Wondershot.Components.PauseMenu,
-    scoreBoard = Wondershot.Components.ScoreBoard,
-    Projectiles = Wondershot.Components.Projectiles,
-    PlayerManager = Wondershot.Components.PlayerManager,
-    World = Wondershot.Components.World,
-    CollisionManager = Wondershot.Components.CollisionManager;
 
 module Wondershot.State {
+  let pauseMenu = Wondershot.Components.PauseMenu,
+      scoreBoard = Wondershot.Components.ScoreBoard,
+      Projectiles = Wondershot.Components.Projectiles,
+      PlayerManager = Wondershot.Components.PlayerManager,
+      World = Wondershot.Components.World,
+      CollisionManager = Wondershot.Components.CollisionManager,
+      Weapon = Wondershot.Components.Weapon;
+
   export class Main extends Phaser.State {
     components = [];
 
     // constructeur utilisé pour propager l'instance game partout
     constructor(game) {
-      console.log('state constructor');
       this.components = [
         pauseMenu.init(game),
         scoreBoard.init(game),
         new World(game),
         PlayerManager.init(game),
-        Projectiles.init(game)
+        Weapon.init(game)
       ];
       CollisionManager.init(game);
     }
 
     preload() {
-      console.log('state preload');
-      this.game.load.spritesheet('controller-indicator', 'assets/images/controller-indicator.png', 16, 16);
-
       for (let component of this.components) {
         if (component.preload) {
           component.preload();
@@ -38,12 +36,12 @@ module Wondershot.State {
       this.game.physics.p2.setImpactEvents(true); // TODO pas sûr que ça soit utile
       // this.game.physics.p2.applyGravity = false; // TODO pas encore besoin a priori
 
-      this.game.worldMaterial = this.game.physics.p2.createMaterial('worldMaterial');
       //  4 trues = the 4 faces of the world in left, right, top, bottom order
-      this.game.physics.p2.setWorldMaterial(this.game.worldMaterial, true, true, true, true);
+      // this.game.physics.p2.setWorldMaterial(this.game.worldMaterial, true, true, true, true);
 
       this.initGroups();
       CollisionManager.createCollisionGroups();
+      CollisionManager.createMaterials();
 
       //       this.stage.disableVisibilityChange = false; // met en pause le jeu si focus perdu et le reprends quand focus back
 

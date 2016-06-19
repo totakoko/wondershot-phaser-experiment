@@ -6,6 +6,7 @@ module Wondershot.Components {
     constructor(game, playerNumber) {
       this.game = game;
       this.playerNumber = playerNumber;
+      this.playerColor = Wondershot.Config.PlayerColors[playerNumber];
 
       this.pad = this.game.input.gamepad['pad' + this.playerNumber],
 
@@ -15,7 +16,8 @@ module Wondershot.Components {
 
       this.sprite = this.game.world.create(80 * this.playerNumber, 200, 'player');
       this.sprite.scale.setTo(0.2);
-      this.sprite.owner = this.playerNumber;
+      this.sprite.tint = Wondershot.Config.PlayerColors[this.playerNumber];
+      this.sprite.data.owner = this;
 
       this.game.physics.p2.enable(this.sprite, Wondershot.Config.Debug);
       this.sprite.body.setCircle(30);
@@ -26,21 +28,26 @@ module Wondershot.Components {
       this.sprite.body.setCollisionGroup(CollisionManager['Player'+playerNumber].id);
       this.sprite.body.collides(CollisionManager['Player'+playerNumber].World);
       this.sprite.body.collides(CollisionManager['Player'+playerNumber].OtherProjectiles);
-
-      this.registerGamepadButtons();
     }
 
     registerGamepadButtons() {
-      this.pad.getButton(Phaser.Gamepad.XBOX360_A).onDown.add(_.throttle(this.throwArrow, 5, { trailing: false }), this);
-      this.pad.getButton(Phaser.Gamepad.XBOX360_B).onDown.add(_.throttle(this.throwRock, 5, { trailing: false }), this);
+      console.log('registerGamepadButtons player%s', this.playerNumber);
+      this.pad.getButton(Phaser.Gamepad.XBOX360_A).onDown.add(_.throttle(this.fireWeapon, 5, { trailing: false }), this);
+      // this.pad.getButton(Phaser.Gamepad.XBOX360_B).onDown.add(_.throttle(this.throwRock, 5, { trailing: false }), this);
       this.pad.getButton(Phaser.Gamepad.XBOX360_START).onDown.add(_.throttle(pauseMenu.togglePause, 500, { trailing: false }), pauseMenu);
     }
 
-    throwArrow() {
-      Wondershot.Components.Projectiles.throwArrow(this.sprite.position, this.sprite.rotation, this.playerNumber);
+    // Actions
+    pickupWeapon(weapon) {
+      this.weapon = weapon;
+      this.weapon.setOwner(this);
     }
-    throwRock() {
-      Wondershot.Components.Projectiles.throwRock(this.sprite.position, this.sprite.rotation, this.playerNumber);
+    fireWeapon() {
+      if (this.weapon == null) {
+        console.log('no weapon !');
+        return;
+      }
+      this.weapon.fire();
     }
   }
 }

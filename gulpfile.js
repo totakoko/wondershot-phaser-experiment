@@ -7,6 +7,7 @@ var gulp = require('gulp'),
   runSequence = require('run-sequence');
 
 var paths = {
+  assetsSvg: 'assets/**/*.svg',
   assets: 'src/assets/**/*',
   less: 'src/css/main.less',
   index: 'src/index.html',
@@ -29,6 +30,13 @@ var tsProject = $.typescript.createProject({
   noExternalResolve: true,
   sortOutput: true,
   sourceRoot: '../scripts'
+});
+
+gulp.task('svg2png', function () {
+  gulp.src(paths.assetsSvg)
+    .pipe($.debug({title: 'svg:'}))
+    .pipe($.svg2png())
+    .pipe(gulp.dest(paths.build + '/assets'));
 });
 
 gulp.task('typescript', function () {
@@ -69,6 +77,7 @@ gulp.task('watch', function () {
   gulp.watch(paths.ts, ['typescript', 'reload']);
   gulp.watch(paths.less, ['less', 'reload']);
   gulp.watch(paths.index, ['reload']);
+  gulp.watch(paths.assetsSvg, ['svg2png', 'reload']);
 });
 
 gulp.task('connect', function () {
@@ -103,7 +112,7 @@ gulp.task('deploy', function () {
 });
 
 gulp.task('default', function () {
-  runSequence('clean', ['inject', 'typescript', 'less', 'connect', 'watch'], 'open');
+  runSequence('clean', ['inject', 'typescript', 'svg2png', 'less', 'connect', 'watch'], 'open');
 });
 gulp.task('build', function () {
   return runSequence('clean', ['copy', 'minifyJs', 'minifyCss', 'processhtml']);

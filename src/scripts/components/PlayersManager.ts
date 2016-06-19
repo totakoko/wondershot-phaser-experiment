@@ -9,28 +9,41 @@ module Wondershot.Components {
     }
     static preload() {
       this.game.load.image('player', 'assets/images/player.png');
+      this.game.load.spritesheet('controller-indicator', 'assets/images/controller-indicator.png', 16, 16);
+      this.game.load.image('player-death-marker', 'assets/images/player-death-marker.png');
     }
     static create() {
       this.game.input.gamepad.start();
 
-      if (this.game.input.gamepad.padsConnected == 0) {
+      if (!this.game.input.gamepad.supported) {
         this.game.destroy();
-        throw new Error(`Could not detect gamepads. Please connect them to the PC!`);
+        throw new Error(`The Gamepad API not supported in this browser!`);
       }
 
+      // la connexion est gamepad est faite en asynchrone
+      this.game.input.gamepad.onConnectCallback = this.onGamepadConnect.bind(this);
+
       this.activePlayers.forEach(function(playerNumber) {
-        this.players[playerNumber] = new Player(this.game, playerNumber);
+        let player = this.players[playerNumber] = new Player(this.game, playerNumber);
+        player.pickupWeapon(new WeaponSlingshot());
       }, this);
     }
 
+    static onGamepadConnect(gamepadNumber) {
+      let playerNumber = gamepadNumber + 1;
+      console.log('Gamepad%s connected.', playerNumber);
+      this.players[playerNumber].registerGamepadButtons();
+    }
 
     static update() {
-      this.updatePadIndicators();
-      this.updatePlayerPositions();
+      if (this.game.input.gamepad.active) {
+        this.updatePadIndicators();
+        this.updatePlayerPositions();
+      }
     }
     static updatePadIndicators() {
       this.activePlayers.forEach(function(playerNumber) {
-        if (this.game.input.gamepad.supported && this.game.input.gamepad.active && this.players[playerNumber].pad.connected) {
+        if (this.players[playerNumber].pad.connected) {
           this.players[playerNumber].indicator.animations.frame = 0;
         } else {
           this.players[playerNumber].indicator.animations.frame = 1;
@@ -51,6 +64,17 @@ module Wondershot.Components {
           }
         }
       }, this);
+    }
+
+    static killPlayer(player) {
+      console.log('kill player%s', player.playerNumber);
+      Wondershot.Components.ScoreBoard.addPoint(player.playerNumber);
+      deathMarker = this.game.Groups.Floor.create(player.sprite.x, player.sprite.y, 'player-death-marker');
+      deathMarker.anchor.setTo(0.5);
+      deathMarker.tint = Wondershot.Config.PlayerColors[player.playerNumber];
+      // this.sprite.scale.setTo(0.2);
+      this.players[player.playerNumber].sprite.destroy();
+      delete this.activePlayers[player.playerNumber-1];
     }
   }
 }
