@@ -11,7 +11,7 @@ var paths = {
   assets: 'src/assets/**/*',
   less: 'src/css/main.less',
   index: 'src/index.html',
-  ts: 'src/scripts/**/*.ts',
+  js: 'src/scripts/**/*.js',
   build: 'build',
   dist: 'dist'
 };
@@ -25,13 +25,6 @@ gulp.task('copy', function () {
     .pipe(gulp.dest(paths.dist + '/assets'));
 });
 
-var tsProject = $.typescript.createProject({
-  declarationFiles: true,
-  noExternalResolve: true,
-  sortOutput: true,
-  sourceRoot: '../scripts'
-});
-
 gulp.task('svg2png', function () {
   gulp.src(paths.assetsSvg)
     .pipe($.debug({title: 'svg:'}))
@@ -39,12 +32,11 @@ gulp.task('svg2png', function () {
     .pipe(gulp.dest(paths.build + '/assets'));
 });
 
-gulp.task('typescript', function () {
-  var tsResult = gulp.src(paths.ts)
+gulp.task('javascript', function () {
+  return gulp.src(paths.js)
+    .pipe($.sort())
     .pipe($.sourcemaps.init())
-    .pipe($.typescript(tsProject));
-
-  return tsResult.js
+    .pipe($.iife())
     .pipe(concat('main.js'))
     .pipe($.sourcemaps.write())
     .pipe(gulp.dest(paths.build));
@@ -62,19 +54,19 @@ gulp.task('processhtml', function () {
     .pipe(gulp.dest(paths.dist));
 });
 
-gulp.task('inject', function () {
+gulp.task('inject', ['javascript'], function () {
   return gulp.src(paths.index)
     .pipe($.inject(gulp.src(bowerFiles()), {name: 'bower', relative: true}))
     .pipe(gulp.dest('src'));
 });
 
-gulp.task('reload', ['typescript'], function () {
+gulp.task('reload', ['javascript'], function () {
   gulp.src(paths.index)
     .pipe($.connect.reload());
 });
 
 gulp.task('watch', function () {
-  gulp.watch(paths.ts, ['typescript', 'reload']);
+  gulp.watch(paths.js, ['javascript', 'reload']);
   gulp.watch(paths.less, ['less', 'reload']);
   gulp.watch(paths.index, ['reload']);
   gulp.watch(paths.assetsSvg, ['svg2png', 'reload']);
@@ -93,7 +85,7 @@ gulp.task('open', function () {
     .pipe($.open({uri: 'http://localhost:9000'}));
 });
 
-gulp.task('minifyJs', ['typescript'], function () {
+gulp.task('minifyJs', function () {
   var all = bowerFiles().concat(paths.build + '/main.js');
   return gulp.src(all)
     .pipe($.uglifyjs('all.min.js', {outSourceMap: false}))
@@ -112,7 +104,7 @@ gulp.task('deploy', function () {
 });
 
 gulp.task('default', function () {
-  runSequence('clean', ['inject', 'typescript', 'svg2png', 'less', 'connect', 'watch'], 'open');
+  runSequence('clean', ['inject', 'svg2png', 'less', 'connect', 'watch'], 'open');
 });
 gulp.task('build', function () {
   return runSequence('clean', ['copy', 'minifyJs', 'minifyCss', 'processhtml']);

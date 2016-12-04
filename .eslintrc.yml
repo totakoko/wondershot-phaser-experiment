@@ -1,0 +1,5 @@
+# Désactivé temporairement car trop de choses à changer...
+env:
+  browser: true
+  es6: true
+# extends: airbnb-base
