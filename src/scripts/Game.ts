@@ -15,6 +15,7 @@ module Wondershot {
       this.state.add('boot', State.Boot);
       this.state.add('preload', State.Preload);
       this.state.add('main', State.Main);
+      this.state.add('battle', State.Battle);
 
       this.state.start('boot');
     }

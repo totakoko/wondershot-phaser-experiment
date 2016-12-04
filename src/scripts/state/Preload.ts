@@ -8,7 +8,10 @@ module Wondershot.State {
     }
 
     create() {
-      this.game.state.start('main');
+
+      setTimeout(function () {
+        this.game.state.start('main');
+      }, 1000);
     }
   }
 }

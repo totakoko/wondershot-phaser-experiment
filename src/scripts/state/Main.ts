@@ -1,26 +1,11 @@
-
 module Wondershot.State {
-  let pauseMenu = Wondershot.Components.PauseMenu,
-      scoreBoard = Wondershot.Components.ScoreBoard,
-      Projectiles = Wondershot.Components.Projectiles,
-      PlayerManager = Wondershot.Components.PlayerManager,
-      World = Wondershot.Components.World,
-      CollisionManager = Wondershot.Components.CollisionManager,
-      Weapon = Wondershot.Components.Weapon;
-
   export class Main extends Phaser.State {
     components = [];
 
     // constructeur utilisé pour propager l'instance game partout
     constructor(game) {
       this.components = [
-        pauseMenu.init(game),
-        scoreBoard.init(game),
-        new World(game),
-        PlayerManager.init(game),
-        Weapon.init(game)
       ];
-      CollisionManager.init(game);
     }
 
     preload() {
@@ -31,19 +16,18 @@ module Wondershot.State {
       }
     }
     create() {
-      this.game.time.advancedTiming = true;
-      this.game.physics.startSystem(Phaser.Physics.P2JS);
-      this.game.physics.p2.setImpactEvents(true); // TODO pas sûr que ça soit utile
-      // this.game.physics.p2.applyGravity = false; // TODO pas encore besoin a priori
 
-      //  4 trues = the 4 faces of the world in left, right, top, bottom order
-      // this.game.physics.p2.setWorldMaterial(this.game.worldMaterial, true, true, true, true);
+      mainMenuTitle = this.game.add.text(this.game.world.centerX, 150, 'Main Menu', { font: '42px Arial', fill: '#000' });
+      mainMenuTitle.anchor.setTo(0.5, 0.5);
 
-      this.initGroups();
-      CollisionManager.createCollisionGroups();
-      CollisionManager.createMaterials();
+      optionBattle = this.game.add.text(this.game.world.centerX, 250, 'Battle', { font: '24px Arial', fill: '#000' });
+      optionBattle.anchor.setTo(0.5, 0.5);
+      optionBattle.inputEnabled = true;
+      optionBattle.events.onInputUp.add(this.optionBattleSelected, this);
 
-      //       this.stage.disableVisibilityChange = false; // met en pause le jeu si focus perdu et le reprends quand focus back
+      // button = this.game.add.button(this.game.world.centerX - 95, 400, 'button', actionOnClick, this, 2, 1, 0);
+      //
+      // button.onInputUp.add(optionBattleSelected, this);
 
       for (let component of this.components) {
         if (component.create) {
@@ -51,28 +35,16 @@ module Wondershot.State {
         }
       }
     }
-    initGroups() {
-      // triés par z-index
-      this.game.Groups = {};
-      this.game.Groups.Game = this.game.add.group(game.world, 'game');
-      this.game.Groups.Floor = this.game.add.group(this.game.Groups.Game, 'floor');
-      this.game.Groups.Objects = this.game.add.group(this.game.Groups.Game, 'objects');
-      this.game.Groups.Players = this.game.add.group(this.game.Groups.Game, 'players');
-      this.game.Groups.Projectiles = this.game.add.group(this.game.Groups.Game, 'projectiles');
-      this.game.Groups.UI = this.game.add.group(this.game.Groups.Game, 'ui');
-      this.game.Groups.Menus = this.game.add.group(game.world, 'menus');
+    optionBattleSelected() {
+      console.log('battle is coming', arguments);
+      this.game.state.start('battle');
     }
+
     update() {
       for (let component of this.components) {
         if (component.update) {
           component.update();
         }
-      }
-    }
-    pauseUpdate() {
-      // permet de mettre à jour les gamepad pour sortir de la pause
-      if (this.game.input.gamepad && this.game.input.gamepad.active) {
-        this.game.input.gamepad.update();
       }
     }
     render() {
