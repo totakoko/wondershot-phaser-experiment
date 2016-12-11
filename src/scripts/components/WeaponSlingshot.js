@@ -1,8 +1,8 @@
-const WeaponSlingshot = Wondershot.Components.WeaponSlingshot = class WeaponSlingshot extends Wondershot.Components.Weapon {
-    constructor(options) {
-        super(options);
-        this.WeaponSlingshotProjectile = Wondershot.Components.WeaponSlingshotProjectile;
-        this.material = Wondershot.Components.CollisionManager.materials.WeaponSlingShot;
+const WeaponSlingshot = WS.Components.WeaponSlingshot = class WeaponSlingshot extends WS.Components.Weapon {
+    constructor() {
+        super();
+        this.WeaponSlingshotProjectile = WS.Components.WeaponSlingshotProjectile;
+        this.material = WS.Services.CollisionManager.materials.WeaponSlingShot;
     }
     fire() {
         console.log('Firing weapon !');

@@ -1,26 +1,26 @@
-const pauseMenu = Wondershot.Components.PauseMenu,
-      CollisionManager = Wondershot.Components.CollisionManager;
+const pauseMenu = WS.Components.PauseMenu;
 
-const Player = Wondershot.Components.Player = class Player {
+const Player = WS.Components.Player = class Player extends WS.Lib.Entity {
     constructor(playerNumber) {
+        super();
         this.playerNumber = playerNumber;
-        this.playerColor = Wondershot.Config.PlayerColors[playerNumber];
-        this.pad = this.game.input.gamepad['pad' + this.playerNumber],
-            this.indicator = this.game.Groups.UI.create(10 + (40 * (this.playerNumber - 1)), 10, 'controller-indicator');
+        this.playerColor = WS.Config.PlayerColors[playerNumber];
+        this.pad = WS.game.input.gamepad['pad' + this.playerNumber];
+        this.indicator = WS.game.Groups.UI.create(10 + (40 * (this.playerNumber - 1)), 10, 'controller-indicator');
         this.indicator.scale.setTo(2);
         this.indicator.animations.frame = 1;
-        this.sprite = this.game.world.create(80 * this.playerNumber, 200, 'player');
+        this.sprite = WS.game.world.create(80 * this.playerNumber, 200, 'player');
         this.sprite.scale.setTo(0.2);
-        this.sprite.tint = Wondershot.Config.PlayerColors[this.playerNumber];
+        this.sprite.tint = WS.Config.PlayerColors[this.playerNumber];
         this.sprite.data.owner = this;
-        this.game.physics.p2.enable(this.sprite, Wondershot.Config.Debug);
+        WS.game.physics.p2.enable(this.sprite, WS.Config.Debug);
         this.sprite.body.setCircle(30);
         this.sprite.body.fixedRotation = true;
         this.sprite.body.damping = 1; // pas d'effet élastique sur les côtés
         console.log('collision group : Player' + playerNumber);
-        this.sprite.body.setCollisionGroup(Components.CollisionManager['Player' + playerNumber].id);
-        this.sprite.body.collides(Components.CollisionManager['Player' + playerNumber].World);
-        this.sprite.body.collides(Components.CollisionManager['Player' + playerNumber].OtherProjectiles);
+        this.sprite.body.setCollisionGroup(WS.Services.CollisionManager['Player' + playerNumber].id);
+        this.sprite.body.collides(WS.Services.CollisionManager['Player' + playerNumber].World);
+        this.sprite.body.collides(WS.Services.CollisionManager['Player' + playerNumber].OtherProjectiles);
     }
     registerGamepadButtons() {
         console.log('registerGamepadButtons player%s', this.playerNumber);

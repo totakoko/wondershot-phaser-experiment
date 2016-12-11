@@ -1,12 +1,12 @@
-Wondershot.Components.ScoreBoard = class ScoreBoard {
+WS.Components.ScoreBoard = class ScoreBoard extends WS.Lib.Entity {
     static create() {
         this.score = {
             1: 0,
             2: 0,
             3: 0,
-            4: 0
+            4: 0,
         };
-        this.scoreText = this.game.Groups.UI.add(new Phaser.Text(this.game, this.game.world.width / 2, 30, '', { font: '20px Arial' }));
+        this.scoreText = WS.game.Groups.UI.add(new Phaser.Text(WS.game, WS.game.world.width / 2, 30, '', { font: '20px Arial' }));
         this.scoreText.anchor.setTo(0.5, 0.5);
         this.update();
     }
@@ -15,7 +15,7 @@ Wondershot.Components.ScoreBoard = class ScoreBoard {
     }
     static addPoint(playerNumber) {
         this.score[playerNumber]++;
-        if (this.score[playerNumber] === Wondershot.Config.RoundsVictory) {
+        if (this.score[playerNumber] === WS.Config.RoundsVictory) {
             console.log('Player ' + playerNumber + ' is victorious');
         }
     }

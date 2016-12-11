@@ -11,7 +11,7 @@ var paths = {
   assets: 'src/assets/**/*',
   less: 'src/css/main.less',
   index: 'src/index.html',
-  js: 'src/scripts/**/*.js',
+  js: ['src/scripts/_init.js', 'src/scripts/lib/*.js', 'src/scripts/**/*.js'],
   build: 'build',
   dist: 'dist'
 };
@@ -34,9 +34,12 @@ gulp.task('svg2png', function () {
 
 gulp.task('javascript', function () {
   return gulp.src(paths.js)
-    .pipe($.sort())
+    // .pipe($.sort())
     .pipe($.sourcemaps.init())
     .pipe($.iife())
+    // .pipe($.babel({
+    //     presets: ['es2015']
+    // }))
     .pipe(concat('main.js'))
     .pipe($.sourcemaps.write())
     .pipe(gulp.dest(paths.build));
@@ -104,7 +107,8 @@ gulp.task('deploy', function () {
 });
 
 gulp.task('default', function () {
-  runSequence('clean', ['inject', 'svg2png', 'less', 'connect', 'watch'], 'open');
+  // runSequence('clean', ['inject', 'svg2png', 'less', 'connect', 'watch'], 'open');
+  runSequence('clean', ['inject', 'svg2png', 'less', 'connect', 'watch']);
 });
 gulp.task('build', function () {
   return runSequence('clean', ['copy', 'minifyJs', 'minifyCss', 'processhtml']);

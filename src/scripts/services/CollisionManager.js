@@ -1,7 +1,6 @@
-const CollisionManager = Wondershot.Components.CollisionManager = class CollisionManager {
+const CollisionManager = WS.Services.CollisionManager = class CollisionManager {
     static createCollisionGroups() {
         var _this = this;
-        this.game = Wondershot.game;
         let groupList = {
             World: {
                 All: ['World', 'Projectile1', 'Projectile2', 'Projectile3', 'Projectile4', 'Player1', 'Player2', 'Player3', 'Player4']
@@ -41,7 +40,7 @@ const CollisionManager = Wondershot.Components.CollisionManager = class Collisio
         };
         Object.keys(groupList).forEach((groupName) => {
             this[groupName] = {
-                id: this.game.physics.p2.createCollisionGroup()
+                id: WS.game.physics.p2.createCollisionGroup()
             };
         });
         Object.keys(groupList).forEach(function (groupName) {
@@ -57,12 +56,12 @@ const CollisionManager = Wondershot.Components.CollisionManager = class Collisio
         });
     }
     static createMaterials() {
-        this.materials.World = this.game.physics.p2.createMaterial('World');
-        this.materials.WeaponSlingshot = this.game.physics.p2.createMaterial('WeaponSlingshot');
+        this.materials.World = WS.game.physics.p2.createMaterial('World');
+        this.materials.WeaponSlingshot = WS.game.physics.p2.createMaterial('WeaponSlingshot');
         this.createContactMaterials();
     }
     static createContactMaterials() {
-        let contactMaterial = this.game.physics.p2.createContactMaterial(this.materials.WeaponSlingshot, this.materials.World);
+        let contactMaterial = WS.game.physics.p2.createContactMaterial(this.materials.WeaponSlingshot, this.materials.World);
         contactMaterial.friction = 0; // Friction to use in the contact of these two materials.
         contactMaterial.restitution = 1.0; // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
         contactMaterial.stiffness = 1e16; // Stiffness of the resulting ContactEquation that this ContactMaterial generate.

@@ -1,34 +1,39 @@
-const PlayerManager = Wondershot.Components.PlayerManager = class PlayerManager {
+const PlayerManager = WS.Components.PlayerManager = class PlayerManager extends WS.Lib.Entity {
     static preload() {
-        this.game.load.image('player', 'assets/images/player.png');
-        this.game.load.spritesheet('controller-indicator', 'assets/images/controller-indicator.png', 16, 16);
-        this.game.load.image('player-death-marker', 'assets/images/player-death-marker.png');
+        WS.game.load.image('player', 'assets/images/player.png');
+        WS.game.load.spritesheet('controller-indicator', 'assets/images/controller-indicator.png', 16, 16);
+        WS.game.load.image('player-death-marker', 'assets/images/player-death-marker.png');
     }
-    static create() {
-        this.game.input.gamepad.start();
-        if (!this.game.input.gamepad.supported) {
-            this.game.destroy();
+    constructor() {
+        super();
+        this.players = {};
+        this.activePlayers = [1, 2, 3, 4];
+    }
+    create() {
+        WS.game.input.gamepad.start();
+        if (!WS.game.input.gamepad.supported) {
+            WS.game.destroy();
             throw new Error(`The Gamepad API not supported in this browser!`);
         }
         // la connexion est gamepad est faite en asynchrone
-        this.game.input.gamepad.onConnectCallback = this.onGamepadConnect.bind(this);
+        WS.game.input.gamepad.onConnectCallback = this.onGamepadConnect.bind(this);
         this.activePlayers.forEach(function (playerNumber) {
-            let player = this.players[playerNumber] = new Components.Player(this.game, playerNumber);
-            player.pickupWeapon(new Components.WeaponSlingshot());
+            let player = this.players[playerNumber] = new WS.Components.Player(playerNumber);
+            player.pickupWeapon(new WS.Components.WeaponSlingshot());
         }, this);
     }
-    static onGamepadConnect(gamepadNumber) {
+    onGamepadConnect(gamepadNumber) {
         let playerNumber = gamepadNumber + 1;
         console.log('Gamepad%s connected.', playerNumber);
         this.players[playerNumber].registerGamepadButtons();
     }
-    static update() {
-        if (this.game.input.gamepad.active) {
+    update() {
+        if (WS.game.input.gamepad.active) {
             this.updatePadIndicators();
             this.updatePlayerPositions();
         }
     }
-    static updatePadIndicators() {
+    updatePadIndicators() {
         this.activePlayers.forEach(function (playerNumber) {
             if (this.players[playerNumber].pad.connected) {
                 this.players[playerNumber].indicator.animations.frame = 0;
@@ -38,7 +43,7 @@ const PlayerManager = Wondershot.Components.PlayerManager = class PlayerManager 
             }
         }, this);
     }
-    static updatePlayerPositions() {
+    updatePlayerPositions() {
         this.activePlayers.forEach(function (playerNumber) {
             let pad = this.players[playerNumber].pad;
             if (pad.connected) {
@@ -47,22 +52,20 @@ const PlayerManager = Wondershot.Components.PlayerManager = class PlayerManager 
                 if (moveX || moveY) {
                     let playerSprite = this.players[playerNumber].sprite;
                     playerSprite.rotation = Math.atan2(moveY, moveX);
-                    playerSprite.body.x += moveX * Wondershot.Config.PlayerSpeed;
-                    playerSprite.body.y += moveY * Wondershot.Config.PlayerSpeed;
+                    playerSprite.body.x += moveX * WS.Config.PlayerSpeed;
+                    playerSprite.body.y += moveY * WS.Config.PlayerSpeed;
                 }
             }
         }, this);
     }
-    static killPlayer(player) {
+    killPlayer(player) {
         console.log('kill player%s', player.playerNumber);
-        Wondershot.Components.ScoreBoard.addPoint(player.playerNumber);
-        deathMarker = this.game.Groups.Floor.create(player.sprite.x, player.sprite.y, 'player-death-marker');
+        WS.Components.ScoreBoard.addPoint(player.playerNumber);
+        deathMarker = WS.game.Groups.Floor.create(player.sprite.x, player.sprite.y, 'player-death-marker');
         deathMarker.anchor.setTo(0.5);
-        deathMarker.tint = Wondershot.Config.PlayerColors[player.playerNumber];
+        deathMarker.tint = WS.Config.PlayerColors[player.playerNumber];
         // this.sprite.scale.setTo(0.2);
         this.players[player.playerNumber].sprite.destroy();
         delete this.activePlayers[player.playerNumber - 1];
     }
 }
-PlayerManager.players = {};
-PlayerManager.activePlayers = [1, 2, 3, 4];

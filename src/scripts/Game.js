@@ -1,4 +1,4 @@
-Wondershot.Game = class Game extends Phaser.Game {
+WS.Game = class Game extends Phaser.Game {
     constructor() {
         super({
             width: 400,
@@ -7,10 +7,10 @@ Wondershot.Game = class Game extends Phaser.Game {
             enableDebug: true
         });
         // arena is 800x600
-        this.state.add('boot', Wondershot.State.Boot);
-        this.state.add('preload', Wondershot.State.Preload);
-        this.state.add('main', Wondershot.State.Main);
-        this.state.add('battle', Wondershot.State.Battle);
+        this.state.add('boot', WS.State.Boot);
+        this.state.add('preload', WS.State.Preload);
+        this.state.add('main', WS.State.Main);
+        this.state.add('battle', WS.State.Battle);
         this.state.start('boot');
     }
 }

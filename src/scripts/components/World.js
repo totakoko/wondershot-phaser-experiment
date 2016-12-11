@@ -1,44 +1,45 @@
-let CollisionManager = Wondershot.Components.CollisionManager;
-const World = Wondershot.Components.World = class World {
+let CollisionManager = WS.Services.CollisionManager;
+const World = WS.Components.World = class World extends WS.Lib.Entity {
+    static preload() {
+        WS.game.load.image('wall', 'assets/images/wall.png');
+    }
     constructor() {
+        super();
         this.arenaBordersWidth = 30;
         this.headerHeight = 80;
         this.startLines = [];
     }
-    preload() {
-        this.game.load.image('wall', 'assets/images/wall.png');
-    }
     create() {
-        this.game.stage.backgroundColor = '#91d49c';
+        WS.game.stage.backgroundColor = '#91d49c';
         // pas besoin pour faire sortir les projectiles ?
-        // this.game.physics.p2.updateBoundsCollisionGroup();
-        let verticalHeight = this.game.world.height - this.headerHeight - 2 * this.arenaBordersWidth;
+        // WS.game.physics.p2.updateBoundsCollisionGroup();
+        let verticalHeight = WS.game.world.height - this.headerHeight - 2 * this.arenaBordersWidth;
         // Define a block using bitmap data rather than an image sprite
-        let horizontalLimitBitmap = this.game.add.bitmapData(this.game.world.width, this.arenaBordersWidth);
-        let verticalLimitBitmap = this.game.add.bitmapData(this.arenaBordersWidth, verticalHeight);
+        let horizontalLimitBitmap = WS.game.add.bitmapData(WS.game.world.width, this.arenaBordersWidth);
+        let verticalLimitBitmap = WS.game.add.bitmapData(this.arenaBordersWidth, verticalHeight);
         // bar de 200px en haut
-        horizontalLimitBitmap.ctx.rect(0, 0, this.game.world.width, this.arenaBordersWidth);
+        horizontalLimitBitmap.ctx.rect(0, 0, WS.game.world.width, this.arenaBordersWidth);
         horizontalLimitBitmap.ctx.fillStyle = '#fff';
         horizontalLimitBitmap.ctx.fill();
         verticalLimitBitmap.ctx.rect(0, 0, this.arenaBordersWidth, verticalHeight);
         verticalLimitBitmap.ctx.fillStyle = '#fff';
         verticalLimitBitmap.ctx.fill();
         // Create a new sprite using the bitmap data
-        let limitTop = this.game.world.create(this.game.world.width / 2, this.headerHeight + this.arenaBordersWidth / 2, horizontalLimitBitmap);
-        let limitBottom = this.game.world.create(this.game.world.width / 2, this.game.world.height - this.arenaBordersWidth / 2, horizontalLimitBitmap);
+        let limitTop = WS.game.world.create(WS.game.world.width / 2, this.headerHeight + this.arenaBordersWidth / 2, horizontalLimitBitmap);
+        let limitBottom = WS.game.world.create(WS.game.world.width / 2, WS.game.world.height - this.arenaBordersWidth / 2, horizontalLimitBitmap);
         let verticalLimitPos = this.headerHeight + this.arenaBordersWidth + verticalHeight / 2;
-        let limitLeft = this.game.Groups.Objects.create(this.arenaBordersWidth / 2, verticalLimitPos, verticalLimitBitmap);
-        let limitRight = this.game.Groups.Objects.create(this.game.world.width - this.arenaBordersWidth / 2, verticalLimitPos, verticalLimitBitmap);
-        let wall = this.game.Groups.Objects.create(120, 300, 'wall');
-        let wall2 = this.game.Groups.Objects.create(280, 500, 'wall');
+        let limitLeft = WS.game.Groups.Objects.create(this.arenaBordersWidth / 2, verticalLimitPos, verticalLimitBitmap);
+        let limitRight = WS.game.Groups.Objects.create(WS.game.world.width - this.arenaBordersWidth / 2, verticalLimitPos, verticalLimitBitmap);
+        let wall = WS.game.Groups.Objects.create(120, 300, 'wall');
+        let wall2 = WS.game.Groups.Objects.create(280, 500, 'wall');
         let worldEntities = [limitTop, limitBottom, limitLeft, limitRight, wall, wall2];
-        this.game.physics.p2.enable(worldEntities, Wondershot.Config.Debug);
+        WS.game.physics.p2.enable(worldEntities, WS.Config.Debug);
         worldEntities.forEach(setupWorldBody, this);
         function setupWorldBody(entity) {
             entity.body.static = true;
-            entity.body.setMaterial(Components.CollisionManager.materials.World);
-            entity.body.setCollisionGroup(Components.CollisionManager.World.id);
-            entity.body.collides(Components.CollisionManager.World.All);
+            entity.body.setMaterial(WS.Services.CollisionManager.materials.World);
+            entity.body.setCollisionGroup(WS.Services.CollisionManager.World.id);
+            entity.body.collides(WS.Services.CollisionManager.World.All);
         }
         this.loopVertical(wall);
         this.loopVertical(wall2, true);
@@ -49,7 +50,7 @@ const World = Wondershot.Components.World = class World {
         //   { x: 280, y: 580 }
         // ];
         // startingPositions.forEach(function(position) {
-        //   this.game.Groups.Floor.create(position.x, position.y, 'starting-position', null);
+        //   WS.game.Groups.Floor.create(position.x, position.y, 'starting-position', null);
         // }, this);
     }
     update() {
@@ -66,7 +67,7 @@ const World = Wondershot.Components.World = class World {
          * @param {boolean} [yoyo=false] - A tween that yoyos will reverse itself and play backwards automatically. A yoyo'd tween doesn't fire the Tween.onComplete event, so listen for Tween.onLoop instead.
          * @return {Phaser.Tween} This Tween object.
          */
-        this.game.add.tween(entity.body.velocity)
+        WS.game.add.tween(entity.body.velocity)
             .to({ x: 0, y: reverse ? -60 : 60 }, 2000, Phaser.Easing.Quadratic.In)
             .to({ x: 0, y: 0 }, 1000, Phaser.Easing.Quadratic.Out, false, 2000)
             .to({ x: 0, y: reverse ? 60 : -60 }, 2000, Phaser.Easing.Quadratic.In)

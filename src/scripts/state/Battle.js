@@ -1,30 +1,26 @@
-let pauseMenu = Wondershot.Components.PauseMenu,
-    scoreBoard = Wondershot.Components.ScoreBoard,
-    Projectiles = Wondershot.Components.Projectiles,
-    PlayerManager = Wondershot.Components.PlayerManager,
-    World = Wondershot.Components.World,
-    CollisionManager = Wondershot.Components.CollisionManager,
-    Weapon = Wondershot.Components.Weapon;
+let PauseMenu = WS.Components.PauseMenu,
+    ScoreBoard = WS.Components.ScoreBoard,
+    Projectiles = WS.Components.Projectiles,
+    PlayerManager = WS.Components.PlayerManager,
+    World = WS.Components.World,
+    CollisionManager = WS.Services.CollisionManager,
+    Weapon = WS.Components.Weapon;
 
-const Battle = Wondershot.State.Battle = class Battle extends Phaser.State {
-    constructor(game) {
-        super();
-        this.components = [];
-    }
-    preload() {
-        for (let component of this.components) {
-            if (component.preload) {
-                component.preload();
-            }
-        }
-    }
+const Battle = WS.State.Battle = class Battle extends Phaser.State {
     create() {
-        this.game.time.advancedTiming = true;
-        this.game.physics.startSystem(Phaser.Physics.P2JS);
-        this.game.physics.p2.setImpactEvents(true); // TODO pas sûr que ça soit utile
-        // this.game.physics.p2.applyGravity = false; // TODO pas encore besoin a priori
+        this.components = [
+            new PauseMenu(),
+            new ScoreBoard(),
+            new World(),
+            new PlayerManager(),
+            new Weapon(),
+        ];
+        WS.game.time.advancedTiming = true;
+        WS.game.physics.startSystem(Phaser.Physics.P2JS);
+        WS.game.physics.p2.setImpactEvents(true); // TODO pas sûr que ça soit utile
+        // WS.game.physics.p2.applyGravity = false; // TODO pas encore besoin a priori
         //  4 trues = the 4 faces of the world in left, right, top, bottom order
-        // this.game.physics.p2.setWorldMaterial(this.game.worldMaterial, true, true, true, true);
+        // WS.game.physics.p2.setWorldMaterial(WS.game.worldMaterial, true, true, true, true);
         this.initGroups();
         CollisionManager.createCollisionGroups();
         CollisionManager.createMaterials();
@@ -37,14 +33,14 @@ const Battle = Wondershot.State.Battle = class Battle extends Phaser.State {
     }
     initGroups() {
         // triés par z-index
-        this.game.Groups = {};
-        this.game.Groups.Game = this.game.add.group(this.game.world, 'game');
-        this.game.Groups.Floor = this.game.add.group(this.game.Groups.Game, 'floor');
-        this.game.Groups.Objects = this.game.add.group(this.game.Groups.Game, 'objects');
-        this.game.Groups.Players = this.game.add.group(this.game.Groups.Game, 'players');
-        this.game.Groups.Projectiles = this.game.add.group(this.game.Groups.Game, 'projectiles');
-        this.game.Groups.UI = this.game.add.group(this.game.Groups.Game, 'ui');
-        this.game.Groups.Menus = this.game.add.group(this.game.world, 'menus');
+        WS.game.Groups = {};
+        WS.game.Groups.Game = WS.game.add.group(WS.game.world, 'game');
+        WS.game.Groups.Floor = WS.game.add.group(WS.game.Groups.Game, 'floor');
+        WS.game.Groups.Objects = WS.game.add.group(WS.game.Groups.Game, 'objects');
+        WS.game.Groups.Players = WS.game.add.group(WS.game.Groups.Game, 'players');
+        WS.game.Groups.Projectiles = WS.game.add.group(WS.game.Groups.Game, 'projectiles');
+        WS.game.Groups.UI = WS.game.add.group(WS.game.Groups.Game, 'ui');
+        WS.game.Groups.Menus = WS.game.add.group(WS.game.world, 'menus');
     }
     update() {
         for (let component of this.components) {
@@ -55,8 +51,8 @@ const Battle = Wondershot.State.Battle = class Battle extends Phaser.State {
     }
     pauseUpdate() {
         // permet de mettre à jour les gamepad pour sortir de la pause
-        if (this.game.input.gamepad && this.game.input.gamepad.active) {
-            this.game.input.gamepad.update();
+        if (WS.game.input.gamepad && WS.game.input.gamepad.active) {
+            WS.game.input.gamepad.update();
         }
     }
     render() {
@@ -66,6 +62,6 @@ const Battle = Wondershot.State.Battle = class Battle extends Phaser.State {
             }
         }
         // FPS
-        this.game.debug.text(this.game.time.fps, this.game.world.width - 25, 14, "#f00");
+        WS.game.debug.text(WS.game.time.fps, WS.game.world.width - 25, 14, "#f00");
     }
 }

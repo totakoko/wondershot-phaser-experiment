@@ -1,6 +1,8 @@
-window.Wondershot = {
+window.WS = {
   Components: {},
   Config: {},
   Game: {},
+  Lib: {},
+  Services: {},
   State: {},
 };

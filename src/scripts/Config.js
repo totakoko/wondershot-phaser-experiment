@@ -1,4 +1,4 @@
-const Config = Wondershot.Config = class Config {
+const Config = WS.Config = class Config {
 }
 Config.Debug = !true;
 Config.PlayerSpeed = 2;
