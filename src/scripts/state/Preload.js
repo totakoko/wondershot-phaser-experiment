@@ -1,25 +1,11 @@
 const Preload = WS.State.Preload = class Preload extends Phaser.State {
     preload() {
-        this.preloadBar = this.add.sprite(290, 290, 'preload-bar');
+        this.preloadBar = this.add.sprite(WS.game.world.centerX, WS.game.world.centerY, 'preload-bar');
+        this.preloadBar.anchor.setTo(0.5, 0.5);
         this.load.setPreloadSprite(this.preloadBar);
 
         // const entities = [
-        //   CollisionManager,
-        //   PauseMenu,
-        //   Player,
-        //   PlayersManager,
-        //   ScoreBoard,
-        //   Weapon,
-        //   WeaponSlingshot,
-        //   WeaponSlingshotProjectile,
-        //   World,
-        // ];
-        // entities.forEach(function(entity) {
-        //   console.log(`preloading ${entity}`)
-        //   entity.preload(game);
-        // })
-        // const entities = [
-        //   CollisionManager,
+        //   PhysicsManager,
         //   PauseMenu,
         //   Player,
         //   PlayersManager,
@@ -30,13 +16,17 @@ const Preload = WS.State.Preload = class Preload extends Phaser.State {
         //   World,
         // ];
         for (let entityName of Object.keys(WS.Components)) {
-          console.log(`preloading ${entityName}`)
+          // console.log(`preloading ${entityName}`)
           WS.Components[entityName].preload();
         }
     }
     create() {
         // setTimeout(() => {
-        WS.game.state.start('battle');
+        WS.Services.PadManager.init();
+        // WS.game.state.start('characterSelection');
+        WS.game.state.start('battle', true, false, {
+          activePlayers: ["1", "2"]
+        });
         // }, 1000);
     }
 }

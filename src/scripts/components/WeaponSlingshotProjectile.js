@@ -13,7 +13,7 @@ const WeaponSlingshotProjectile = WS.Components.WeaponSlingshotProjectile = clas
         this.projectilesPool.forEach(function (projectile) {
             projectile.body.setCircle(10);
             projectile.body.fixedRotation = true;
-            projectile.body.setMaterial(WS.Services.CollisionManager.materials.WeaponSlingshot);
+            projectile.body.setMaterial(WS.Services.PhysicsManager.materials.WeaponSlingshot);
         }, this);
     }
     constructor(options) {
@@ -26,12 +26,18 @@ const WeaponSlingshotProjectile = WS.Components.WeaponSlingshotProjectile = clas
         projectile.body.rotation = options.sprite.rotation;
         projectile.body.velocity.x = Math.cos(rotation) * WeaponSlingshotProjectile.speed;
         projectile.body.velocity.y = Math.sin(rotation) * WeaponSlingshotProjectile.speed;
-        projectile.body.setCollisionGroup(WS.Services.CollisionManager['Projectile' + owner.playerNumber].id);
-        projectile.body.collides(WS.Services.CollisionManager['Projectile' + owner.playerNumber].World, this.worldHitHandler, this);
-        projectile.body.collides(WS.Services.CollisionManager['Projectile' + owner.playerNumber].OtherPlayers, this.playerHitHandler, this);
+        projectile.body.setCollisionGroup(WS.Services.PhysicsManager['Projectile' + owner.playerNumber].id);
+        projectile.body.collides(WS.Services.PhysicsManager['Projectile' + owner.playerNumber].World, this.worldHitHandler, this);
+        projectile.body.collides(WS.Services.PhysicsManager['Projectile' + owner.playerNumber].OtherPlayers, this.playerHitHandler, this);
         projectile.data.owner = owner;
         projectile.data.bounceLeft = 3;
-        projectile.tint = owner.playerColor;
+        projectile.tint = owner.playerColor.tint;
+
+        projectile.body.onBeginContact.add(this.contactHandler);
+    }
+    // TODO, utiliser un contactHandler plutôt que world handler
+    contactHandler(projectileBody, bodyB, shapeA, shapeB, equation) {
+      console.log('projectile contact !', arguments);
     }
     worldHitHandler(projectileBody, bodyB, shapeA, shapeB, equation) {
         console.log('bounceLeft', projectileBody.sprite.data.bounceLeft);
@@ -43,9 +49,8 @@ const WeaponSlingshotProjectile = WS.Components.WeaponSlingshotProjectile = clas
         projectileBody.setZeroForce();
     }
     playerHitHandler(projectileBody, bodyB, shapeA, shapeB, equation) {
-        console.log('rock projectile just hit %s%s', bodyB.sprite.key, bodyB.sprite.data.owner);
-        // console.log('playerHitHandler', body.sprite.key);
-        WS.Components.PlayerManager.killPlayer(bodyB.sprite.data.owner);
+        console.log(`Player ${projectileBody.sprite.data.owner.playerNumber} just hit ${bodyB.sprite.data.owner.playerNumber}`);
+        bodyB.sprite.data.owner.kill();
     }
 }
 WeaponSlingshotProjectile.speed = WS.Config.ProjectileSpeed;

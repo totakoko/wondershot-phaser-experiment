@@ -4,8 +4,8 @@ const Boot = WS.State.Boot = class Boot extends Phaser.State {
     }
     create() {
         WS.game.stage.backgroundColor = 0xFFFFFF;
-        this.input.maxPointers = 1;
-        this.stage.disableVisibilityChange = true;
+        WS.game.stage.disableVisibilityChange = true;
+        WS.game.input.maxPointers = 1;
         WS.game.state.start('preload');
     }
 }

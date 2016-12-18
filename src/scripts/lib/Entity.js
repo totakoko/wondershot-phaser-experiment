@@ -18,7 +18,11 @@ const Entity = WS.Lib.Entity = class Entity {
   }
 
   // permet de mettre à jour des choses pendant l'event loop
+  create() {
+  }
   update() {
+  }
+  render() {
   }
 
 }

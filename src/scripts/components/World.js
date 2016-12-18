@@ -1,4 +1,4 @@
-let CollisionManager = WS.Services.CollisionManager;
+let PhysicsManager = WS.Services.PhysicsManager;
 const World = WS.Components.World = class World extends WS.Lib.Entity {
     static preload() {
         WS.game.load.image('wall', 'assets/images/wall.png');
@@ -8,6 +8,15 @@ const World = WS.Components.World = class World extends WS.Lib.Entity {
         this.arenaBordersWidth = 30;
         this.headerHeight = 80;
         this.startLines = [];
+        this.startLocations = [
+          {x: 90, y: 180},
+          {x: 300, y: 180},
+          {x: 90, y: 600},
+          {x: 300, y: 600},
+        ];
+    }
+    getStartPositions() {
+      return this.startLocations;
     }
     create() {
         WS.game.stage.backgroundColor = '#91d49c';
@@ -34,22 +43,16 @@ const World = WS.Components.World = class World extends WS.Lib.Entity {
         let wall2 = WS.game.Groups.Objects.create(280, 500, 'wall');
         let worldEntities = [limitTop, limitBottom, limitLeft, limitRight, wall, wall2];
         WS.game.physics.p2.enable(worldEntities, WS.Config.Debug);
-        worldEntities.forEach(setupWorldBody, this);
-        function setupWorldBody(entity) {
+        worldEntities.forEach((entity) => {
             entity.body.static = true;
-            entity.body.setMaterial(WS.Services.CollisionManager.materials.World);
-            entity.body.setCollisionGroup(WS.Services.CollisionManager.World.id);
-            entity.body.collides(WS.Services.CollisionManager.World.All);
-        }
+            entity.body.setMaterial(WS.Services.PhysicsManager.materials.World);
+            entity.body.setCollisionGroup(WS.Services.PhysicsManager.World.id);
+            entity.body.collides(WS.Services.PhysicsManager.World.All);
+        });
         this.loopVertical(wall);
         this.loopVertical(wall2, true);
-        // let startingPositions = [
-        //   { x: 40, y: 120 },
-        //   { x: 280, y: 120 },
-        //   { x: 40, y: 580 },
-        //   { x: 280, y: 580 }
-        // ];
-        // startingPositions.forEach(function(position) {
+      
+        // this.startLocations.forEach(function(position) {
         //   WS.game.Groups.Floor.create(position.x, position.y, 'starting-position', null);
         // }, this);
     }

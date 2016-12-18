@@ -10,6 +10,7 @@ WS.Game = class Game extends Phaser.Game {
         this.state.add('boot', WS.State.Boot);
         this.state.add('preload', WS.State.Preload);
         this.state.add('main', WS.State.Main);
+        this.state.add('characterSelection', WS.State.CharacterSelection);
         this.state.add('battle', WS.State.Battle);
         this.state.start('boot');
     }

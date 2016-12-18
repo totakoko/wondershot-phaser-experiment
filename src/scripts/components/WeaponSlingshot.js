@@ -2,10 +2,10 @@ const WeaponSlingshot = WS.Components.WeaponSlingshot = class WeaponSlingshot ex
     constructor() {
         super();
         this.WeaponSlingshotProjectile = WS.Components.WeaponSlingshotProjectile;
-        this.material = WS.Services.CollisionManager.materials.WeaponSlingShot;
+        this.material = WS.Services.PhysicsManager.materials.WeaponSlingShot;
     }
     fire() {
         console.log('Firing weapon !');
-        new Components.WeaponSlingshotProjectile(this.owner);
+        new WS.Components.WeaponSlingshotProjectile(this.owner);
     }
 }

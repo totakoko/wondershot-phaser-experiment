@@ -2,6 +2,7 @@ const Main = WS.State.Main = class Main extends Phaser.State {
   create() {
       const mainMenuTitle = WS.game.add.text(WS.game.world.centerX, 150, 'Main Menu', { font: '42px Arial', fill: '#000' });
       mainMenuTitle.anchor.setTo(0.5, 0.5);
+
       const optionBattle = WS.game.add.text(WS.game.world.centerX, 250, 'Battle', { font: '24px Arial', fill: '#000' });
       optionBattle.anchor.setTo(0.5, 0.5);
       optionBattle.inputEnabled = true;
@@ -17,7 +18,7 @@ const Main = WS.State.Main = class Main extends Phaser.State {
   }
   optionBattleSelected() {
       console.log('battle is coming', arguments);
-      WS.game.state.start('battle');
+      WS.game.state.start('characterSelection');
   }
   update() {
       // for (let component of this.components) {
