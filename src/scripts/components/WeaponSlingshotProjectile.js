@@ -4,7 +4,7 @@ const WeaponSlingshotProjectile = WS.Components.WeaponSlingshotProjectile = clas
     }
     static create() {
         this.projectilesPool = new Phaser.Group(WS.game, WS.game.Groups.Projectiles, 'weapon-slingshot-projectiles');
-        this.projectilesPool.createMultiple(10, 'weapon-slingshot-projectile');
+        this.projectilesPool.createMultiple(2000, 'weapon-slingshot-projectile');
         this.projectilesPool.forEach(function (projectile) {
             projectile.scale.setTo(0.3);
             projectile.visible = false;
@@ -35,7 +35,7 @@ const WeaponSlingshotProjectile = WS.Components.WeaponSlingshotProjectile = clas
 
         projectile.body.onBeginContact.add(this.contactHandler);
     }
-    // TODO, utiliser un contactHandler plutôt que world handler
+    // TODO, utiliser un contactHandler plutôt que
     contactHandler(projectileBody, bodyB, shapeA, shapeB, equation) {
       console.log('projectile contact !', arguments);
     }

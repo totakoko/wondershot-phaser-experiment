@@ -29,6 +29,8 @@ const CharacterSelection = WS.State.CharacterSelection = class CharacterSelectio
         this.activePlayers[padNumber] = !this.activePlayers[padNumber];
         console.log(`P${padNumber} ${this.activePlayers[padNumber]}`);
       }.bind(this));
+
+      // WS.Services.PhysicsManager.init();
   }
   startBattleButtonSelected() {
       const activePlayers = _.chain(this.activePlayers)
@@ -38,8 +40,11 @@ const CharacterSelection = WS.State.CharacterSelection = class CharacterSelectio
                              .filter()
                              .value();
      console.log('CharacterSelection: selected players %s', activePlayers);
-      WS.game.state.start('battle', true, false, {
-        activePlayers
+
+      WS.game.state.start('round', true, false, {
+        battle: new WS.Lib.Battle({
+          players: activePlayers
+        })
       });
   }
   update() {

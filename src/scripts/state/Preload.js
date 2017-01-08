@@ -23,9 +23,11 @@ const Preload = WS.State.Preload = class Preload extends Phaser.State {
     create() {
         // setTimeout(() => {
         WS.Services.PadManager.init();
-        // WS.game.state.start('characterSelection');
-        WS.game.state.start('battle', true, false, {
-          activePlayers: ["1", "2"]
+        // WS.game.state.start('main');
+        WS.game.state.start('round', true, false, {
+          battle: new WS.Lib.Battle({
+            players: ['1', '2']
+          })
         });
         // }, 1000);
     }

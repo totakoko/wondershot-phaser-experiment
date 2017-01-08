@@ -38,6 +38,9 @@ const Player = WS.Components.Player = class Player extends WS.Lib.Entity {
     registerGamepadButtons() {
         console.log('registerGamepadButtons player%s', this.playerNumber);
         // TODO tester plusieurs ajouts de callback
+        for (const keyName of [Phaser.Gamepad.XBOX360_A, Phaser.Gamepad.XBOX360_START]) {
+          this.pad.getButton(keyName).onDown.removeAll();
+        }
         this.pad.getButton(Phaser.Gamepad.XBOX360_A).onDown.add(_.throttle(this.fireWeapon, 5, { trailing: false }), this);
         // this.pad.getButton(Phaser.Gamepad.XBOX360_B).onDown.add(_.throttle(this.throwRock, 5, { trailing: false }), this);
         this.pad.getButton(Phaser.Gamepad.XBOX360_START).onDown.add(_.throttle(pauseMenu.togglePause, 500, { trailing: false }), pauseMenu);
@@ -74,10 +77,10 @@ const Player = WS.Components.Player = class Player extends WS.Lib.Entity {
         const deathMarker = WS.game.Groups.Floor.create(this.sprite.x, this.sprite.y, 'player-death-marker');
         deathMarker.anchor.setTo(0.5);
         deathMarker.tint = this.playerColor.tint;
-        // this.sprite.scale.setTo(0.2);
         this.sprite.destroy();
-
-        WS.game.state.callbackContext.scoreBoard.addPoint(this.playerNumber);
+        // this.sprite.safedestroy = true;
+        //TODO utiliser safedestroy = true
+        WS.game.state.callbackContext.battle.addPoint(this.playerNumber);
         // delete this.activePlayers[player.playerNumber - 1];
     }
 }
