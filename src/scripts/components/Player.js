@@ -42,7 +42,7 @@ const Player = WS.Components.Player = class Player extends WS.Lib.Entity {
           this.pad.getButton(keyName).onDown.removeAll();
         }
         this.pad.getButton(Phaser.Gamepad.XBOX360_A).onDown.add(_.throttle(this.fireWeapon, 5, { trailing: false }), this);
-        // this.pad.getButton(Phaser.Gamepad.XBOX360_B).onDown.add(_.throttle(this.throwRock, 5, { trailing: false }), this);
+        this.pad.getButton(Phaser.Gamepad.XBOX360_B).onDown.add(_.throttle(this.fireAlternateWeapon, 5, { trailing: false }), this);
         this.pad.getButton(Phaser.Gamepad.XBOX360_START).onDown.add(_.throttle(pauseMenu.togglePause, 500, { trailing: false }), pauseMenu);
     }
     update() {
@@ -69,6 +69,11 @@ const Player = WS.Components.Player = class Player extends WS.Lib.Entity {
             return;
         }
         this.weapon.fire();
+    }
+    fireAlternateWeapon() {
+        new WS.Components.WeaponBow({
+          owner: this,
+        }).fire();
     }
     kill() {
         console.log('kill player%s', this.playerNumber);

@@ -1,7 +1,7 @@
-const WeaponSlingshot = WS.Components.WeaponSlingshot = class WeaponSlingshot extends WS.Components.Weapon {
+const WeaponBow = WS.Components.WeaponBow = class WeaponBow extends WS.Components.Weapon {
     constructor(options) {
         super(options);
-        this.projectile = WS.Components.WeaponSlingshotProjectile;
+        this.projectile = WS.Components.WeaponBowProjectile;
         // this.material = WS.Services.PhysicsManager.materials.WeaponSlingShot;
     }
     fire() {

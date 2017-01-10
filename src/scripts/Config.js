@@ -2,7 +2,11 @@ const Config = WS.Config = class Config {
 }
 Config.Debug = !true;
 Config.PlayerSpeed = 2;
+
 Config.ProjectileSpeed = 300;
+Config.ArrowMinSpeed = 300;
+Config.ArrowMaxSpeed = 600;
+
 Config.RoundsVictory = 5;
 Config.HighPrecisionMovements = true;
 Config.RockProjectileOffset = 30;
@@ -22,5 +26,9 @@ Config.PlayerColors = {
     '4': {
       tint: 0xffff96,
       hex: '#ffff96',
+    },
+    'neutral': {
+      tint: 0x8e8e8e,
+      hex: '#8e8e8e',
     },
 };

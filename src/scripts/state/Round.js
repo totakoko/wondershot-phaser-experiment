@@ -30,10 +30,13 @@ const Round = WS.State.Round = class Round extends Phaser.State {
               pad: WS.Services.PadManager.getGamepad(playerNumber),
               startLocation: this.getNextStartLocation(),
             });
-            player.pickupWeapon(new WS.Components.WeaponSlingshot());
+            player.pickupWeapon(new WS.Components.WeaponSlingshot({
+              owner: player,
+            }));
             this.components.push(player);
         });
 
+        WS.Components.WeaponBowProjectile.create();
         WS.Components.WeaponSlingshotProjectile.create();
 
         this.components.forEach((component) => {
