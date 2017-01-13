@@ -6,13 +6,14 @@ const Round = WS.State.Round = class Round extends Phaser.State {
         console.log('round: create');
         WS.Services.PhysicsManager.init();
 
-        this.components = [];
+
+        this.battle.resetStage();
 
         this.pauseMenu = new WS.Components.PauseMenu();
-        this.components.push(this.pauseMenu);
-        this.components.push(new WS.Components.ScoreBoard(this.battle));
+        this.battle.stage.register(this.pauseMenu)
+        this.battle.stage.register(new WS.Components.ScoreBoard(this.battle));
         let world = new WS.Components.World();
-        this.components.push(world);
+        this.battle.stage.register(world)
 
         // positions triées pour être dépilées simplement
         this.startLocations = _.chain(world.getStartPositions())
@@ -24,43 +25,33 @@ const Round = WS.State.Round = class Round extends Phaser.State {
 
         this.players = {};
         this.battle.players.forEach((playerNumber) => {
-            let player = this.players[playerNumber] = new WS.Components.Player({
+            const player = this.players[playerNumber] = new WS.Components.PlayerBot({
               playerNumber: playerNumber,
               color: WS.Config.PlayerColors[playerNumber],
               pad: WS.Services.PadManager.getGamepad(playerNumber),
               startLocation: this.getNextStartLocation(),
             });
-            player.pickupWeapon(new WS.Components.WeaponSlingshot({
+            const weapon = new WS.Components.WeaponSlingshot({
               owner: player,
-            }));
-            this.components.push(player);
+            });
+            player.pickupWeapon(weapon);
+            this.battle.stage.register(weapon)
+            this.battle.stage.register(player)
         });
 
-        WS.Components.WeaponBowProjectile.create();
-        WS.Components.WeaponSlingshotProjectile.create();
-
-        this.components.forEach((component) => {
-          component.create();
-        });
+        this.battle.stage.create();
     }
     getNextStartLocation() {
       return this.startLocations.splice(0, 1)[0];
     }
     update() {
-        for (let component of this.components) {
-            component.update();
-        }
+        this.battle.stage.update();
     }
     pauseUpdate() {
-        // permet de mettre à jour les gamepad pour sortir de la pause
-        if (WS.game.input.gamepad && WS.game.input.gamepad.active) {
-            WS.game.input.gamepad.update();
-        }
+        this.battle.stage.pauseUpdate();
     }
     render() {
-        for (let component of this.components) {
-            component.render();
-        }
+        this.battle.stage.render();
         // FPS
         WS.game.debug.text(WS.game.time.fps, WS.game.world.width - 25, 14, "#f00");
     }

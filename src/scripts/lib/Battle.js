@@ -28,4 +28,8 @@ const Battle = WS.Lib.Battle = class Battle {
       // }
   }
 
+  resetStage() {
+    this.stage = new WS.Lib.Stage();
+  }
+
 }

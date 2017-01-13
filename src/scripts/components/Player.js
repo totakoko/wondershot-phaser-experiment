@@ -42,7 +42,7 @@ const Player = WS.Components.Player = class Player extends WS.Lib.Entity {
           this.pad.getButton(keyName).onDown.removeAll();
         }
         this.pad.getButton(Phaser.Gamepad.XBOX360_A).onDown.add(_.throttle(this.fireWeapon, 5, { trailing: false }), this);
-        this.pad.getButton(Phaser.Gamepad.XBOX360_B).onDown.add(_.throttle(this.fireAlternateWeapon, 5, { trailing: false }), this);
+        // this.pad.getButton(Phaser.Gamepad.XBOX360_B).onDown.add(_.throttle(this.fireAlternateWeapon, 5, { trailing: false }), this);
         this.pad.getButton(Phaser.Gamepad.XBOX360_START).onDown.add(_.throttle(pauseMenu.togglePause, 500, { trailing: false }), pauseMenu);
     }
     update() {
@@ -65,9 +65,10 @@ const Player = WS.Components.Player = class Player extends WS.Lib.Entity {
     }
     fireWeapon() {
         if (this.weapon == null) {
-            console.log('no weapon !');
+            console.log('No weapon to fire !');
             return;
         }
+        console.log(`Fire weapon ${this.weapon.constructor.name}`)
         this.weapon.fire();
     }
     fireAlternateWeapon() {

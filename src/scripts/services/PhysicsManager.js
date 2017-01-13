@@ -19,9 +19,9 @@ const PhysicsManager = WS.Services.PhysicsManager = class PhysicsManager {
     WS.game.Groups = {};
     WS.game.Groups.Game = WS.game.add.group(WS.game.world, 'game');
     WS.game.Groups.Floor = WS.game.add.group(WS.game.Groups.Game, 'floor');
-    WS.game.Groups.Objects = WS.game.add.group(WS.game.Groups.Game, 'objects');
-    WS.game.Groups.Players = WS.game.add.group(WS.game.Groups.Game, 'players');
-    WS.game.Groups.Projectiles = WS.game.add.group(WS.game.Groups.Game, 'projectiles');
+    WS.game.Groups.Objects = WS.game.add.group(WS.game.Groups.Game, 'objects', false, true, Phaser.Physics.P2JS);
+    WS.game.Groups.Players = WS.game.add.group(WS.game.Groups.Game, 'players', false, true, Phaser.Physics.P2JS);
+    WS.game.Groups.Projectiles = WS.game.add.group(WS.game.Groups.Game, 'projectiles', false, true, Phaser.Physics.P2JS);
     WS.game.Groups.UI = WS.game.add.group(WS.game.Groups.Game, 'ui');
     WS.game.Groups.Menus = WS.game.add.group(WS.game.world, 'menus');
   }

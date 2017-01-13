@@ -9,11 +9,11 @@ const WeaponSlingshot = WS.Components.WeaponSlingshot = class WeaponSlingshot ex
           console.log('Firing weapon !');
           this.state = 'projectile_shot';
           const power = Math.floor(Math.random() * 101);
-          new this.projectile({
+          this.stage.register(new this.projectile({
             owner: this.owner,
             power: power,
             weapon: this,
-          });
+          }));
         }
     }
 }

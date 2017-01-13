@@ -2,20 +2,6 @@ const WeaponBowProjectile = WS.Components.WeaponBowProjectile = class WeaponBowP
     static preload() {
         WS.game.load.image('weapon-slingshot-projectile', 'assets/images/weapon-slingshot-projectile.png');
     }
-    static create() {
-        this.projectilesPool = new Phaser.Group(WS.game, WS.game.Groups.Projectiles, 'weapon-slingshot-projectiles');
-        this.projectilesPool.createMultiple(2000, 'weapon-slingshot-projectile');
-        this.projectilesPool.forEach(function (projectile) {
-            projectile.scale.setTo(0.3);
-            projectile.visible = false;
-        });
-        WS.game.physics.p2.enable(this.projectilesPool, WS.Config.Debug);
-        this.projectilesPool.forEach(function (projectile) {
-            projectile.body.setCircle(10);
-            projectile.body.fixedRotation = true;
-            projectile.body.setMaterial(WS.Services.PhysicsManager.materials.WeaponBow);
-        }, this);
-    }
     constructor(options) {
         super();
         this.weapon = options.weapon;
@@ -62,4 +48,3 @@ const WeaponBowProjectile = WS.Components.WeaponBowProjectile = class WeaponBowP
         bodyB.sprite.data.owner.kill();
     }
 }
-WeaponBowProjectile.speed = WS.Config.ProjectileSpeed;
