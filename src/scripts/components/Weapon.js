@@ -7,9 +7,6 @@ const Weapon = WS.Components.Weapon = class Weapon extends WS.Lib.Entity {
       this.state.cleanup();
       this.state = newState;
     }
-    setOwner(owner) {
-      this.owner = owner;
-    }
     fire() {
       throw new Error('Not implemented');
     }

@@ -17,15 +17,19 @@ const Battle = WS.Lib.Battle = class Battle {
           console.log(`Player ${playerNumber} is victorious !`);
           // BattleManager.endRound()
       }
-      // if (_.chain(this.players).map('alive').filter().value().length == 1) {
-        setTimeout(() => {
+
+      const remainingPlayers = _.chain(this.players).map('alive').filter().value().length;
+
+      console.log(`${remainingPlayers} remaining players.`);
+      if (remainingPlayers === 1) {
+        WS.game.time.events.add(2000, () => {
           console.log('End of the round');
           // start next round
           WS.game.state.start('round', true, false, {
             battle: this
           });
-        }, 2000);
-      // }
+        });
+      }
   }
 
   resetStage() {

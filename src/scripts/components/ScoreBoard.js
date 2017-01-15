@@ -4,7 +4,7 @@ WS.Components.ScoreBoard = class ScoreBoard extends WS.Lib.Entity {
       this.battle = battle;
     }
     create() {
-        this.scoreText = WS.game.Groups.UI.add(new Phaser.Text(WS.game, WS.game.world.width / 2, 15, '', { font: '20px Arial' }));
+        this.scoreText = WS.game.Groups.UI.add(new Phaser.Text(WS.game, WS.game.world.width / 2, 0, '', { font: '12px Arial' }));
         this.scoreText.anchor.setTo(0.5, 0);
         this.update();
     }

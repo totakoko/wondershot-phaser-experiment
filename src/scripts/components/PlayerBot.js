@@ -8,12 +8,10 @@ const PlayerBot = WS.Components.PlayerBot = class Player extends WS.Components.P
         };
 
         this.updateBotDirection();
+        this.fireRandomly();
     }
     registerGamepadButtons() {
         console.log('registerGamepadButtons bot player%s', this.playerNumber);
-        setTimeout(() => {
-          this.fireWeapon();
-        }, 1000);
     }
     update() {
       if (this.sprite.alive) {
@@ -29,7 +27,14 @@ const PlayerBot = WS.Components.PlayerBot = class Player extends WS.Components.P
     updateBotDirection() {
       this.movement.x = _.random(-1, 1, true);
       this.movement.y = _.random(-1, 1, true);
-      const nextMovementDelay = _.random(500, 1500, true);
-      setTimeout(this.updateBotDirection.bind(this), nextMovementDelay);
+      const nextActionDelay = _.random(500, 1500, true);
+      // setTimeout(this.updateBotDirection.bind(this), nextMovementDelay);
+      WS.game.time.events.add(nextActionDelay, this.updateBotDirection, this);
+    }
+    fireRandomly() {
+      this.fireWeapon();
+      const nextActionDelay = _.random(1, 5, true);
+      // setTimeout(this.updateBotDirection.bind(this), nextMovementDelay);
+      WS.game.time.events.add(Phaser.Timer.SECOND * nextActionDelay, this.fireRandomly, this);
     }
 }
