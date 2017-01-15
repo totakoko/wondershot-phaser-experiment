@@ -15,7 +15,7 @@ const Preload = WS.State.Preload = class Preload extends Phaser.State {
         // WS.game.state.start('main');
         WS.game.state.start('round', true, false, {
           battle: new WS.Lib.Battle({
-            players: ['1', '2']
+            players: ['1', '2', '3', '4']
           })
         });
         // }, 1000);

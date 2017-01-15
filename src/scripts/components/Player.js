@@ -32,6 +32,7 @@ const Player = WS.Components.Player = class Player extends WS.Lib.Entity {
         this.sprite.body.setCollisionGroup(WS.Services.PhysicsManager['Player' + this.playerNumber].id);
         this.sprite.body.collides(WS.Services.PhysicsManager['Player' + this.playerNumber].World);
         this.sprite.body.collides(WS.Services.PhysicsManager['Player' + this.playerNumber].OtherProjectiles);
+        this.sprite.body.collides(WS.Services.PhysicsManager['Player' + this.playerNumber].Objects);
 
         this.registerGamepadButtons();
     }
@@ -41,7 +42,7 @@ const Player = WS.Components.Player = class Player extends WS.Lib.Entity {
         for (const keyName of [Phaser.Gamepad.XBOX360_A, Phaser.Gamepad.XBOX360_START]) {
           this.pad.getButton(keyName).onDown.removeAll();
         }
-        this.pad.getButton(Phaser.Gamepad.XBOX360_A).onDown.add(_.throttle(this.fireWeapon, 5, { trailing: false }), this);
+        this.pad.getButton(Phaser.Gamepad.XBOX360_A).onDown.add(this.fireWeapon, this);
         // this.pad.getButton(Phaser.Gamepad.XBOX360_B).onDown.add(_.throttle(this.fireAlternateWeapon, 5, { trailing: false }), this);
         this.pad.getButton(Phaser.Gamepad.XBOX360_START).onDown.add(_.throttle(pauseMenu.togglePause, 500, { trailing: false }), pauseMenu);
     }
@@ -60,8 +61,9 @@ const Player = WS.Components.Player = class Player extends WS.Lib.Entity {
 
     // Actions
     pickupWeapon(weapon) {
+        console.log(`Player ${this.playerNumber} picks up ${weapon.id}`);
         this.weapon = weapon;
-        this.weapon.setOwner(this);
+        this.weapon.pickup(this);
     }
     fireWeapon() {
         if (this.weapon == null) {

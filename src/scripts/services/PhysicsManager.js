@@ -29,39 +29,47 @@ const PhysicsManager = WS.Services.PhysicsManager = class PhysicsManager {
   static createCollisionGroups() {
       let groupList = {
           World: {
-              All: ['World', 'Projectile1', 'Projectile2', 'Projectile3', 'Projectile4', 'Player1', 'Player2', 'Player3', 'Player4']
+              All: ['World', 'Projectile1', 'Projectile2', 'Projectile3', 'Projectile4', 'Player1', 'Player2', 'Player3', 'Player4'],
           },
           Projectile1: {
               World: ['World'],
-              OtherPlayers: ['Player2', 'Player3', 'Player4']
+              OtherPlayers: ['Player2', 'Player3', 'Player4'],
           },
           Projectile2: {
               World: ['World'],
-              OtherPlayers: ['Player1', 'Player3', 'Player4']
+              OtherPlayers: ['Player1', 'Player3', 'Player4'],
           },
           Projectile3: {
               World: ['World'],
-              OtherPlayers: ['Player1', 'Player2', 'Player4']
+              OtherPlayers: ['Player1', 'Player2', 'Player4'],
           },
           Projectile4: {
               World: ['World'],
-              OtherPlayers: ['Player1', 'Player2', 'Player3']
+              OtherPlayers: ['Player1', 'Player2', 'Player3'],
           },
           Player1: {
               World: ['World'],
-              OtherProjectiles: ['Projectile2', 'Projectile3', 'Projectile4']
+              OtherProjectiles: ['Projectile2', 'Projectile3', 'Projectile4'],
+              Objects: ['Objects'],
           },
           Player2: {
               World: ['World'],
-              OtherProjectiles: ['Projectile1', 'Projectile3', 'Projectile4']
+              OtherProjectiles: ['Projectile1', 'Projectile3', 'Projectile4'],
+              Objects: ['Objects'],
           },
           Player3: {
               World: ['World'],
-              OtherProjectiles: ['Projectile1', 'Projectile2', 'Projectile4']
+              OtherProjectiles: ['Projectile1', 'Projectile2', 'Projectile4'],
+              Objects: ['Objects'],
           },
           Player4: {
               World: ['World'],
-              OtherProjectiles: ['Projectile1', 'Projectile2', 'Projectile3']
+              OtherProjectiles: ['Projectile1', 'Projectile2', 'Projectile3'],
+              Objects: ['Objects'],
+          },
+          Objects: {
+              World: ['World'],
+              Players: ['Player1', 'Player2', 'Player3', 'Player4'],
           },
       };
       Object.keys(groupList).forEach((groupName) => {
@@ -86,7 +94,7 @@ const PhysicsManager = WS.Services.PhysicsManager = class PhysicsManager {
       this.materials.WeaponSlingshot = WS.game.physics.p2.createMaterial('WeaponSlingshot');
 
       // slingshot
-      let slingshotContactMaterial = WS.game.physics.p2.createContactMaterial(this.materials.WeaponSlingshot, this.materials.World);
+      const slingshotContactMaterial = WS.game.physics.p2.createContactMaterial(this.materials.WeaponSlingshot, this.materials.World);
       slingshotContactMaterial.friction = 0; // Friction to use in the contact of these two materials.
       slingshotContactMaterial.restitution = 1.0; // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
       slingshotContactMaterial.stiffness = 1e16; // Stiffness of the resulting ContactEquation that this ContactMaterial generate.

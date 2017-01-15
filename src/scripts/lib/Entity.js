@@ -2,6 +2,7 @@ const Entity = WS.Lib.Entity = class Entity {
   constructor() {
     this.game = WS.game;
     this.components = [];
+    this.id = `${this.constructor.name}-${Entity.nextEntityId++}`;
   }
 
   register(component) {
@@ -24,5 +25,5 @@ const Entity = WS.Lib.Entity = class Entity {
   }
   render() {
   }
-
 }
+Entity.nextEntityId = 1;

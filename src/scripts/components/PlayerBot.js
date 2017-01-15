@@ -16,10 +16,12 @@ const PlayerBot = WS.Components.PlayerBot = class Player extends WS.Components.P
         }, 1000);
     }
     update() {
-      if (this.movement.x || this.movement.y) {
-          this.sprite.rotation = Math.atan2(this.movement.y, this.movement.x);
-          this.sprite.body.x += this.movement.x * WS.Config.PlayerSpeed;
-          this.sprite.body.y += this.movement.y * WS.Config.PlayerSpeed;
+      if (this.sprite.alive) {
+        if (this.movement.x || this.movement.y) {
+            this.sprite.rotation = Math.atan2(this.movement.y, this.movement.x);
+            this.sprite.body.x += this.movement.x * WS.Config.PlayerSpeed;
+            this.sprite.body.y += this.movement.y * WS.Config.PlayerSpeed;
+        }
       }
       this.indicator.animations.frame = this.pad.connected ? 0 : 1;
     }
