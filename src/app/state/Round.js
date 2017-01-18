@@ -1,4 +1,7 @@
-const Round = WS.State.Round = class Round extends Phaser.State {
+import Phaser from 'phaser';
+import WS from '../';
+
+export default class Round extends Phaser.State {
     init(stateOptions) {
         this.battle = stateOptions.battle;
     }

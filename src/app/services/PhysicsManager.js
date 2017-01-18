@@ -1,4 +1,7 @@
-const PhysicsManager = WS.Services.PhysicsManager = class PhysicsManager {
+import Phaser from 'phaser';
+import WS from '../';
+
+export const PhysicsManager = class PhysicsManager {
   static init() {
     // If true then advanced profiling, including the fps rate, fps min/max, suggestedFps and msMin/msMax are updated.
     WS.game.time.advancedTiming = true;

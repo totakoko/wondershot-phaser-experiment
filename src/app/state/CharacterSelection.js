@@ -1,4 +1,7 @@
-const CharacterSelection = WS.State.CharacterSelection = class CharacterSelection extends Phaser.State {
+import Phaser from 'phaser';
+import WS from '../';
+
+export default class CharacterSelection extends Phaser.State {
   create() {
       const mainMenuTitle = WS.game.add.text(WS.game.world.centerX, 42, 'Character Selection', { font: '42px Arial', fill: '#000' });
       mainMenuTitle.anchor.setTo(0.5, 0.5);

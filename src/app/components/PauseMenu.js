@@ -1,4 +1,6 @@
-const PauseMenu = WS.Components.PauseMenu = class PauseMenu extends WS.Lib.Entity {
+import WS from '../';
+
+export default class PauseMenu extends WS.Lib.Entity {
     static preload() {
         WS.game.load.script('filterX', 'https://cdn.rawgit.com/photonstorm/phaser/c298a45d1fc0e90618736ade3782ee82a39f7108/v2/filters/BlurX.js');
         WS.game.load.script('filterY', 'https://cdn.rawgit.com/photonstorm/phaser/c298a45d1fc0e90618736ade3782ee82a39f7108/v2/filters/BlurY.js');

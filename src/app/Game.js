@@ -1,4 +1,6 @@
-WS.Game = class Game extends Phaser.Game {
+import Phaser from 'phaser';
+
+export default class Game extends Phaser.Game {
     constructor() {
         super({
             width: 400,
@@ -13,5 +15,12 @@ WS.Game = class Game extends Phaser.Game {
         this.state.add('characterSelection', WS.State.CharacterSelection);
         this.state.add('round', WS.State.Round);
         this.state.start('boot');
+
+        window.onkeyup = e => {
+          if (e.key === 's') {
+            this.destroy();
+          }
+        };
+
     }
 }

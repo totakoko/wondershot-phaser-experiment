@@ -1,4 +1,6 @@
-const World = WS.Components.World = class World extends WS.Lib.Entity {
+import WS from '../';
+
+export default class World extends WS.Lib.Entity {
     static preload() {
         WS.game.load.image('wall', 'assets/images/wall.png');
     }

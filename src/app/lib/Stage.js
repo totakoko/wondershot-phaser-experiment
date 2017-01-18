@@ -1,4 +1,6 @@
-const Stage = WS.Lib.Stage = class Stage {
+import WS from '../';
+
+export default class Stage {
   constructor() {
     this.game = WS.game;
     this.entities = [];
@@ -31,5 +33,4 @@ const Stage = WS.Lib.Stage = class Stage {
       entity.render();
     });
   }
-
 }

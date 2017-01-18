@@ -1,8 +1,7 @@
 {
   "dependencies": {
     "lodash": "^4.17.4",
-    "phaser": "^2.6.2",
-    "vue": "^2.0.1"
+    "phaser": "^2.6.2"
   },
   "devDependencies": {
     "del": "^2.0.2",
@@ -70,6 +69,10 @@
     ],
     "plugins": [
       "html"
-    ]
+    ],
+    "rules": {
+      "indent": 0,
+      "comma-dangle": 0
+    }
   }
 }

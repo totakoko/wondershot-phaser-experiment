@@ -1,4 +1,6 @@
-const WeaponSlingshot = WS.Components.WeaponSlingshot = class WeaponSlingshot extends WS.Components.Weapon {
+import WS from '../';
+
+export default class WeaponSlingshot extends WS.Components.Weapon {
     static preload() {
       WS.game.load.image('weapon-slingshot-projectile', 'assets/images/weapon-slingshot-projectile.png');
     }

@@ -1,4 +1,6 @@
-const PlayerBot = WS.Components.PlayerBot = class Player extends WS.Components.Player {
+import WS from '../';
+
+export default class Player extends WS.Components.Player {
     constructor(options) {
         super(options);
 

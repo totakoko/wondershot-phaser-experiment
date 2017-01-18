@@ -1,4 +1,6 @@
-const Weapon = WS.Components.Weapon = class Weapon extends WS.Lib.Entity {
+import WS from '../';
+
+export default class Weapon extends WS.Lib.Entity {
     constructor(options) {
       super();
       this.owner = options.owner;

@@ -1,4 +1,7 @@
-const Main = WS.State.Main = class Main extends Phaser.State {
+import Phaser from 'phaser';
+import WS from '../';
+
+export default class Main extends Phaser.State {
   create() {
       const mainMenuTitle = WS.game.add.text(WS.game.world.centerX, 150, 'Main Menu', { font: '42px Arial', fill: '#000' });
       mainMenuTitle.anchor.setTo(0.5, 0.5);

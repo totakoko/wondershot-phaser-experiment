@@ -1,4 +1,7 @@
-const Boot = WS.State.Boot = class Boot extends Phaser.State {
+import Phaser from 'phaser';
+import WS from '../';
+
+export default class Boot extends Phaser.State {
     preload() {
         this.load.image('preload-bar', 'assets/images/preloader.gif');
     }

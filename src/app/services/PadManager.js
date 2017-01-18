@@ -1,4 +1,6 @@
-const PadManager = WS.Services.PadManager = class PadManager {
+import WS from '../';
+
+export default class PadManager {
     static init() {
         console.log('PadManager: Initializing');
         WS.game.input.gamepad.start();

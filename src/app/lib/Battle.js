@@ -1,4 +1,6 @@
-const Battle = WS.Lib.Battle = class Battle {
+import WS from '../';
+
+export default class Battle {
   constructor(options) {
     this.players = options.players;
     if (this.players.length < 1) {

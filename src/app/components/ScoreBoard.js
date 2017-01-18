@@ -1,4 +1,6 @@
-WS.Components.ScoreBoard = class ScoreBoard extends WS.Lib.Entity {
+import WS from '../';
+
+export default class ScoreBoard extends WS.Lib.Entity {
     constructor(battle) {
       super();
       this.battle = battle;

@@ -1,4 +1,6 @@
-const Entity = WS.Lib.Entity = class Entity {
+import WS from '../';
+
+export default class Entity {
   constructor() {
     this.game = WS.game;
     this.components = [];

@@ -27,7 +27,7 @@ module.exports = {
           'style-loader',
           'css-loader',
           'stylus-loader',
-          'postcss-loader'
+          // 'postcss-loader' # Bug avec postcss cf bug https://github.com/FountainJS/generator-fountain-webapp/issues/171
         ]
       },
       {

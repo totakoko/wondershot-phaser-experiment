@@ -1,6 +1,7 @@
+import WS from '../';
 const pauseMenu = WS.Components.PauseMenu;
 
-const Player = WS.Components.Player = class Player extends WS.Lib.Entity {
+export default class Player extends WS.Lib.Entity {
     static preload() {
         WS.game.load.image('player', 'assets/images/player.png');
         WS.game.load.spritesheet('controller-indicator', 'assets/images/controller-indicator.png', 16, 16);

@@ -1,4 +1,7 @@
-const Preload = WS.State.Preload = class Preload extends Phaser.State {
+import Phaser from 'phaser';
+import WS from '../';
+
+export default class Preload extends Phaser.State {
     preload() {
         this.preloadBar = this.add.sprite(WS.game.world.centerX, WS.game.world.centerY, 'preload-bar');
         this.preloadBar.anchor.setTo(0.5, 0.5);

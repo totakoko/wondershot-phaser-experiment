@@ -1,5 +1,4 @@
-const Config = WS.Config = class Config {
-}
+export const Config = class Config {};
 Config.Debug = !true;
 Config.PlayerSpeed = 2;
 
