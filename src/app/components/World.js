@@ -1,6 +1,7 @@
-import WS from '../';
+import Phaser from 'phaser';
+import WS from '../WS';
 
-export default class World extends WS.Lib.Entity {
+export default WS.Components.World = class World extends WS.Lib.Entity {
     static preload() {
         WS.game.load.image('wall', 'assets/images/wall.png');
     }
@@ -23,10 +24,10 @@ export default class World extends WS.Lib.Entity {
         WS.game.stage.backgroundColor = '#91d49c';
         // pas besoin pour faire sortir les projectiles ?
         // WS.game.physics.p2.updateBoundsCollisionGroup();
-        let verticalHeight = WS.game.world.height - this.headerHeight - 2 * this.arenaBordersWidth;
+        const verticalHeight = WS.game.world.height - this.headerHeight - 2 * this.arenaBordersWidth;
         // Define a block using bitmap data rather than an image sprite
-        let horizontalLimitBitmap = WS.game.add.bitmapData(WS.game.world.width, this.arenaBordersWidth);
-        let verticalLimitBitmap = WS.game.add.bitmapData(this.arenaBordersWidth, verticalHeight);
+        const horizontalLimitBitmap = WS.game.add.bitmapData(WS.game.world.width, this.arenaBordersWidth);
+        const verticalLimitBitmap = WS.game.add.bitmapData(this.arenaBordersWidth, verticalHeight);
         // bar de 200px en haut
         horizontalLimitBitmap.ctx.rect(0, 0, WS.game.world.width, this.arenaBordersWidth);
         horizontalLimitBitmap.ctx.fillStyle = '#fff';
@@ -35,16 +36,16 @@ export default class World extends WS.Lib.Entity {
         verticalLimitBitmap.ctx.fillStyle = '#fff';
         verticalLimitBitmap.ctx.fill();
         // Create a new sprite using the bitmap data
-        let limitTop = WS.game.world.create(WS.game.world.width / 2, this.headerHeight + this.arenaBordersWidth / 2, horizontalLimitBitmap);
-        let limitBottom = WS.game.world.create(WS.game.world.width / 2, WS.game.world.height - this.arenaBordersWidth / 2, horizontalLimitBitmap);
-        let verticalLimitPos = this.headerHeight + this.arenaBordersWidth + verticalHeight / 2;
-        let limitLeft = WS.game.Groups.Objects.create(this.arenaBordersWidth / 2, verticalLimitPos, verticalLimitBitmap);
-        let limitRight = WS.game.Groups.Objects.create(WS.game.world.width - this.arenaBordersWidth / 2, verticalLimitPos, verticalLimitBitmap);
-        let wall = WS.game.Groups.Objects.create(120, 300, 'wall');
-        let wall2 = WS.game.Groups.Objects.create(280, 500, 'wall');
-        let worldEntities = [limitTop, limitBottom, limitLeft, limitRight, wall, wall2];
+        const limitTop = WS.game.world.create(WS.game.world.width / 2, this.headerHeight + this.arenaBordersWidth / 2, horizontalLimitBitmap);
+        const limitBottom = WS.game.world.create(WS.game.world.width / 2, WS.game.world.height - this.arenaBordersWidth / 2, horizontalLimitBitmap);
+        const verticalLimitPos = this.headerHeight + this.arenaBordersWidth + verticalHeight / 2;
+        const limitLeft = WS.game.Groups.Objects.create(this.arenaBordersWidth / 2, verticalLimitPos, verticalLimitBitmap);
+        const limitRight = WS.game.Groups.Objects.create(WS.game.world.width - this.arenaBordersWidth / 2, verticalLimitPos, verticalLimitBitmap);
+        const wall = WS.game.Groups.Objects.create(120, 300, 'wall');
+        const wall2 = WS.game.Groups.Objects.create(280, 500, 'wall');
+        const worldEntities = [limitTop, limitBottom, limitLeft, limitRight, wall, wall2];
         WS.game.physics.p2.enable(worldEntities, WS.Config.Debug);
-        worldEntities.forEach((entity) => {
+        worldEntities.forEach(entity => {
             entity.body.static = true;
             entity.body.setMaterial(WS.Services.PhysicsManager.materials.World);
             entity.body.setCollisionGroup(WS.Services.PhysicsManager.World.id);
@@ -72,14 +73,14 @@ export default class World extends WS.Lib.Entity {
          * @return {Phaser.Tween} This Tween object.
          */
         WS.game.add.tween(entity.body.velocity)
-            .to({ x: 0, y: reverse ? -60 : 60 }, 2000, Phaser.Easing.Quadratic.In)
-            .to({ x: 0, y: 0 }, 1000, Phaser.Easing.Quadratic.Out, false, 2000)
-            .to({ x: 0, y: reverse ? 60 : -60 }, 2000, Phaser.Easing.Quadratic.In)
-            .to({ x: 0, y: 0 }, 1000, Phaser.Easing.Quadratic.Out, false, 2000)
+            .to({x: 0, y: reverse ? -60 : 60}, 2000, Phaser.Easing.Quadratic.In)
+            .to({x: 0, y: 0}, 1000, Phaser.Easing.Quadratic.Out, false, 2000)
+            .to({x: 0, y: reverse ? 60 : -60}, 2000, Phaser.Easing.Quadratic.In)
+            .to({x: 0, y: 0}, 1000, Phaser.Easing.Quadratic.Out, false, 2000)
             .loop()
             .start();
     }
-}
+};
 /*
 éléments de l'arène
 
@@ -88,8 +89,6 @@ bordures de l'arène : statique
 éléments de décors : statique avec mouvements scriptés
 téléporteurs (par couple) : déclencheur avec zone de téléportation et zone d'arriver (angle fixe)
 armes: statique à pickup
-
-
 
 format d'un asset
 

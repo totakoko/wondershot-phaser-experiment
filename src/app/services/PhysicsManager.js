@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
-import WS from '../';
+import WS from '../WS';
 
-export const PhysicsManager = class PhysicsManager {
+export const PhysicsManager = WS.Services.PhysicsManager = class PhysicsManager {
   static init() {
     // If true then advanced profiling, including the fps rate, fps min/max, suggestedFps and msMin/msMax are updated.
     WS.game.time.advancedTiming = true;
@@ -15,7 +15,6 @@ export const PhysicsManager = class PhysicsManager {
     this.createCollisionGroups();
     this.createMaterials();
     //       this.stage.disableVisibilityChange = false; // met en pause le jeu si focus perdu et le reprends quand focus back
-
   }
   static initGroups() {
     // triés par z-index
@@ -30,7 +29,7 @@ export const PhysicsManager = class PhysicsManager {
   }
 
   static createCollisionGroups() {
-      let groupList = {
+      const groupList = {
           World: {
               All: ['World', 'Projectile1', 'Projectile2', 'Projectile3', 'Projectile4', 'Player1', 'Player2', 'Player3', 'Player4'],
           },
@@ -75,17 +74,17 @@ export const PhysicsManager = class PhysicsManager {
               Players: ['Player1', 'Player2', 'Player3', 'Player4'],
           },
       };
-      Object.keys(groupList).forEach((groupName) => {
+      Object.keys(groupList).forEach(groupName => {
           this[groupName] = {
               id: WS.game.physics.p2.createCollisionGroup()
           };
       });
-      Object.keys(groupList).forEach((groupName) => {
+      Object.keys(groupList).forEach(groupName => {
           //         console.debug('- %s', groupName);
-          let groupAliases = groupList[groupName];
-          Object.keys(groupAliases).forEach((groupAlias) => {
+          const groupAliases = groupList[groupName];
+          Object.keys(groupAliases).forEach(groupAlias => {
               //           console.debug('  > %s', groupAlias);
-              this[groupName][groupAlias] = groupAliases[groupAlias].map((collisionGroupName) => {
+              this[groupName][groupAlias] = groupAliases[groupAlias].map(collisionGroupName => {
                   //             console.debug('    * %s', collisionGroupName);
                   return this[collisionGroupName].id;
               });
@@ -105,7 +104,6 @@ export const PhysicsManager = class PhysicsManager {
       slingshotContactMaterial.frictionStiffness = 1e16; // Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
       slingshotContactMaterial.frictionRelaxation = 0; // Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
       slingshotContactMaterial.surfaceVelocity = 0; // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
-
   }
-}
+};
 PhysicsManager.materials = {};

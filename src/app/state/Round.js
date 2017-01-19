@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
-import WS from '../';
+import WS from '../WS';
 
-export default class Round extends Phaser.State {
+export default WS.State.Round = class Round extends Phaser.State {
     init(stateOptions) {
         this.battle = stateOptions.battle;
     }
@@ -9,14 +9,13 @@ export default class Round extends Phaser.State {
         console.log('round: create');
         WS.Services.PhysicsManager.init();
 
-
         this.battle.resetStage();
 
         this.pauseMenu = new WS.Components.PauseMenu();
-        this.battle.stage.register(this.pauseMenu)
+        this.battle.stage.register(this.pauseMenu);
         this.battle.stage.register(new WS.Components.ScoreBoard(this.battle));
-        let world = new WS.Components.World();
-        this.battle.stage.register(world)
+        const world = new WS.Components.World();
+        this.battle.stage.register(world);
 
         // positions triées pour être dépilées simplement
         this.startLocations = _.chain(world.getStartPositions())
@@ -27,7 +26,7 @@ export default class Round extends Phaser.State {
         }
 
         this.players = {};
-        this.battle.players.forEach((playerNumber) => {
+        this.battle.players.forEach(playerNumber => {
             const player = this.players[playerNumber] = new WS.Components.PlayerBot({
               playerNumber: playerNumber,
               color: WS.Config.PlayerColors[playerNumber],
@@ -38,8 +37,8 @@ export default class Round extends Phaser.State {
               owner: player,
             });
             player.pickupWeapon(weapon);
-            this.battle.stage.register(weapon)
-            this.battle.stage.register(player)
+            this.battle.stage.register(weapon);
+            this.battle.stage.register(player);
         });
 
         this.battle.stage.create();
@@ -61,4 +60,4 @@ export default class Round extends Phaser.State {
     shutdown() {
       console.log('Round: shutdown');
     }
-}
+};

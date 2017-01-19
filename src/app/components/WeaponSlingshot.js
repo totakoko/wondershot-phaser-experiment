@@ -1,6 +1,6 @@
-import WS from '../';
+import WS from '../WS';
 
-export default class WeaponSlingshot extends WS.Components.Weapon {
+export default WS.Components.WeaponSlingshot = class WeaponSlingshot extends WS.Components.Weapon {
     static preload() {
       WS.game.load.image('weapon-slingshot-projectile', 'assets/images/weapon-slingshot-projectile.png');
     }
@@ -17,7 +17,7 @@ export default class WeaponSlingshot extends WS.Components.Weapon {
     pickup(owner) {
       this.changeState(new WeaponSlingshotCarriedState(this, owner));
     }
-}
+};
 
 class WeaponSlingshotOnGroundState extends WS.Lib.WeaponState {
   constructor(weapon, position) {
@@ -48,7 +48,6 @@ class WeaponSlingshotOnGroundState extends WS.Lib.WeaponState {
   }
 }
 
-
 class WeaponSlingshotCarriedState extends WS.Lib.WeaponState {
   constructor(weapon, owner) {
     super(weapon);
@@ -60,7 +59,6 @@ class WeaponSlingshotCarriedState extends WS.Lib.WeaponState {
     this.weapon.changeState(new WeaponSlingshotFiredState(this.weapon, this.owner, power));
   }
 }
-
 
 class WeaponSlingshotFiredState extends WS.Lib.WeaponState {
   constructor(weapon, owner, power) {
@@ -86,7 +84,7 @@ class WeaponSlingshotFiredState extends WS.Lib.WeaponState {
     projectile.body.velocity.y = Math.sin(ownerRotation) * projectileSpeed;
     projectile.body.setMaterial(WS.Services.PhysicsManager.materials.WeaponSlingshot);
 
-    const projectilePhysics = WS.Services.PhysicsManager['Projectile' + this.owner.playerNumber];
+    const projectilePhysics = WS.Services.PhysicsManager[`Projectile${this.owner.playerNumber}`];
     projectile.body.setCollisionGroup(projectilePhysics.id);
     projectile.body.collides(projectilePhysics.World, this.projectileWorldHitHandler, this);
     projectile.body.collides(projectilePhysics.OtherPlayers, this.projectilePlayerHitHandler, this);
@@ -95,7 +93,7 @@ class WeaponSlingshotFiredState extends WS.Lib.WeaponState {
     this.projectileSprite.destroy();
   }
   getProjectileSpeed(power) {
-    return power * (WS.Config.ArrowMaxSpeed - WS.Config.ArrowMinSpeed) / 100 + WS.Config.ArrowMinSpeed
+    return power * (WS.Config.ArrowMaxSpeed - WS.Config.ArrowMinSpeed) / 100 + WS.Config.ArrowMinSpeed;
   }
 
   projectileWorldHitHandler(projectileBody, bodyB, shapeA, shapeB, equation) {

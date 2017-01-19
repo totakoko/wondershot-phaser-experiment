@@ -1,7 +1,7 @@
-import WS from '../';
-const pauseMenu = WS.Components.PauseMenu;
+import _ from 'lodash';
+import WS from '../WS';
 
-export default class Player extends WS.Lib.Entity {
+export default WS.Components.Player = class Player extends WS.Lib.Entity {
     static preload() {
         WS.game.load.image('player', 'assets/images/player.png');
         WS.game.load.spritesheet('controller-indicator', 'assets/images/controller-indicator.png', 16, 16);
@@ -13,7 +13,6 @@ export default class Player extends WS.Lib.Entity {
         this.playerColor = playerOptions.color;
         this.pad = playerOptions.pad;
         this.alive = true;
-
 
         this.indicator = WS.game.Groups.UI.create(10 + (40 * (this.playerNumber - 1)), 10, 'controller-indicator');
         this.indicator.scale.setTo(2);
@@ -29,27 +28,26 @@ export default class Player extends WS.Lib.Entity {
         this.sprite.body.setCircle(30);
         this.sprite.body.fixedRotation = true;
         this.sprite.body.damping = 1; // pas d'effet élastique sur les côtés
-        console.log('collision group : Player' + this.playerNumber);
-        this.sprite.body.setCollisionGroup(WS.Services.PhysicsManager['Player' + this.playerNumber].id);
-        this.sprite.body.collides(WS.Services.PhysicsManager['Player' + this.playerNumber].World);
-        this.sprite.body.collides(WS.Services.PhysicsManager['Player' + this.playerNumber].OtherProjectiles);
-        this.sprite.body.collides(WS.Services.PhysicsManager['Player' + this.playerNumber].Objects);
+        console.log(`collision group : Player${this.playerNumber}`);
+        this.sprite.body.setCollisionGroup(WS.Services.PhysicsManager[`Player${this.playerNumber}`].id);
+        this.sprite.body.collides(WS.Services.PhysicsManager[`Player${this.playerNumber}`].World);
+        this.sprite.body.collides(WS.Services.PhysicsManager[`Player${this.playerNumber}`].OtherProjectiles);
+        this.sprite.body.collides(WS.Services.PhysicsManager[`Player${this.playerNumber}`].Objects);
 
         this.registerGamepadButtons();
     }
     registerGamepadButtons() {
         console.log('registerGamepadButtons player%s', this.playerNumber);
-        // TODO tester plusieurs ajouts de callback
-        for (const keyName of [Phaser.Gamepad.XBOX360_A, Phaser.Gamepad.XBOX360_START]) {
+        for (const keyName of [WS.Phaser.Gamepad.XBOX360_A, WS.Phaser.Gamepad.XBOX360_START]) {
           this.pad.getButton(keyName).onDown.removeAll();
         }
-        this.pad.getButton(Phaser.Gamepad.XBOX360_A).onDown.add(this.fireWeapon, this);
-        this.pad.getButton(Phaser.Gamepad.XBOX360_START).onDown.add(_.throttle(pauseMenu.togglePause, 500, { trailing: false }), pauseMenu);
+        this.pad.getButton(WS.Phaser.Gamepad.XBOX360_A).onDown.add(this.fireWeapon, this);
+        this.pad.getButton(WS.Phaser.Gamepad.XBOX360_START).onDown.add(_.throttle(WS.Components.PauseMenu.togglePause, 500, {trailing: false}), WS.Components.PauseMenu);
     }
     update() {
       if (this.pad.connected && this.sprite.alive) {
-          let moveX = this.pad._rawPad.axes[0];
-          let moveY = this.pad._rawPad.axes[1];
+          const moveX = this.pad._rawPad.axes[0];
+          const moveY = this.pad._rawPad.axes[1];
           if (moveX || moveY) {
               this.sprite.rotation = Math.atan2(moveY, moveX);
               this.sprite.body.x += moveX * WS.Config.PlayerSpeed;
@@ -66,11 +64,11 @@ export default class Player extends WS.Lib.Entity {
         this.weapon.pickup(this);
     }
     fireWeapon() {
-        if (this.weapon == null) {
+        if (this.weapon === null) {
             console.log('No weapon to fire !');
             return;
         }
-        console.log(`Fire weapon ${this.weapon.constructor.name}`)
+        console.log(`Fire weapon ${this.weapon.constructor.name}`);
         this.weapon.fire();
         this.weapon = null;
     }
@@ -83,9 +81,8 @@ export default class Player extends WS.Lib.Entity {
         deathMarker.tint = this.playerColor.tint;
         this.sprite.destroy();
         // this.sprite.safedestroy = true;
-        //TODO utiliser safedestroy = true
         WS.game.state.callbackContext.battle.addPoint(this.playerNumber);
 
-        this.fireWeapon = function() {};
+        this.fireWeapon = function () {};
     }
-}
+};

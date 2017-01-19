@@ -1,6 +1,6 @@
-import WS from '../';
+import WS from '../WS';
 
-export default class Player extends WS.Components.Player {
+export default WS.Components.PlayerBot = class PlayerBot extends WS.Components.Player {
     constructor(options) {
         super(options);
 
@@ -9,8 +9,10 @@ export default class Player extends WS.Components.Player {
           y: 0,
         };
 
-        this.updateBotDirection();
-        this.fireRandomly();
+        setTimeout(() => {
+          this.updateBotDirection();
+          this.fireRandomly();
+        });
     }
     registerGamepadButtons() {
         console.log('registerGamepadButtons bot player%s', this.playerNumber);
@@ -37,6 +39,6 @@ export default class Player extends WS.Components.Player {
       this.fireWeapon();
       const nextActionDelay = _.random(1, 5, true);
       // setTimeout(this.updateBotDirection.bind(this), nextMovementDelay);
-      WS.game.time.events.add(Phaser.Timer.SECOND * nextActionDelay, this.fireRandomly, this);
+      WS.game.time.events.add(WS.Phaser.Timer.SECOND * nextActionDelay, this.fireRandomly, this);
     }
-}
+};

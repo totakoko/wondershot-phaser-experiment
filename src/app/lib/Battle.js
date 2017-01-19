@@ -1,6 +1,7 @@
-import WS from '../';
+import _ from 'lodash';
+import WS from '../WS';
 
-export default class Battle {
+export default WS.Lib.Battle = class Battle {
   constructor(options) {
     this.players = options.players;
     if (this.players.length < 1) {
@@ -8,7 +9,7 @@ export default class Battle {
     }
 
     this.score = {};
-    _.each(this.players, (playerNumber) => {
+    _.each(this.players, playerNumber => {
       this.score[playerNumber] = 0;
     });
   }
@@ -38,4 +39,4 @@ export default class Battle {
     this.stage = new WS.Lib.Stage();
   }
 
-}
+};

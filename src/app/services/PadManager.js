@@ -1,6 +1,6 @@
-import WS from '../';
+import WS from '../WS';
 
-export default class PadManager {
+export default WS.Services.PadManager = class PadManager {
     static init() {
         console.log('PadManager: Initializing');
         WS.game.input.gamepad.start();
@@ -13,19 +13,19 @@ export default class PadManager {
         WS.game.input.gamepad.onConnectCallback = this.onGamepadConnect.bind(this);
     }
     static onGamepadConnect(padIndex) {
-        console.log(`PadManager: Gamepad${padIndex+1} connected`);
+        console.log(`PadManager: Gamepad${padIndex + 1} connected`);
         // if battle started reregister events
         // this.players[playerNumber].registerGamepadButtons();
     }
 
     static setPadsCallback(callback) {
       WS.game.input.gamepad.addCallbacks(this, {
-        onDown: function(buttonCode, value, padIndex) {
-          callback(padIndex+1);
+        onDown: function (buttonCode, value, padIndex) {
+          callback(padIndex + 1);
         }
       });
     }
     static getGamepad(playerNumber) {
       return WS.game.input.gamepad[`pad${playerNumber}`];
     }
-}
+};

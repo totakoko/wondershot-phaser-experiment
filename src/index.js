@@ -1,7 +1,6 @@
 // import Vue from 'vue';
 // import Hello from './app/Hello.vue';
 
-console.log('hey');
 import './index.styl';
 
 // export default new Vue({
@@ -9,12 +8,12 @@ import './index.styl';
 //   render: h => h(Hello)
 // });
 
-export default {
-};
+// import 'pixi';
+// import 'p2';
+// import "phaser";
 
-// import WS from './app';
+import WS from './app';
 
 window.onload = function () {
-  alert("hey");
-  // WS.game = new WS.Game();
+  WS.game = new WS.Game();
 };

@@ -1,6 +1,7 @@
-import WS from '../';
+import Phaser from 'phaser';
+import WS from '../WS';
 
-export default class PauseMenu extends WS.Lib.Entity {
+export default WS.Components.PauseMenu = class PauseMenu extends WS.Lib.Entity {
     static preload() {
         WS.game.load.script('filterX', 'https://cdn.rawgit.com/photonstorm/phaser/c298a45d1fc0e90618736ade3782ee82a39f7108/v2/filters/BlurX.js');
         WS.game.load.script('filterY', 'https://cdn.rawgit.com/photonstorm/phaser/c298a45d1fc0e90618736ade3782ee82a39f7108/v2/filters/BlurY.js');
@@ -28,8 +29,7 @@ export default class PauseMenu extends WS.Lib.Entity {
             WS.game.Groups.Game.filters = [this.blurX, this.blurY];
             this.pauseBar.visible = true;
             this.pauseText.visible = true;
-        }
-        else {
+        } else {
             WS.game.Groups.Game.filters = null;
             this.pauseBar.visible = false;
             this.pauseText.visible = false;
@@ -41,5 +41,5 @@ export default class PauseMenu extends WS.Lib.Entity {
         WS.game.input.gamepad.pad1._buttons[Phaser.Gamepad.XBOX360_START].isDown = false;
         this.update();
     }
-}
-PauseMenu.paused = false;
+};
+WS.Components.PauseMenu.paused = false;

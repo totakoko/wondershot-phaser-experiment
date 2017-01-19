@@ -1,6 +1,6 @@
-import WS from '../';
+import WS from '../WS';
 
-export default class Stage {
+export default WS.Lib.Stage = class Stage {
   constructor() {
     this.game = WS.game;
     this.entities = [];
@@ -13,12 +13,12 @@ export default class Stage {
 
   // permet de mettre à jour des choses pendant l'event loop
   create() {
-    this.entities.forEach((entity) => {
+    this.entities.forEach(entity => {
       entity.create();
     });
   }
   update() {
-    this.entities.forEach((entity) => {
+    this.entities.forEach(entity => {
       entity.update();
     });
   }
@@ -29,8 +29,8 @@ export default class Stage {
     }
   }
   render() {
-    this.entities.forEach((entity) => {
+    this.entities.forEach(entity => {
       entity.render();
     });
   }
-}
+};

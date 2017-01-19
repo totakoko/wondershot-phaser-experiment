@@ -1,15 +1,10 @@
-import Components from './components';
-import Lib from './lib';
-import Services from './services';
-import State from './state';
-import Config from './Config';
-import Game from './Game';
+import './lib';
+import './components';
+import './services';
+import './state';
+import './Config';
+import './Game';
+import WS from './WS';
 
-export default {
-  Components,
-  Lib,
-  Services,
-  State,
-  Config,
-  Game,
-};
+console.log(WS);
+export default WS;

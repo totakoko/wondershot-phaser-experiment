@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
-import WS from '../';
+import WS from '../WS';
 
-export default class Main extends Phaser.State {
+export default WS.State.Main = class Main extends Phaser.State {
   create() {
-      const mainMenuTitle = WS.game.add.text(WS.game.world.centerX, 150, 'Main Menu', { font: '42px Arial', fill: '#000' });
+      const mainMenuTitle = WS.game.add.text(WS.game.world.centerX, 150, 'Main Menu', {font: '42px Arial', fill: '#000'});
       mainMenuTitle.anchor.setTo(0.5, 0.5);
 
-      const optionBattle = WS.game.add.text(WS.game.world.centerX, 250, 'Battle', { font: '24px Arial', fill: '#000' });
+      const optionBattle = WS.game.add.text(WS.game.world.centerX, 250, 'Battle', {font: '24px Arial', fill: '#000'});
       optionBattle.anchor.setTo(0.5, 0.5);
       optionBattle.inputEnabled = true;
       optionBattle.events.onInputUp.add(this.optionBattleSelected, this);
@@ -39,4 +39,4 @@ export default class Main extends Phaser.State {
       // FPS
       WS.game.debug.text(WS.game.time.fps, WS.game.world.width - 25, 14, "#f00");
   }
-}
+};

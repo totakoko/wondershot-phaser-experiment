@@ -1,12 +1,12 @@
-import WS from '../';
+import WS from '../WS';
 
-export default class ScoreBoard extends WS.Lib.Entity {
+export default WS.Components.ScoreBoard = class ScoreBoard extends WS.Lib.Entity {
     constructor(battle) {
       super();
       this.battle = battle;
     }
     create() {
-        this.scoreText = WS.game.Groups.UI.add(new Phaser.Text(WS.game, WS.game.world.width / 2, 0, '', { font: '12px Arial' }));
+        this.scoreText = WS.game.Groups.UI.add(new WS.Phaser.Text(WS.game, WS.game.world.width / 2, 0, '', {font: '12px Arial'}));
         this.scoreText.anchor.setTo(0.5, 0);
         this.update();
     }
@@ -17,4 +17,4 @@ export default class ScoreBoard extends WS.Lib.Entity {
         }
         this.scoreText.text = scoreText;
     }
-}
+};

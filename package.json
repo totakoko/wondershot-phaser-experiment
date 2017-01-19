@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "expose-loader": "^0.7.1",
     "lodash": "^4.17.4",
     "phaser": "^2.6.2"
   },
@@ -72,7 +73,16 @@
     ],
     "rules": {
       "indent": 0,
-      "comma-dangle": 0
+      "comma-dangle": 0,
+      "babel/object-shorthand": 0,
+      "no-unused-vars": [
+        "error",
+        {
+          "args": "none"
+        }
+      ],
+      "no-use-before-define": 0,
+      "guard-for-in": 0
     }
   }
 }

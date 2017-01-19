@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
+import WS from './WS';
 
-export default class Game extends Phaser.Game {
+export default WS.Game = class Game extends Phaser.Game {
     constructor() {
         super({
             width: 400,
@@ -21,6 +22,5 @@ export default class Game extends Phaser.Game {
             this.destroy();
           }
         };
-
     }
-}
+};

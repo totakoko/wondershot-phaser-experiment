@@ -1,6 +1,6 @@
-import WS from '../';
+import WS from '../WS';
 
-export default class Entity {
+export default WS.Lib.Entity = class Entity {
   constructor() {
     this.game = WS.game;
     this.components = [];
@@ -11,7 +11,7 @@ export default class Entity {
     this.components.push(component);
   }
   broadcast(event) {
-    for (let component of this.components) {
+    for (const component of this.components) {
       component.notify(event);
     }
   }
@@ -27,5 +27,5 @@ export default class Entity {
   }
   render() {
   }
-}
-Entity.nextEntityId = 1;
+};
+WS.Lib.Entity.nextEntityId = 1;
