@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import WS from '../WS';
 
 export default WS.Components.PlayerBot = class PlayerBot extends WS.Components.Player {
