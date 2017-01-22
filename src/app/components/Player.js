@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import WS from '../WS';
+const log = require('loglevel').getLogger('player');
 
 export default WS.Components.Player = class Player extends WS.Lib.Entity {
     static preload() {
@@ -19,7 +20,7 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         this.indicator.animations.frame = 1;
 
         // this.sprite = WS.game.world.create(80 * this.playerNumber, 200, 'player');
-        console.log(`Player ${this.playerNumber} starting at position ${playerOptions.startLocation.x}:${playerOptions.startLocation.y}`);
+        log.debug(`Player ${this.playerNumber} starting at position ${playerOptions.startLocation.x}:${playerOptions.startLocation.y}`);
         this.sprite = WS.game.world.create(playerOptions.startLocation.x, playerOptions.startLocation.y, 'player');
         this.sprite.scale.setTo(0.2);
         this.sprite.tint = this.playerColor.tint;
@@ -28,7 +29,7 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         this.sprite.body.setCircle(30);
         this.sprite.body.fixedRotation = true;
         this.sprite.body.damping = 1; // pas d'effet élastique sur les côtés
-        console.log(`collision group : Player${this.playerNumber}`);
+        log.debug(`collision group : Player${this.playerNumber}`);
         this.sprite.body.setCollisionGroup(WS.Services.PhysicsManager[`Player${this.playerNumber}`].id);
         this.sprite.body.collides(WS.Services.PhysicsManager[`Player${this.playerNumber}`].World);
         this.sprite.body.collides(WS.Services.PhysicsManager[`Player${this.playerNumber}`].OtherProjectiles);
@@ -37,7 +38,7 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         this.registerGamepadButtons();
     }
     registerGamepadButtons() {
-        console.log('registerGamepadButtons player%s', this.playerNumber);
+        log.debug('registerGamepadButtons player%s', this.playerNumber);
         for (const keyName of [WS.Phaser.Gamepad.XBOX360_A, WS.Phaser.Gamepad.XBOX360_START]) {
           this.pad.getButton(keyName).onDown.removeAll();
         }
@@ -59,21 +60,21 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
 
     // Actions
     pickupWeapon(weapon) {
-        console.log(`Player ${this.playerNumber} picks up ${weapon.id}`);
+        log.debug(`Player ${this.playerNumber} picks up ${weapon.id}`);
         this.weapon = weapon;
         this.weapon.pickup(this);
     }
     fireWeapon() {
         if (this.weapon === null) {
-            console.log('No weapon to fire !');
+            log.debug('No weapon to fire !');
             return;
         }
-        console.log(`Fire weapon ${this.weapon.constructor.name}`);
+        log.debug(`Fire weapon ${this.weapon.constructor.name}`);
         this.weapon.fire();
         this.weapon = null;
     }
     kill() {
-        console.log('kill player%s', this.playerNumber);
+        log.info('kill player%s', this.playerNumber);
         this.alive = false;
 
         const deathMarker = WS.game.Groups.Floor.create(this.sprite.x, this.sprite.y, 'player-death-marker');
@@ -81,7 +82,7 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         deathMarker.tint = this.playerColor.tint;
         this.sprite.destroy();
         // this.sprite.safedestroy = true;
-        WS.game.state.callbackContext.battle.addPoint(this.playerNumber);
+        WS.game.state.callbackContext.battle.notifyPlayerKilled(this.playerNumber);
 
         this.fireWeapon = function () {};
     }

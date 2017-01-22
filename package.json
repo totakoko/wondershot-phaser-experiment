@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "lodash": "^4.17.4",
+    "loglevel": "^1.4.1",
     "phaser": "^2.6.2"
   },
   "devDependencies": {

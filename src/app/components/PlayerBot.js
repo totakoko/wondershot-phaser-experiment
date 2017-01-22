@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import WS from '../WS';
+const log = require('loglevel').getLogger('player');
 
 export default WS.Components.PlayerBot = class PlayerBot extends WS.Components.Player {
     constructor(options) {
@@ -16,7 +17,7 @@ export default WS.Components.PlayerBot = class PlayerBot extends WS.Components.P
         });
     }
     registerGamepadButtons() {
-        console.log('registerGamepadButtons bot player%s', this.playerNumber);
+        log.debug('registerGamepadButtons bot player%s', this.playerNumber);
     }
     update() {
       if (this.sprite.alive) {
@@ -33,13 +34,11 @@ export default WS.Components.PlayerBot = class PlayerBot extends WS.Components.P
       this.movement.x = _.random(-1, 1, true);
       this.movement.y = _.random(-1, 1, true);
       const nextActionDelay = _.random(500, 1500, true);
-      // setTimeout(this.updateBotDirection.bind(this), nextMovementDelay);
       WS.game.time.events.add(nextActionDelay, this.updateBotDirection, this);
     }
     fireRandomly() {
       this.fireWeapon();
       const nextActionDelay = _.random(1, 5, true);
-      // setTimeout(this.updateBotDirection.bind(this), nextMovementDelay);
       WS.game.time.events.add(WS.Phaser.Timer.SECOND * nextActionDelay, this.fireRandomly, this);
     }
 };

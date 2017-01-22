@@ -1,4 +1,5 @@
 import WS from '../WS';
+const log = require('loglevel').getLogger('player');
 
 export default WS.Components.WeaponSlingshot = class WeaponSlingshot extends WS.Components.Weapon {
     static preload() {
@@ -22,7 +23,7 @@ export default WS.Components.WeaponSlingshot = class WeaponSlingshot extends WS.
 class WeaponSlingshotOnGroundState extends WS.Lib.WeaponState {
   constructor(weapon, position) {
     super(weapon);
-    console.log(`${this.weapon.id} > Changing state to ${this.constructor.name}`);
+    log.debug(`${this.weapon.id} > Changing state to ${this.constructor.name}`);
 
     const projectileSprite = this.projectileSprite = WS.game.Groups.Objects.create(
       position.x,
@@ -43,7 +44,7 @@ class WeaponSlingshotOnGroundState extends WS.Lib.WeaponState {
     this.projectileSprite.destroy();
   }
   playerPickupHandler(weaponBody, playerBody, shapeA, shapeB, equation) {
-    console.log(`Weapon ${this.weapon.id} will be picked-up player ${playerBody.sprite.data.owner.playerNumber}`);
+    log.debug(`Weapon ${this.weapon.id} will be picked-up player ${playerBody.sprite.data.owner.playerNumber}`);
     playerBody.sprite.data.owner.pickupWeapon(this.weapon);
   }
 }
@@ -54,7 +55,7 @@ class WeaponSlingshotCarriedState extends WS.Lib.WeaponState {
     this.owner = owner;
   }
   fire() {
-    console.log('Firing weapon !');
+    log.debug('Firing weapon !');
     const power = Math.floor(Math.random() * 101);
     this.weapon.changeState(new WeaponSlingshotFiredState(this.weapon, this.owner, power));
   }
@@ -97,7 +98,7 @@ class WeaponSlingshotFiredState extends WS.Lib.WeaponState {
   }
 
   projectileWorldHitHandler(projectileBody, bodyB, shapeA, shapeB, equation) {
-      // console.log('bounceLeft', this.bounceLeft);
+      // log.info('bounceLeft', this.bounceLeft);
       if (this.bounceLeft > 0) {
           this.bounceLeft--;
           return;
@@ -108,7 +109,7 @@ class WeaponSlingshotFiredState extends WS.Lib.WeaponState {
       }));
   }
   projectilePlayerHitHandler(projectileBody, playerBody, shapeA, shapeB, equation) {
-      console.log(`Player ${this.owner.playerNumber} just hit ${playerBody.sprite.data.owner.playerNumber}`);
+      log.info(`Player ${this.owner.playerNumber} just hit ${playerBody.sprite.data.owner.playerNumber}`);
       playerBody.sprite.data.owner.kill();
       // this.weapon.changeState(new WeaponSlingshotOnGroundState(this.weapon, {
       //   x: projectileBody.x,

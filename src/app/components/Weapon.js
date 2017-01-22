@@ -1,5 +1,5 @@
 import WS from '../WS';
-console.log(WS);
+
 export default WS.Components.Weapon = class Weapon extends WS.Lib.Entity {
     constructor(options) {
       super();

@@ -10,7 +10,7 @@ export default WS.State.Round = class Round extends Phaser.State {
         console.log('round: create');
         WS.Services.PhysicsManager.init();
 
-        this.battle.resetStage();
+        this.battle.reset();
 
         this.pauseMenu = new WS.Components.PauseMenu();
         this.battle.stage.register(this.pauseMenu);

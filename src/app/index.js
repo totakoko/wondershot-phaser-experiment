@@ -6,5 +6,8 @@ import './Config';
 import './Game';
 import WS from './WS';
 
-console.log(WS);
+const log = require('loglevel');
+log.setDefaultLevel('info');
+log.getLogger('battle').setLevel('debug');
+
 export default WS;
