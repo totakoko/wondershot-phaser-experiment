@@ -1,7 +1,7 @@
 import WS from './WS';
 
 export const Config = WS.Config = {};
-Config.Debug = !true;
+Config.Debug = true;
 Config.PlayerSpeed = 2;
 
 Config.ProjectileSpeed = 300;

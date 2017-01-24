@@ -87,7 +87,7 @@ class WeaponSlingshotFiredState extends WS.Lib.WeaponState {
 
     const projectilePhysics = WS.Services.PhysicsManager[`Projectile${this.owner.playerNumber}`];
     projectile.body.setCollisionGroup(projectilePhysics.id);
-    projectile.body.collides(projectilePhysics.World, this.projectileWorldHitHandler, this);
+    projectile.body.collides(projectilePhysics.Arena, this.projectileArenaHitHandler, this);
     projectile.body.collides(projectilePhysics.OtherPlayers, this.projectilePlayerHitHandler, this);
   }
   cleanup() {
@@ -97,7 +97,7 @@ class WeaponSlingshotFiredState extends WS.Lib.WeaponState {
     return power * (WS.Config.ArrowMaxSpeed - WS.Config.ArrowMinSpeed) / 100 + WS.Config.ArrowMinSpeed;
   }
 
-  projectileWorldHitHandler(projectileBody, bodyB, shapeA, shapeB, equation) {
+  projectileArenaHitHandler(projectileBody, bodyB, shapeA, shapeB, equation) {
       // log.info('bounceLeft', this.bounceLeft);
       if (this.bounceLeft > 0) {
           this.bounceLeft--;

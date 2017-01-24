@@ -14,11 +14,11 @@ export default WS.State.Round = class Round extends Phaser.State {
 
         this.pauseMenu = new WS.Components.PauseMenu();
         this.battle.stage.register(this.pauseMenu);
-        const world = new WS.Components.World();
-        this.battle.stage.register(world);
+        const arena = new WS.Components.Arena();
+        this.battle.stage.register(arena);
 
         // positions triées pour être dépilées simplement
-        this.startLocations = _.chain(world.getStartPositions())
+        this.startLocations = _.chain(arena.getStartPositions())
                               .shuffle()
                               .value();
         if (this.battle.players.length > this.startLocations.length) {

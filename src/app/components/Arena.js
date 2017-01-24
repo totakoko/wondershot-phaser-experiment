@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import WS from '../WS';
 
-export default WS.Components.World = class World extends WS.Lib.Entity {
+export default WS.Components.Arena = class Arena extends WS.Lib.Entity {
     static preload() {
         WS.game.load.image('wall', 'assets/images/wall.png');
     }
@@ -36,8 +36,8 @@ export default WS.Components.World = class World extends WS.Lib.Entity {
         verticalLimitBitmap.ctx.fillStyle = '#fff';
         verticalLimitBitmap.ctx.fill();
         // Create a new sprite using the bitmap data
-        const limitTop = WS.game.world.create(WS.game.world.width / 2, this.headerHeight + this.arenaBordersWidth / 2, horizontalLimitBitmap);
-        const limitBottom = WS.game.world.create(WS.game.world.width / 2, WS.game.world.height - this.arenaBordersWidth / 2, horizontalLimitBitmap);
+        const limitTop = WS.game.Groups.Arena.create(WS.game.world.width / 2, this.headerHeight + this.arenaBordersWidth / 2, horizontalLimitBitmap);
+        const limitBottom = WS.game.Groups.Arena.create(WS.game.world.width / 2, WS.game.world.height - this.arenaBordersWidth / 2, horizontalLimitBitmap);
         const verticalLimitPos = this.headerHeight + this.arenaBordersWidth + verticalHeight / 2;
         const limitLeft = WS.game.Groups.Objects.create(this.arenaBordersWidth / 2, verticalLimitPos, verticalLimitBitmap);
         const limitRight = WS.game.Groups.Objects.create(WS.game.world.width - this.arenaBordersWidth / 2, verticalLimitPos, verticalLimitBitmap);
@@ -47,16 +47,12 @@ export default WS.Components.World = class World extends WS.Lib.Entity {
         WS.game.physics.p2.enable(worldEntities, WS.Config.Debug);
         worldEntities.forEach(entity => {
             entity.body.static = true;
-            entity.body.setMaterial(WS.Services.PhysicsManager.materials.World);
-            entity.body.setCollisionGroup(WS.Services.PhysicsManager.World.id);
-            entity.body.collides(WS.Services.PhysicsManager.World.All);
+            entity.body.setMaterial(WS.Services.PhysicsManager.materials.Arena);
+            entity.body.setCollisionGroup(WS.Services.PhysicsManager.Arena.id);
+            entity.body.collides(WS.Services.PhysicsManager.Arena.All);
         });
         this.loopVertical(wall);
         this.loopVertical(wall2, true);
-
-        // this.startLocations.forEach(function(position) {
-        //   WS.game.Groups.Floor.create(position.x, position.y, 'starting-position', null);
-        // }, this);
     }
     update() {
     }

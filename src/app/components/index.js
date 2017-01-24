@@ -4,7 +4,7 @@ import PlayerBot from './PlayerBot';
 import ScoreBoard from './ScoreBoard';
 import Weapon from './Weapon';
 import WeaponSlingshot from './WeaponSlingshot';
-import World from './World';
+import Arena from './Arena';
 
 export default {
   PauseMenu,
@@ -13,5 +13,5 @@ export default {
   ScoreBoard,
   Weapon,
   WeaponSlingshot,
-  World,
+  Arena,
 };

@@ -10,7 +10,7 @@ export const PhysicsManager = WS.Services.PhysicsManager = class PhysicsManager 
     WS.game.physics.p2.setImpactEvents(true); // http://phaser.io/docs/2.6.2/Phaser.Physics.P2.html#setImpactEvents
     // WS.game.physics.p2.applyGravity = false; // TODO pas encore besoin a priori
     //  4 trues = the 4 faces of the world in left, right, top, bottom order
-    // WS.game.physics.p2.setWorldMaterial(WS.game.worldMaterial, true, true, true, true);
+    // WS.game.physics.p2.setArenaMaterial(WS.game.worldMaterial, true, true, true, true);
     this.initGroups();
     this.createCollisionGroups();
     this.createMaterials();
@@ -20,7 +20,7 @@ export const PhysicsManager = WS.Services.PhysicsManager = class PhysicsManager 
     // triés par z-index
     WS.game.Groups = {};
     WS.game.Groups.Game = WS.game.add.group(WS.game.world, 'game');
-    WS.game.Groups.Floor = WS.game.add.group(WS.game.Groups.Game, 'floor');
+    WS.game.Groups.Arena = WS.game.add.group(WS.game.Groups.Game, 'arena');
     WS.game.Groups.Objects = WS.game.add.group(WS.game.Groups.Game, 'objects', false, true, Phaser.Physics.P2JS);
     WS.game.Groups.Players = WS.game.add.group(WS.game.Groups.Game, 'players', false, true, Phaser.Physics.P2JS);
     WS.game.Groups.Projectiles = WS.game.add.group(WS.game.Groups.Game, 'projectiles', false, true, Phaser.Physics.P2JS);
@@ -30,47 +30,47 @@ export const PhysicsManager = WS.Services.PhysicsManager = class PhysicsManager 
 
   static createCollisionGroups() {
       const groupList = {
-          World: {
-              All: ['World', 'Projectile1', 'Projectile2', 'Projectile3', 'Projectile4', 'Player1', 'Player2', 'Player3', 'Player4'],
+          Arena: {
+              All: ['Arena', 'Projectile1', 'Projectile2', 'Projectile3', 'Projectile4', 'Player1', 'Player2', 'Player3', 'Player4'],
           },
           Projectile1: {
-              World: ['World'],
+              Arena: ['Arena'],
               OtherPlayers: ['Player2', 'Player3', 'Player4'],
           },
           Projectile2: {
-              World: ['World'],
+              Arena: ['Arena'],
               OtherPlayers: ['Player1', 'Player3', 'Player4'],
           },
           Projectile3: {
-              World: ['World'],
+              Arena: ['Arena'],
               OtherPlayers: ['Player1', 'Player2', 'Player4'],
           },
           Projectile4: {
-              World: ['World'],
+              Arena: ['Arena'],
               OtherPlayers: ['Player1', 'Player2', 'Player3'],
           },
           Player1: {
-              World: ['World'],
+              Arena: ['Arena'],
               OtherProjectiles: ['Projectile2', 'Projectile3', 'Projectile4'],
               Objects: ['Objects'],
           },
           Player2: {
-              World: ['World'],
+              Arena: ['Arena'],
               OtherProjectiles: ['Projectile1', 'Projectile3', 'Projectile4'],
               Objects: ['Objects'],
           },
           Player3: {
-              World: ['World'],
+              Arena: ['Arena'],
               OtherProjectiles: ['Projectile1', 'Projectile2', 'Projectile4'],
               Objects: ['Objects'],
           },
           Player4: {
-              World: ['World'],
+              Arena: ['Arena'],
               OtherProjectiles: ['Projectile1', 'Projectile2', 'Projectile3'],
               Objects: ['Objects'],
           },
           Objects: {
-              World: ['World'],
+              Arena: ['Arena'],
               Players: ['Player1', 'Player2', 'Player3', 'Player4'],
           },
       };
@@ -92,11 +92,11 @@ export const PhysicsManager = WS.Services.PhysicsManager = class PhysicsManager 
       });
   }
   static createMaterials() {
-      this.materials.World = WS.game.physics.p2.createMaterial('World');
+      this.materials.Arena = WS.game.physics.p2.createMaterial('Arena');
       this.materials.WeaponSlingshot = WS.game.physics.p2.createMaterial('WeaponSlingshot');
 
       // slingshot
-      const slingshotContactMaterial = WS.game.physics.p2.createContactMaterial(this.materials.WeaponSlingshot, this.materials.World);
+      const slingshotContactMaterial = WS.game.physics.p2.createContactMaterial(this.materials.WeaponSlingshot, this.materials.Arena);
       slingshotContactMaterial.friction = 0; // Friction to use in the contact of these two materials.
       slingshotContactMaterial.restitution = 1.0; // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
       slingshotContactMaterial.stiffness = 1e16; // Stiffness of the resulting ContactEquation that this ContactMaterial generate.

@@ -21,7 +21,7 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
 
         // this.sprite = WS.game.world.create(80 * this.playerNumber, 200, 'player');
         log.debug(`Player ${this.playerNumber} starting at position ${playerOptions.startLocation.x}:${playerOptions.startLocation.y}`);
-        this.sprite = WS.game.world.create(playerOptions.startLocation.x, playerOptions.startLocation.y, 'player');
+        this.sprite = WS.game.Groups.Players.create(playerOptions.startLocation.x, playerOptions.startLocation.y, 'player');
         this.sprite.scale.setTo(0.2);
         this.sprite.tint = this.playerColor.tint;
         this.sprite.data.owner = this;
@@ -31,7 +31,7 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         this.sprite.body.damping = 1; // pas d'effet élastique sur les côtés
         log.debug(`collision group : Player${this.playerNumber}`);
         this.sprite.body.setCollisionGroup(WS.Services.PhysicsManager[`Player${this.playerNumber}`].id);
-        this.sprite.body.collides(WS.Services.PhysicsManager[`Player${this.playerNumber}`].World);
+        this.sprite.body.collides(WS.Services.PhysicsManager[`Player${this.playerNumber}`].Arena);
         this.sprite.body.collides(WS.Services.PhysicsManager[`Player${this.playerNumber}`].OtherProjectiles);
         this.sprite.body.collides(WS.Services.PhysicsManager[`Player${this.playerNumber}`].Objects);
 
@@ -77,7 +77,7 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         log.info('kill player%s', this.playerNumber);
         this.alive = false;
 
-        const deathMarker = WS.game.Groups.Floor.create(this.sprite.x, this.sprite.y, 'player-death-marker');
+        const deathMarker = WS.game.Groups.Arena.create(this.sprite.x, this.sprite.y, 'player-death-marker');
         deathMarker.anchor.setTo(0.5);
         deathMarker.tint = this.playerColor.tint;
         this.sprite.destroy();
