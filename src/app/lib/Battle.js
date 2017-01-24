@@ -6,7 +6,7 @@ export default WS.Lib.Battle = class Battle {
   constructor(options) {
     this.players = options.players;
     if (this.players.length < 1) {
-      throw new Error('ScoreBoard: 0 players');
+      throw new Error('Battle: 0 players');
     }
 
     this.score = {};
@@ -46,9 +46,8 @@ export default WS.Lib.Battle = class Battle {
         endOfRoundMessageText.anchor.y = 0.5;
 
         WS.game.time.events.add(1000, () => {
-          WS.game.state.start('round', true, false, { // A FAIRE : et ici charger l'écran de résultat? mais on perd le background
-            battle: this //   =========================> donc finalement on va rester dans le même state, mais mettre en background l'arène
-          });
+          endOfRoundMessageText.destroy();
+          this.showScoreBoard();
         });
       });
     }
@@ -62,10 +61,29 @@ export default WS.Lib.Battle = class Battle {
       this.score[playerNumber]++;
       if (this.score[playerNumber] === WS.Config.RoundsVictory) {
           log.info(`Player ${playerNumber} has won the battle!`); // A FAIRE, quand c'est gagné, bah on ne recommence pas un autre round
-          // BattleManager.end()
+          this.end();
       }
   }
+  showScoreBoard() {
+    this.stage.register(new WS.Components.ScoreBoard(this));
+
+    // après 3 secondes on démarre un nouveau round
+    WS.game.time.events.add(3000, () => {
+      WS.game.state.start('round', true, false, {
+        battle: this
+      });
+    });
+  }
+
   end() {
+    // fin du battle et démarrage d'un nouveau
+    WS.game.time.events.add(3000, () => {
+      WS.game.state.start('round', true, false, {
+        battle: new WS.Lib.Battle({
+          players: this.players
+        })
+      });
+    });
     // écran de résultat
     // puis redémarrage de battle pour menu principal
   }

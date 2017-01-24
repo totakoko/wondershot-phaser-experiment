@@ -5,6 +5,7 @@ import './state';
 import './Config';
 import './Game';
 import WS from './WS';
+import './Filters';
 
 const log = require('loglevel');
 log.setDefaultLevel('info');

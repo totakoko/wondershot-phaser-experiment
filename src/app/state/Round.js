@@ -14,7 +14,6 @@ export default WS.State.Round = class Round extends Phaser.State {
 
         this.pauseMenu = new WS.Components.PauseMenu();
         this.battle.stage.register(this.pauseMenu);
-        this.battle.stage.register(new WS.Components.ScoreBoard(this.battle));
         const world = new WS.Components.World();
         this.battle.stage.register(world);
 
@@ -42,7 +41,7 @@ export default WS.State.Round = class Round extends Phaser.State {
             this.battle.stage.register(player);
         });
 
-        this.battle.stage.create();
+        // this.battle.stage.create();
     }
     getNextStartLocation() {
       return this.startLocations.splice(0, 1)[0];
@@ -61,4 +60,5 @@ export default WS.State.Round = class Round extends Phaser.State {
     shutdown() {
       console.log('Round: shutdown');
     }
+
 };

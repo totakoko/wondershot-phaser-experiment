@@ -13,6 +13,7 @@ import './index.styl';
 // import "phaser";
 
 import WS from './app';
+window.WS = WS;
 
 window.onload = function () {
   WS.game = new WS.Game();

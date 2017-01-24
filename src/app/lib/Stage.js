@@ -8,6 +8,7 @@ export default WS.Lib.Stage = class Stage {
 
   register(entity) {
     entity.stage = this;
+    entity.create();
     this.entities.push(entity);
   }
 
