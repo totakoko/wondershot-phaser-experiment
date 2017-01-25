@@ -7,7 +7,7 @@ export default WS.Components.WeaponSlingshot = class WeaponSlingshot extends WS.
     }
     constructor(options) {
       super(options);
-      this.state = new WeaponSlingshotOnGroundState(this, {x: 0, y: 0}); // par défaut au sol mais non accessible
+      this.state = new WeaponSlingshotOnGroundState(this, options.position || {x: 0, y: 0}); // par défaut au sol mais non accessible
     }
     fire() {
       this.state.fire();
