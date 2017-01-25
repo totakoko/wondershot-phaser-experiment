@@ -8,7 +8,6 @@ export default WS.Components.Arena = class Arena extends WS.Lib.Entity {
     constructor() {
         super();
         this.arenaBordersWidth = 30;
-        this.headerHeight = 80;
         this.startLines = [];
         this.startLocations = [
           {x: 90, y: 180},
@@ -24,7 +23,7 @@ export default WS.Components.Arena = class Arena extends WS.Lib.Entity {
         WS.game.stage.backgroundColor = '#91d49c';
         // pas besoin pour faire sortir les projectiles ?
         // WS.game.physics.p2.updateBoundsCollisionGroup();
-        const verticalHeight = WS.game.world.height - this.headerHeight - 2 * this.arenaBordersWidth;
+        const verticalHeight = WS.game.world.height - 2 * this.arenaBordersWidth;
         // Define a block using bitmap data rather than an image sprite
         const horizontalLimitBitmap = WS.game.add.bitmapData(WS.game.world.width, this.arenaBordersWidth);
         const verticalLimitBitmap = WS.game.add.bitmapData(this.arenaBordersWidth, verticalHeight);
@@ -36,9 +35,9 @@ export default WS.Components.Arena = class Arena extends WS.Lib.Entity {
         verticalLimitBitmap.ctx.fillStyle = '#fff';
         verticalLimitBitmap.ctx.fill();
         // Create a new sprite using the bitmap data
-        const limitTop = WS.game.Groups.Arena.create(WS.game.world.width / 2, this.headerHeight + this.arenaBordersWidth / 2, horizontalLimitBitmap);
+        const limitTop = WS.game.Groups.Arena.create(WS.game.world.width / 2, this.arenaBordersWidth / 2, horizontalLimitBitmap);
         const limitBottom = WS.game.Groups.Arena.create(WS.game.world.width / 2, WS.game.world.height - this.arenaBordersWidth / 2, horizontalLimitBitmap);
-        const verticalLimitPos = this.headerHeight + this.arenaBordersWidth + verticalHeight / 2;
+        const verticalLimitPos = this.arenaBordersWidth + verticalHeight / 2;
         const limitLeft = WS.game.Groups.Objects.create(this.arenaBordersWidth / 2, verticalLimitPos, verticalLimitBitmap);
         const limitRight = WS.game.Groups.Objects.create(WS.game.world.width - this.arenaBordersWidth / 2, verticalLimitPos, verticalLimitBitmap);
         const wall = WS.game.Groups.Objects.create(120, 300, 'wall');

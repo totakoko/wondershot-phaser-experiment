@@ -8,6 +8,8 @@ Config.ProjectileSpeed = 300;
 Config.ArrowMinSpeed = 300;
 Config.ArrowMaxSpeed = 600;
 
+Config.ArenaWidth = 800;
+Config.ArenaHeight = 800;
 Config.RoundsVictory = 5;
 Config.HighPrecisionMovements = true;
 Config.RockProjectileOffset = 30;

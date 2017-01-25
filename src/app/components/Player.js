@@ -15,10 +15,6 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         this.pad = playerOptions.pad;
         this.alive = true;
 
-        this.indicator = WS.game.Groups.UI.create(10 + (40 * (this.playerNumber - 1)), 10, 'controller-indicator');
-        this.indicator.scale.setTo(2);
-        this.indicator.animations.frame = 1;
-
         // this.sprite = WS.game.world.create(80 * this.playerNumber, 200, 'player');
         log.debug(`Player ${this.playerNumber} starting at position ${playerOptions.startLocation.x}:${playerOptions.startLocation.y}`);
         this.sprite = WS.game.Groups.Players.create(playerOptions.startLocation.x, playerOptions.startLocation.y, 'player');
@@ -55,7 +51,6 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
               this.sprite.body.y += moveY * WS.Config.PlayerSpeed;
           }
       }
-      this.indicator.animations.frame = this.pad.connected ? 0 : 1;
     }
 
     // Actions

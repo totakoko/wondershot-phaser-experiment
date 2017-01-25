@@ -27,7 +27,6 @@ export default WS.Components.PlayerBot = class PlayerBot extends WS.Components.P
             this.sprite.body.y += this.movement.y * WS.Config.PlayerSpeed;
         }
       }
-      this.indicator.animations.frame = this.pad.connected ? 0 : 1;
     }
 
     updateBotDirection() {

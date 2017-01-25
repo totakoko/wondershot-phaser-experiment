@@ -4,8 +4,8 @@ import WS from './WS';
 export default WS.Game = class Game extends Phaser.Game {
     constructor() {
         super({
-            width: 400,
-            height: 700,
+            width: WS.Config.ArenaWidth,
+            height: WS.Config.ArenaHeight,
             transparent: false,
             enableDebug: true
         });
