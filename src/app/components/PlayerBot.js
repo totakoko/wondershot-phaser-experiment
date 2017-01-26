@@ -20,7 +20,8 @@ export default WS.Components.PlayerBot = class PlayerBot extends WS.Components.P
         log.debug('registerGamepadButtons bot player%s', this.playerNumber);
     }
     update() {
-      if (this.sprite.alive) {
+      // le joueur doit être actif et le jeu pas en pause
+      if (this.sprite.alive && !WS.game.physics.p2.paused) {
         if (this.movement.x || this.movement.y) {
             this.sprite.rotation = Math.atan2(this.movement.y, this.movement.x);
             this.sprite.body.x += this.movement.x * WS.Config.PlayerSpeed;

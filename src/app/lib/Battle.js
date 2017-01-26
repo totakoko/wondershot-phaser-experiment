@@ -67,23 +67,25 @@ export default WS.Lib.Battle = class Battle {
   showScoreBoard() {
     this.stage.register(new WS.Components.ScoreBoard(this));
 
+    WS.game.physics.p2.pause();
+    WS.game.time.events.pause();
     // après 3 secondes on démarre un nouveau round
-    WS.game.time.events.add(3000, () => {
+    setTimeout(() => {
       WS.game.state.start('round', true, false, {
         battle: this
       });
-    });
+    }, 3000);
   }
 
   end() {
     // fin du battle et démarrage d'un nouveau
-    WS.game.time.events.add(3000, () => {
+    setTimeout(() => {
       WS.game.state.start('round', true, false, {
         battle: new WS.Lib.Battle({
           players: this.players
         })
       });
-    });
+    }, 3000);
     // écran de résultat
     // puis redémarrage de battle pour menu principal
   }

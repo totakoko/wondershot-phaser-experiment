@@ -7,6 +7,8 @@ export const PhysicsManager = WS.Services.PhysicsManager = class PhysicsManager 
     WS.game.time.advancedTiming = true;
 
     WS.game.physics.startSystem(Phaser.Physics.P2JS);
+    WS.game.physics.p2.resume();
+    WS.game.time.events.resume();
     WS.game.physics.p2.setImpactEvents(true); // http://phaser.io/docs/2.6.2/Phaser.Physics.P2.html#setImpactEvents
     // WS.game.physics.p2.applyGravity = false; // TODO pas encore besoin a priori
     //  4 trues = the 4 faces of the world in left, right, top, bottom order
