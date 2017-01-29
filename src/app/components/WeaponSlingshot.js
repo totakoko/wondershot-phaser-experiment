@@ -34,11 +34,13 @@ class WeaponSlingshotOnGroundState extends WS.Lib.WeaponState {
     projectileSprite.tint = WS.Config.PlayerColors.neutral.tint;
     projectileSprite.scale.setTo(0.3);
     projectileSprite.body.setCircle(10);
-    projectileSprite.body.setMaterial(WS.Services.PhysicsManager.materials.WeaponSlingshot);
+    projectileSprite.body.damping = 1; // Damping is specified as a value between 0 and 1, which is the proportion of velocity lost per second.
+    projectileSprite.body.fixedRotation = true;
 
     const projectilePhysics = WS.Services.PhysicsManager.Objects;
     projectileSprite.body.setCollisionGroup(projectilePhysics.id);
     projectileSprite.body.collides(projectilePhysics.Players, this.playerPickupHandler, this);
+    projectileSprite.body.collides(projectilePhysics.Arena, this.arenaHandler, this);
   }
   cleanup() {
     this.projectileSprite.destroy();

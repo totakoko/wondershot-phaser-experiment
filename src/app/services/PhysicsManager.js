@@ -33,7 +33,7 @@ export const PhysicsManager = WS.Services.PhysicsManager = class PhysicsManager 
   static createCollisionGroups() {
       const groupList = {
           Arena: {
-              All: ['Arena', 'Projectile1', 'Projectile2', 'Projectile3', 'Projectile4', 'Player1', 'Player2', 'Player3', 'Player4'],
+              All: ['Arena', 'Objects', 'Projectile1', 'Projectile2', 'Projectile3', 'Projectile4', 'Player1', 'Player2', 'Player3', 'Player4'],
           },
           Projectile1: {
               Arena: ['Arena'],
@@ -97,7 +97,7 @@ export const PhysicsManager = WS.Services.PhysicsManager = class PhysicsManager 
       this.materials.Arena = WS.game.physics.p2.createMaterial('Arena');
       this.materials.WeaponSlingshot = WS.game.physics.p2.createMaterial('WeaponSlingshot');
 
-      // slingshot
+      // Arena - WeaponSlingshot
       const slingshotContactMaterial = WS.game.physics.p2.createContactMaterial(this.materials.WeaponSlingshot, this.materials.Arena);
       slingshotContactMaterial.friction = 0; // Friction to use in the contact of these two materials.
       slingshotContactMaterial.restitution = 1.0; // Restitution (i.e. how bouncy it is!) to use in the contact of these two materials.
