@@ -26,22 +26,51 @@ export default WS.State.Round = class Round extends Phaser.State {
         }
 
         this.players = {};
-        this.battle.players.forEach(playerNumber => {
-            const player = this.players[playerNumber] = new WS.Components.PlayerBot({
-              playerNumber: playerNumber,
-              color: WS.Config.PlayerColors[playerNumber],
-              pad: WS.Services.PadManager.getGamepad(playerNumber),
-              startLocation: this.getNextStartLocation(),
-            });
-            const weapon = new WS.Components.WeaponSlingshot({
-              owner: player,
-            });
-            player.pickupWeapon(weapon);
-            this.battle.stage.register(weapon);
-            this.battle.stage.register(player);
-        });
-
-        // this.battle.stage.create();
+        // this.battle.players.forEach(playerNumber => {
+        // });
+        this.assignKeyboardPlayer(1);
+        this.assignBotPlayer(2);
+        // this.assignPlayerBot(3);
+        // this.assignPlayerBot(4);
+        for (let i = 0; i < 10; i++) {
+          this.battle.stage.register(new WS.Components.WeaponSlingshot({
+            owner: null,
+            position: {
+              x: _.random(100, 300),
+              y: _.random(300, 400),
+            }
+          }));
+        }
+    }
+    assignGamepadPlayer(playerNumber) {
+      const player = this.createPlayer(playerNumber);
+      player.setInput(new WS.Lib.Input.GamepadInput({
+        pad: WS.Services.PadManager.getGamepad(playerNumber),
+      }));
+    }
+    assignKeyboardPlayer(playerNumber) {
+      const player = this.createPlayer(playerNumber);
+      player.setInput(new WS.Lib.Input.KeyboardInput());
+    }
+    assignBotPlayer(playerNumber) {
+      const player = this.createPlayer(playerNumber);
+      player.setInput(new WS.Lib.Input.BotInput({
+        player: player,
+      }));
+    }
+    createPlayer(playerNumber) {
+      const player = this.players[playerNumber] = new WS.Components.Player({
+        playerNumber: playerNumber,
+        color: WS.Config.PlayerColors[playerNumber],
+        startLocation: this.getNextStartLocation(),
+      });
+      const weapon = new WS.Components.WeaponSlingshot({
+        owner: player,
+      });
+      player.pickupWeapon(weapon);
+      this.battle.stage.register(weapon);
+      this.battle.stage.register(player);
+      return player;
     }
     getNextStartLocation() {
       return this.startLocations.splice(0, 1)[0];

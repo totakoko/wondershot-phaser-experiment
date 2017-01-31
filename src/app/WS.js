@@ -2,7 +2,9 @@ import Phaser from 'phaser';
 
 export default {
   Components: {},
-  Lib: {},
+  Lib: {
+    Input: {},
+  },
   Services: {},
   State: {},
   Config: {},

@@ -12,7 +12,6 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         super();
         this.playerNumber = playerOptions.playerNumber;
         this.playerColor = playerOptions.color;
-        this.pad = playerOptions.pad;
         this.alive = true;
 
         // this.sprite = WS.game.world.create(80 * this.playerNumber, 200, 'player');
@@ -30,21 +29,28 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         this.sprite.body.collides(WS.Services.PhysicsManager[`Player${this.playerNumber}`].Arena);
         this.sprite.body.collides(WS.Services.PhysicsManager[`Player${this.playerNumber}`].OtherProjectiles);
         this.sprite.body.collides(WS.Services.PhysicsManager[`Player${this.playerNumber}`].Objects);
-
-        this.registerGamepadButtons();
     }
-    registerGamepadButtons() {
-        log.debug('registerGamepadButtons player%s', this.playerNumber);
-        for (const keyName of [WS.Phaser.Gamepad.XBOX360_A, WS.Phaser.Gamepad.XBOX360_START]) {
-          this.pad.getButton(keyName).onDown.removeAll();
-        }
-        this.pad.getButton(WS.Phaser.Gamepad.XBOX360_A).onDown.add(this.fireWeapon, this);
-        this.pad.getButton(WS.Phaser.Gamepad.XBOX360_START).onDown.add(_.throttle(WS.Components.PauseMenu.togglePause, 500, {trailing: false}), WS.Components.PauseMenu);
+    setInput(options) {
+      if (options.movement) {
+        this.movement = options.movement;
+      }
+      if (options.fireWeapon) {
+        options.jump.onDown.removeAll();
+        options.fireWeapon.onDown.add(this.fireWeapon, this);
+      }
+      if (options.jump) {
+        options.jump.onDown.removeAll();
+        options.jump.onDown.add(this.jump, this);
+      }
+      if (options.togglePauseMenu) {
+        options.jump.onDown.removeAll();
+        options.togglePauseMenu.onDown.add(_.throttle(WS.Components.PauseMenu.togglePause, 500, {trailing: false}), WS.Components.PauseMenu);
+      }
     }
     update() {
-      if (this.pad.connected && this.sprite.alive) {
-          const moveX = this.pad._rawPad.axes[0];
-          const moveY = this.pad._rawPad.axes[1];
+      if (this.sprite.alive && this.movement) {
+          const moveX = this.movement[0];
+          const moveY = this.movement[1];
           if (moveX || moveY) {
               this.sprite.rotation = Math.atan2(moveY, moveX);
               this.sprite.body.x += moveX * WS.Config.PlayerSpeed;
@@ -52,7 +58,6 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
           }
       }
     }
-
     // Actions
     pickupWeapon(weapon) {
         log.debug(`Player ${this.playerNumber} picks up ${weapon.id}`);
@@ -67,6 +72,9 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         log.debug(`Fire weapon ${this.weapon.constructor.name}`);
         this.weapon.fire();
         this.weapon = null;
+    }
+    jump() {
+      log.debug('Jump!');
     }
     kill() {
         log.info('kill player%s', this.playerNumber);
