@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import WS from '../WS';
-const log = require('loglevel').getLogger('player');
+const log = require('loglevel').getLogger('Player');
 
 export default WS.Components.Player = class Player extends WS.Lib.Entity {
     static preload() {
@@ -25,10 +25,11 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         this.sprite.body.fixedRotation = true;
         this.sprite.body.damping = 1; // pas d'effet élastique sur les côtés
         log.debug(`collision group : Player${this.playerNumber}`);
-        this.sprite.body.setCollisionGroup(WS.Services.PhysicsManager[`Player${this.playerNumber}`].id);
-        this.sprite.body.collides(WS.Services.PhysicsManager[`Player${this.playerNumber}`].Arena);
-        this.sprite.body.collides(WS.Services.PhysicsManager[`Player${this.playerNumber}`].OtherProjectiles);
-        this.sprite.body.collides(WS.Services.PhysicsManager[`Player${this.playerNumber}`].Objects);
+        const physics = WS.Services.PhysicsManager[`Player${this.playerNumber}`];
+        this.sprite.body.setCollisionGroup(physics.id);
+        this.sprite.body.collides(physics.Arena);
+        this.sprite.body.collides(physics.OtherProjectiles);
+        this.sprite.body.collides(physics.Objects);
     }
     setInput(options) {
       if (options.movement) {
