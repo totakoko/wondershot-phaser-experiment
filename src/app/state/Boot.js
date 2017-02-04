@@ -11,6 +11,10 @@ export default WS.State.Boot = class Boot extends Phaser.State {
         WS.game.stage.backgroundColor = 0xFFFFFF;
         WS.game.stage.disableVisibilityChange = true;
         WS.game.input.maxPointers = 1;
+        WS.Services.ScaleManager.init({
+          width: WS.game.width,
+          height: WS.game.height,
+        });
         WS.game.state.start('preload');
     }
 };
