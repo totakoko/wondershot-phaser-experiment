@@ -1,4 +1,5 @@
 import WS from '../WS';
+const log = require('misc/loglevel').getLogger('ScoreBoard'); // eslint-disable-line no-unused-vars
 
 export default WS.Components.ScoreBoard = class ScoreBoard extends WS.Lib.Entity {
     static preload() {

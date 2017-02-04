@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import WS from '../../WS';
+const log = require('misc/loglevel').getLogger('BotInput'); // eslint-disable-line no-unused-vars
 
 export default WS.Lib.Input.BotInput = class BotInput extends WS.Lib.Input.AbstractInput {
   constructor(options) {
@@ -8,7 +9,7 @@ export default WS.Lib.Input.BotInput = class BotInput extends WS.Lib.Input.Abstr
     this.movement = [0, 0];
     setTimeout(() => {
       this.updateBotDirection();
-      // this.fireRandomly();
+      this.fireRandomly();
     });
   }
 

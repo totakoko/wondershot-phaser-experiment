@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import WS from '../WS';
+const log = require('misc/loglevel').getLogger('PhysicsManager'); // eslint-disable-line no-unused-vars
 
 export const PhysicsManager = WS.Services.PhysicsManager = class PhysicsManager {
   static init() {

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import WS from '../WS';
+const log = require('misc/loglevel').getLogger('Preload'); // eslint-disable-line no-unused-vars
 
 export default WS.State.Preload = class Preload extends Phaser.State {
     preload() {
@@ -8,7 +9,7 @@ export default WS.State.Preload = class Preload extends Phaser.State {
         this.load.setPreloadSprite(this.preloadBar);
 
         for (const entityName of Object.keys(WS.Components)) {
-          // console.log(`preloading ${entityName}`)
+          log.info(`preloading ${entityName}`);
           WS.Components[entityName].preload();
         }
     }
@@ -19,8 +20,19 @@ export default WS.State.Preload = class Preload extends Phaser.State {
         // DEBUG
         WS.game.state.start('round', true, false, {
           battle: new WS.Lib.Battle({
-            // players: ['1', '2']
-            players: ['1', '2', '3', '4']
+            players: [{
+              id: 1,
+              type: 'Keyboard',
+            }, {
+              id: 2,
+              type: 'Bot',
+            }, {
+              id: 3,
+              type: 'Bot',
+            }, {
+              id: 4,
+              type: 'Bot',
+            }]
           })
         });
     }

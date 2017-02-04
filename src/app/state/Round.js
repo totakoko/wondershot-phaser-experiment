@@ -1,13 +1,14 @@
 import Phaser from 'phaser';
 import _ from 'lodash';
 import WS from '../WS';
+const log = require('misc/loglevel').getLogger('Round'); // eslint-disable-line no-unused-vars
 
 export default WS.State.Round = class Round extends Phaser.State {
     init(stateOptions) {
         this.battle = stateOptions.battle;
     }
     create() {
-        console.log('round: create');
+        log.info('create');
         WS.Services.PhysicsManager.init();
 
         this.battle.reset();
@@ -18,20 +19,16 @@ export default WS.State.Round = class Round extends Phaser.State {
         this.battle.stage.register(arena);
 
         // positions triées pour être dépilées simplement
-        this.startLocations = _.chain(arena.getStartPositions())
-                              .shuffle()
-                              .value();
+        this.startLocations = _.chain(arena.getStartPositions()).shuffle().value();
         if (this.battle.players.length > this.startLocations.length) {
           throw new Error(`The world has only ${this.startLocations.length} start locations while there are ${this.activePlayers.length} active players.`);
         }
 
         this.players = {};
-        // this.battle.players.forEach(playerNumber => {
-        // });
-        this.assignKeyboardPlayer(1);
-        this.assignBotPlayer(2);
-        // this.assignPlayerBot(3);
-        // this.assignPlayerBot(4);
+        _.each(this.battle.players, player => {
+          this[`assign${player.type}Player`](player.id);
+        });
+
         for (let i = 0; i < 10; i++) {
           this.battle.stage.register(new WS.Components.WeaponSlingshot({
             owner: null,
@@ -87,7 +84,7 @@ export default WS.State.Round = class Round extends Phaser.State {
         WS.game.debug.text(WS.game.time.fps, WS.game.world.width - 25, 14, "#f00");
     }
     shutdown() {
-      console.log('Round: shutdown');
+      log.info('shutdown');
     }
 
 };

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import _ from 'lodash';
 import WS from '../WS';
+const log = require('misc/loglevel').getLogger('CharacterSelection'); // eslint-disable-line no-unused-vars
 
 export default WS.State.CharacterSelection = class CharacterSelection extends Phaser.State {
   create() {
@@ -30,7 +31,7 @@ export default WS.State.CharacterSelection = class CharacterSelection extends Ph
       this.activePlayers = {};
       WS.Services.PadManager.setPadsCallback(padNumber => {
         this.activePlayers[padNumber] = !this.activePlayers[padNumber];
-        console.log(`P${padNumber} ${this.activePlayers[padNumber]}`);
+        log.info(`P${padNumber} ${this.activePlayers[padNumber]}`);
       });
 
       // WS.Services.PhysicsManager.init();
@@ -42,7 +43,7 @@ export default WS.State.CharacterSelection = class CharacterSelection extends Ph
                              })
                              .filter()
                              .value();
-     console.log('CharacterSelection: selected players %s', activePlayers);
+     log.info('CharacterSelection: selected players %s', activePlayers);
 
       WS.game.state.start('round', true, false, {
         battle: new WS.Lib.Battle({

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import WS from '../WS';
-const log = require('loglevel').getLogger('battle');
+// const log = require('misc/loglevel');
+const log = require('misc/loglevel').getLogger('Battle'); // eslint-disable-line no-unused-vars
 
 export default WS.Lib.Battle = class Battle {
   constructor(options) {
@@ -8,10 +9,11 @@ export default WS.Lib.Battle = class Battle {
     if (this.players.length < 1) {
       throw new Error('Battle: 0 players');
     }
+    log.info(`Initializing with ${this.players.length} players`);
 
     this.score = {};
-    _.each(this.players, playerNumber => {
-      this.score[playerNumber] = 0;
+    _.each(this.players, player => {
+      this.score[player.id] = 0;
     });
   }
 
@@ -48,12 +50,16 @@ export default WS.Lib.Battle = class Battle {
         WS.game.time.events.add(1000, () => {
           endOfRoundMessageText.destroy();
           this.showScoreBoard();
+          // DEBUG round suivant directement
+          // WS.game.state.start('round', true, false, {
+          //   battle: this
+          // });
         });
       });
     }
   }
   reset() {
-    this.alivePlayers = this.players.slice();
+    this.alivePlayers = _.map(this.players, 'id');
     this.stage = new WS.Lib.Stage();
     this.endOfRoundTimer = null;
   }

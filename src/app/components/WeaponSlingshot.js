@@ -1,5 +1,5 @@
 import WS from '../WS';
-const log = require('loglevel').getLogger('WeaponSlingshot');
+const log = require('misc/loglevel').getLogger('WeaponSlingshot'); // eslint-disable-line no-unused-vars
 
 export default WS.Components.WeaponSlingshot = class WeaponSlingshot extends WS.Components.Weapon {
     static preload() {

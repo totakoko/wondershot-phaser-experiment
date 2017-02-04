@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import WS from './WS';
+const log = require('misc/loglevel').getLogger('Game'); // eslint-disable-line no-unused-vars
 
 export default WS.Game = class Game extends Phaser.Game {
     constructor() {

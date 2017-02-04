@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import WS from '../WS';
+const log = require('misc/loglevel').getLogger('Arena'); // eslint-disable-line no-unused-vars
 
 export default WS.Components.Arena = class Arena extends WS.Lib.Entity {
     static preload() {

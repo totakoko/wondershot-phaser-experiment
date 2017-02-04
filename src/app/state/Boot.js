@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import WS from '../WS';
+const log = require('misc/loglevel').getLogger('Boot'); // eslint-disable-line no-unused-vars
 
 export default WS.State.Boot = class Boot extends Phaser.State {
     preload() {

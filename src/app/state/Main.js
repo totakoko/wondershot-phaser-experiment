@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import WS from '../WS';
+const log = require('misc/loglevel').getLogger('Main'); // eslint-disable-line no-unused-vars
 
 export default WS.State.Main = class Main extends Phaser.State {
   create() {
@@ -20,7 +21,7 @@ export default WS.State.Main = class Main extends Phaser.State {
       // }
   }
   optionBattleSelected() {
-      console.log('battle is coming', arguments);
+      log.info('battle is coming', arguments);
       WS.game.state.start('characterSelection');
   }
   update() {

@@ -1,4 +1,5 @@
 import WS from '../../WS';
+const log = require('misc/loglevel').getLogger('KeyboardInput'); // eslint-disable-line no-unused-vars
 
 export default WS.Lib.Input.KeyboardInput = class KeyboardInput extends WS.Lib.Input.AbstractInput {
   constructor(options) {

@@ -59,6 +59,11 @@ module.exports = {
       debug: true
     })
   ],
+  resolve: {
+    alias: {
+      misc: '/home/maxime/src/wondershot/src/misc'
+    }
+  },
   devtool: 'source-map',
   output: {
     path: path.join(process.cwd(), conf.paths.tmp),

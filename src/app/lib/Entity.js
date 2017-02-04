@@ -1,4 +1,5 @@
 import WS from '../WS';
+const log = require('misc/loglevel').getLogger('Entity'); // eslint-disable-line no-unused-vars
 
 export default WS.Lib.Entity = class Entity {
   constructor() {

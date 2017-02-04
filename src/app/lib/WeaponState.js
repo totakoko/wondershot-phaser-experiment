@@ -1,5 +1,5 @@
 import WS from '../WS';
-const log = require('loglevel').getLogger('player');
+const log = require('misc/loglevel').getLogger('WeaponState'); // eslint-disable-line no-unused-vars
 
 export default WS.Lib.WeaponState = class WeaponState {
   constructor(weapon) {

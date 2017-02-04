@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import WS from '../WS';
-const log = require('loglevel').getLogger('Player');
+const log = require('misc/loglevel').getLogger('Player'); // eslint-disable-line no-unused-vars
 
 export default WS.Components.Player = class Player extends WS.Lib.Entity {
     static preload() {
@@ -78,7 +78,7 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
       log.debug('Jump!');
     }
     kill() {
-        log.info('kill player%s', this.playerNumber);
+        log.info(`kill player${this.playerNumber}`);
         this.alive = false;
 
         const deathMarker = WS.game.Groups.Arena.create(this.sprite.x, this.sprite.y, 'player-death-marker');

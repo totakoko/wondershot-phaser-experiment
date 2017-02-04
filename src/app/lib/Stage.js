@@ -1,4 +1,5 @@
 import WS from '../WS';
+const log = require('misc/loglevel').getLogger('Stage'); // eslint-disable-line no-unused-vars
 
 export default WS.Lib.Stage = class Stage {
   constructor() {
