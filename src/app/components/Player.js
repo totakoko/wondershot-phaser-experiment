@@ -36,20 +36,20 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         this.movement = options.movement;
       }
       if (options.fireWeapon) {
-        options.jump.onDown.removeAll();
+        options.fireWeapon.onDown.removeAll();
         options.fireWeapon.onDown.add(this.fireWeapon, this);
       }
       if (options.jump) {
         options.jump.onDown.removeAll();
-        options.jump.onDown.add(this.jump, this);
+        options.jump.onDown.add(_.throttle(this.jump, 3000, {trailing: false}), this);
       }
       if (options.togglePauseMenu) {
-        options.jump.onDown.removeAll();
+        options.togglePauseMenu.onDown.removeAll();
         options.togglePauseMenu.onDown.add(_.throttle(WS.Components.PauseMenu.togglePause, 500, {trailing: false}), WS.Components.PauseMenu);
       }
     }
     update() {
-      if (this.sprite.alive && this.movement) {
+      if (this.sprite.alive && this.movement && !this.jumping) {
           const moveX = this.movement[0];
           const moveY = this.movement[1];
           if (moveX || moveY) {
@@ -75,7 +75,22 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         this.weapon = null;
     }
     jump() {
-      log.debug('Jump!');
+      const accelerationFactor = 50000;
+      const xForce = Math.cos(this.sprite.rotation) * accelerationFactor;
+      const yForce = Math.sin(this.sprite.rotation) * accelerationFactor;
+      log.debug(`Jump! (accel: ${xForce}:${yForce}`);
+
+      // jumping part, the player can't control the movements
+      this.jumping = true;
+      const jumpingTween = WS.game.add.tween(this.sprite.body.force)
+          .to({x: xForce, y: yForce}, 100, WS.Phaser.Easing.Linear.None)
+          .to({x: xForce / 10, y: yForce / 10}, 150, WS.Phaser.Easing.Linear.None)
+          .start();
+      jumpingTween.onComplete.add(() => {
+        log.debug('Jump tween complete');
+        this.jumping = false;
+        this.sprite.body.angularVelocity = 0; // TODO arranger ça avec les materials
+      });
     }
     kill() {
         log.info(`kill player${this.playerNumber}`);
