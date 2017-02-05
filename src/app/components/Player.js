@@ -66,6 +66,10 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         this.weapon.pickup(this);
     }
     fireWeapon() {
+        if (!this.alive) {
+          log.warn(`Player ${this.playerNumber} is dead`);
+          return;
+        }
         if (this.weapon === null) {
             log.debug('No weapon to fire !');
             return;
@@ -75,6 +79,10 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         this.weapon = null;
     }
     jump() {
+      if (!this.alive) {
+        log.warn(`Player ${this.playerNumber} is dead`);
+        return;
+      }
       const accelerationFactor = 50000;
       const xForce = Math.cos(this.sprite.rotation) * accelerationFactor;
       const yForce = Math.sin(this.sprite.rotation) * accelerationFactor;

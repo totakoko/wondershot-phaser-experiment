@@ -9,8 +9,9 @@ export default WS.Lib.Input.BotInput = class BotInput extends WS.Lib.Input.Abstr
     this.movement = [0, 0];
     setTimeout(() => {
       this.updateBotDirection();
-      this.fireRandomly();
     });
+    WS.game.time.events.add(WS.Phaser.Timer.SECOND * _.random(1, 5, true), this.fireRandomly, this);
+    WS.game.time.events.add(WS.Phaser.Timer.SECOND * _.random(1, 5, true), this.jumpRandomly, this);
   }
 
       // update() {
@@ -32,6 +33,11 @@ export default WS.Lib.Input.BotInput = class BotInput extends WS.Lib.Input.Abstr
   }
   fireRandomly() {
     this.player.fireWeapon();
+    const nextActionDelay = _.random(1, 5, true);
+    WS.game.time.events.add(WS.Phaser.Timer.SECOND * nextActionDelay, this.fireRandomly, this);
+  }
+  jumpRandomly() {
+    this.player.jump();
     const nextActionDelay = _.random(1, 5, true);
     WS.game.time.events.add(WS.Phaser.Timer.SECOND * nextActionDelay, this.fireRandomly, this);
   }
