@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import _ from 'lodash';
 import WS from '../WS';
 const log = require('misc/loglevel').getLogger('Arena'); // eslint-disable-line no-unused-vars
 
@@ -11,11 +11,12 @@ export default WS.Components.Arena = class Arena extends WS.Lib.Entity {
         this.arenaBordersWidth = 30;
         this.startLines = [];
         this.startLocations = [
-          {x: 90, y: 180},
-          {x: 300, y: 180},
-          {x: 90, y: 600},
-          {x: 300, y: 600},
+          {x: WS.Services.ScaleManager.xp(15), y: WS.Services.ScaleManager.yp(15)},
+          {x: WS.Services.ScaleManager.xp(85), y: WS.Services.ScaleManager.yp(15)},
+          {x: WS.Services.ScaleManager.xp(15), y: WS.Services.ScaleManager.yp(85)},
+          {x: WS.Services.ScaleManager.xp(85), y: WS.Services.ScaleManager.yp(85)},
         ];
+        this.lines = [];
     }
     getStartPositions() {
       return this.startLocations;
@@ -43,11 +44,10 @@ export default WS.Components.Arena = class Arena extends WS.Lib.Entity {
         const limitRight = WS.game.Groups.Objects.create(WS.game.world.width - this.arenaBordersWidth / 2, verticalLimitPos, verticalLimitBitmap);
         [limitTop, limitBottom, limitLeft, limitRight].forEach(this.setArenaCollisionGroup);
 
-        // TODO faire un petit calcul pour connaître la vélocité en fonction de from - to
         const walls = [
           { // haut-gauche
             from: {
-              x: WS.Services.ScaleManager.xp(20),
+              x: WS.Services.ScaleManager.xp(22),
               y: WS.Services.ScaleManager.yp(35),
             },
             to: {
@@ -57,7 +57,7 @@ export default WS.Components.Arena = class Arena extends WS.Lib.Entity {
           },
           { // haut-droite
             from: {
-              x: WS.Services.ScaleManager.xp(80),
+              x: WS.Services.ScaleManager.xp(78),
               y: WS.Services.ScaleManager.yp(35),
             },
             to: {
@@ -71,7 +71,7 @@ export default WS.Components.Arena = class Arena extends WS.Lib.Entity {
               y: WS.Services.ScaleManager.yp(65),
             },
             to: {
-              x: WS.Services.ScaleManager.xp(20),
+              x: WS.Services.ScaleManager.xp(22),
               y: WS.Services.ScaleManager.yp(65),
             },
           },
@@ -81,7 +81,7 @@ export default WS.Components.Arena = class Arena extends WS.Lib.Entity {
               y: WS.Services.ScaleManager.yp(65),
             },
             to: {
-              x: WS.Services.ScaleManager.xp(80),
+              x: WS.Services.ScaleManager.xp(78),
               y: WS.Services.ScaleManager.yp(65),
             },
           },
@@ -106,10 +106,8 @@ export default WS.Components.Arena = class Arena extends WS.Lib.Entity {
       const wall = WS.game.Groups.Objects.create(from.x, from.y, 'wall');
       this.setArenaCollisionGroup(wall);
 
-      const xDistance = to.x - from.x;
-      const yDistance = to.y - from.y;
-
-      const coefReduction = 2;
+      const line = new WS.Phaser.Line(from.x, from.y, to.x, to.y);
+      this.lines.push(line);
       /*
        * @method Phaser.Tween#to
        * @param {object} properties - An object containing the properties you want to tween, such as `Sprite.x` or `Sound.volume`. Given as a JavaScript object.
@@ -121,13 +119,16 @@ export default WS.Components.Arena = class Arena extends WS.Lib.Entity {
        * @param {boolean} [yoyo=false] - A tween that yoyos will reverse itself and play backwards automatically. A yoyo'd tween doesn't fire the Tween.onComplete event, so listen for Tween.onLoop instead.
        * @return {Phaser.Tween} This Tween object.
        */
-      WS.game.add.tween(wall.body.velocity)
-          .to({x: xDistance / coefReduction, y: yDistance / coefReduction}, 2000, Phaser.Easing.Quadratic.In)
-          .to({x: 0, y: 0}, 1000, Phaser.Easing.Quadratic.Out, false, 2000)
-          .to({x: -xDistance / coefReduction, y: -yDistance / coefReduction}, 2000, Phaser.Easing.Quadratic.In)
-          .to({x: 0, y: 0}, 1000, Phaser.Easing.Quadratic.Out, false, 2000)
+      WS.game.add.tween(wall.body)
+          .to(to, 1000, WS.Phaser.Easing.Linear.None, false, 2000)
+          .to(from, 1000, WS.Phaser.Easing.Linear.None, false, 2000)
           .loop()
           .start();
+    }
+    render() {
+      _.each(this.lines, line => {
+        WS.game.debug.geom(line, 'black');
+      });
     }
 };
 /*
