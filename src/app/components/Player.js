@@ -49,7 +49,7 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
       }
     }
     update() {
-      if (this.sprite.alive && this.movement && !this.jumping) {
+      if (this.sprite.alive && this.movement && !this.jumping && !WS.game.physics.p2.paused) {
           const moveX = this.movement[0];
           const moveY = this.movement[1];
           if (moveX || moveY) {

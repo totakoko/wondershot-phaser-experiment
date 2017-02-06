@@ -20,7 +20,7 @@ export default WS.Components.ScoreBoard = class ScoreBoard extends WS.Lib.Entity
 
         let scoreTextMessage = '';
         for (const playerNumber in this.battle.score) {
-          scoreTextMessage += `Player ${playerNumber} : ${this.battle.score[playerNumber]} \n`;
+          scoreTextMessage += `${WS.Config.PlayerColors[playerNumber].name} : ${this.battle.score[playerNumber]} \n`;
         }
         const scoreText = WS.game.add.bitmapText(WS.game.world.centerX, 200, 'desyrel', 'Score', 48);
         scoreText.anchor.x = 0.5;

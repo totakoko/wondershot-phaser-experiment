@@ -36,7 +36,7 @@ export default WS.Lib.Battle = class Battle {
         // let endOfRoundMessage = this.alivePlayers.length ? `Player ${this.alivePlayers[0]} wins !` : 'Draw !';
         let endOfRoundMessage;
         if (this.alivePlayers.length === 1) {
-          endOfRoundMessage = `Player ${this.alivePlayers[0]} wins !`;
+          endOfRoundMessage = `${WS.Config.PlayerColors[this.alivePlayers[0]].name} wins !`;
           this.addRoundVictory(this.alivePlayers[0]); // A FAIRE : mettre ça dans un autre état / écran de résultat
         } else if (this.alivePlayers.length === 0) {
           endOfRoundMessage = 'Draw !';
@@ -47,7 +47,7 @@ export default WS.Lib.Battle = class Battle {
         endOfRoundMessageText.anchor.x = 0.5;
         endOfRoundMessageText.anchor.y = 0.5;
 
-        WS.game.time.events.add(1000, () => {
+        WS.game.time.events.add(1500, () => {
           endOfRoundMessageText.destroy();
           this.showScoreBoard();
           // DEBUG round suivant directement
@@ -75,6 +75,7 @@ export default WS.Lib.Battle = class Battle {
 
     WS.game.physics.p2.pause();
     WS.game.time.events.pause();
+    WS.game.tweens.pauseAll();
     // après 3 secondes on démarre un nouveau round
     setTimeout(() => {
       WS.game.state.start('round', true, false, {
