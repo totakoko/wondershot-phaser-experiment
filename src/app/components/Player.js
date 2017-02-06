@@ -97,7 +97,9 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
       jumpingTween.onComplete.add(() => {
         log.debug('Jump tween complete');
         this.jumping = false;
-        this.sprite.body.angularVelocity = 0; // TODO arranger ça avec les materials
+        if (this.sprite.alive) {
+          this.sprite.body.angularVelocity = 0; // TODO arranger ça avec les materials
+        }
       });
     }
     kill() {
