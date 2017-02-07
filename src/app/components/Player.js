@@ -2,6 +2,8 @@ import _ from 'lodash';
 import WS from '../WS';
 const log = require('misc/loglevel').getLogger('Player'); // eslint-disable-line no-unused-vars
 
+const PlayerSpeed = 3;
+
 export default WS.Components.Player = class Player extends WS.Lib.Entity {
     static preload() {
         WS.game.load.image('player', 'assets/images/player.png');
@@ -30,6 +32,8 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         this.sprite.body.collides(physics.Arena);
         this.sprite.body.collides(physics.OtherProjectiles);
         this.sprite.body.collides(physics.Objects);
+
+        this.onKilledEvent = new WS.Phaser.Signal(); // eslint-disable-line babel/new-cap
     }
     setInput(options) {
       if (options.movement) {
@@ -37,7 +41,9 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
       }
       if (options.fireWeapon) {
         options.fireWeapon.onDown.removeAll();
-        options.fireWeapon.onDown.add(this.fireWeapon, this);
+        options.fireWeapon.onDown.add(this.loadWeapon, this);
+        options.fireWeapon.onUp.removeAll();
+        options.fireWeapon.onUp.add(this.releaseWeapon, this);
       }
       if (options.jump) {
         options.jump.onDown.removeAll();
@@ -54,8 +60,8 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
           const moveY = this.movement[1];
           if (moveX || moveY) {
               this.sprite.rotation = Math.atan2(moveY, moveX);
-              this.sprite.body.x += moveX * WS.Config.PlayerSpeed;
-              this.sprite.body.y += moveY * WS.Config.PlayerSpeed;
+              this.sprite.body.x += moveX * PlayerSpeed;
+              this.sprite.body.y += moveY * PlayerSpeed;
           }
       }
     }
@@ -65,7 +71,29 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         this.weapon = weapon;
         this.weapon.pickup(this);
     }
-    fireWeapon() {
+    loadWeapon() {
+      if (this.loadingWeapon) {
+        throw new Error("Can't load weapon again while still loading.");
+      }
+      this.loadingWeapon = {
+        power: 0
+      };
+      this.loadingWeaponTween = WS.game.add.tween(this.loadingWeapon)
+          .to({power: 100}, 1000, WS.Phaser.Easing.Linear.None)
+          .start()
+          .onUpdateCallback(() => {
+            console.log('loading power', this.loadingWeapon.power);
+          });
+    }
+    releaseWeapon() {
+        if (!this.loadingWeapon) {
+          throw new Error("Can't release unloaded weapon.");
+        }
+        this.fireWeapon(this.loadingWeapon.power);
+        this.loadingWeapon = null;
+        this.loadingWeaponTween.stop();
+    }
+    fireWeapon(power) {
         if (!this.alive) {
           log.warn(`Player ${this.playerNumber} is dead`);
           return;
@@ -75,7 +103,7 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
             return;
         }
         log.debug(`Fire weapon ${this.weapon.constructor.name}`);
-        this.weapon.fire();
+        this.weapon.fire(power);
         this.weapon = null;
     }
     jump() {
@@ -111,6 +139,7 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         deathMarker.tint = this.playerColor.tint;
         this.sprite.destroy();
         // this.sprite.safedestroy = true;
+        this.onKilledEvent.dispatch();
         WS.game.state.callbackContext.battle.notifyPlayerKilled(this.playerNumber);
 
         this.fireWeapon = function () {};

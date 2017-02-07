@@ -7,38 +7,33 @@ export default WS.Lib.Input.BotInput = class BotInput extends WS.Lib.Input.Abstr
     super({});
     this.player = options.player;
     this.movement = [0, 0];
+
+    this.player.onKilledEvent.add(this.shutdownBot, this);
     setTimeout(() => {
-      this.updateBotDirection();
+      this.updateBotDirectionEvent = this.updateBotDirection();
     });
-    WS.game.time.events.add(WS.Phaser.Timer.SECOND * _.random(1, 5, true), this.fireRandomly, this);
-    WS.game.time.events.add(WS.Phaser.Timer.SECOND * _.random(1, 5, true), this.jumpRandomly, this);
+    this.fireRandomlyEvent = WS.game.time.events.add(WS.Phaser.Timer.SECOND * _.random(1, 5, true), this.fireRandomly, this);
+    this.jumpRandomlyEvent = WS.game.time.events.add(WS.Phaser.Timer.SECOND * _.random(1, 5, true), this.jumpRandomly, this);
   }
-
-      // update() {
-      //   // le joueur doit être actif et le jeu pas en pause
-      //   if (this.sprite.alive && !WS.game.physics.p2.paused) {
-      //     if (this.movement.x || this.movement.y) {
-      //         this.sprite.rotation = Math.atan2(this.movement.y, this.movement.x);
-      //         this.sprite.body.x += this.movement.x * WS.Config.PlayerSpeed;
-      //         this.sprite.body.y += this.movement.y * WS.Config.PlayerSpeed;
-      //     }
-      //   }
-      // }
-
+  shutdownBot() {
+    this.updateBotDirectionEvent.timer.remove(this.updateBotDirectionEvent);
+    this.fireRandomlyEvent.timer.remove(this.fireRandomlyEvent);
+    this.jumpRandomlyEvent.timer.remove(this.jumpRandomlyEvent);
+  }
   updateBotDirection() {
     this.movement[0] = _.random(-1, 1, true);
     this.movement[1] = _.random(-1, 1, true);
     const nextActionDelay = _.random(500, 1500, true);
-    WS.game.time.events.add(nextActionDelay, this.updateBotDirection, this);
+    this.updateBotDirectionEvent = WS.game.time.events.add(nextActionDelay, this.updateBotDirection, this);
   }
   fireRandomly() {
-    this.player.fireWeapon();
+    this.player.fireWeapon(_.random(0, 100));
     const nextActionDelay = _.random(1, 5, true);
-    WS.game.time.events.add(WS.Phaser.Timer.SECOND * nextActionDelay, this.fireRandomly, this);
+    this.fireRandomlyEvent = WS.game.time.events.add(WS.Phaser.Timer.SECOND * nextActionDelay, this.fireRandomly, this);
   }
   jumpRandomly() {
     this.player.jump();
     const nextActionDelay = _.random(1, 5, true);
-    WS.game.time.events.add(WS.Phaser.Timer.SECOND * nextActionDelay, this.fireRandomly, this);
+    this.jumpRandomlyEvent = WS.game.time.events.add(WS.Phaser.Timer.SECOND * nextActionDelay, this.fireRandomly, this);
   }
 };

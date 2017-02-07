@@ -1,12 +1,7 @@
 import WS from './WS';
 
 export const Config = WS.Config = {};
-Config.Debug = true;
-Config.PlayerSpeed = 2;
-
-Config.ProjectileSpeed = 300;
-Config.ArrowMinSpeed = 300;
-Config.ArrowMaxSpeed = 600;
+Config.Debug = false;
 
 Config.ArenaWidth = 600;
 Config.ArenaHeight = 600;

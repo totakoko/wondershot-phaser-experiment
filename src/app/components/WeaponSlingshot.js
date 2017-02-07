@@ -9,13 +9,28 @@ export default WS.Components.WeaponSlingshot = class WeaponSlingshot extends WS.
       super(options);
       this.state = new WeaponSlingshotOnGroundState(this, options.position || {x: 0, y: 0}); // par défaut au sol mais non accessible
     }
-    fire() {
-      this.state.fire();
+    fire(power) {
+      this.state.fire(power);
     }
     pickup(owner) {
       this.changeState(new WeaponSlingshotCarriedState(this, owner));
     }
 };
+
+const ProjectileMinimumSpeed = 500;
+const ProjectileMaximumSpeed = 1000;
+const ProjectileMinimumSize = 8;
+const ProjectileMaximumSize = 16;
+const ProjectileOnGroundSize = 10;
+const ProjectileMaximumBounces = 3;
+const ProjectileSpriteSizeRadio = 24;
+
+function getProjectileSpeed(power) {
+  return power * (ProjectileMaximumSpeed - ProjectileMinimumSpeed) / 100 + ProjectileMinimumSpeed;
+}
+function getProjectileSize(power) {
+  return 20 - power * (ProjectileMaximumSize - ProjectileMinimumSize) / 100;
+}
 
 class WeaponSlingshotOnGroundState extends WS.Lib.WeaponState {
   constructor(weapon, position) {
@@ -29,9 +44,9 @@ class WeaponSlingshotOnGroundState extends WS.Lib.WeaponState {
     );
     // projectileSprite.visible = true;
     projectileSprite.tint = WS.Config.PlayerColors.neutral.tint;
-    projectileSprite.scale.setTo(0.3);
+    projectileSprite.scale.setTo(ProjectileOnGroundSize / ProjectileSpriteSizeRadio);
     WS.game.physics.p2.enable(projectileSprite, WS.Config.Debug);
-    projectileSprite.body.setCircle(10);
+    projectileSprite.body.setCircle(ProjectileOnGroundSize);
     projectileSprite.body.damping = 1; // Damping is specified as a value between 0 and 1, which is the proportion of velocity lost per second.
     projectileSprite.body.data.shapes[0].sensor = true;
     projectileSprite.body.fixedRotation = true;
@@ -74,19 +89,23 @@ class WeaponSlingshotCarriedState extends WS.Lib.WeaponState {
     super(weapon);
     this.owner = owner;
   }
-  fire() {
+  fire(power) {
     log.debug('Firing weapon !');
-    const power = Math.floor(Math.random() * 101);
+    // const power = Math.floor(Math.random() * 101);
     this.weapon.changeState(new WeaponSlingshotFiredState(this.weapon, this.owner, power));
   }
 }
 
+/*
+En fonction de la puissance power [0, 100]
+On fait varier la vitesse de 500 à 1000 et la taille de 20 à 8
+*/
 class WeaponSlingshotFiredState extends WS.Lib.WeaponState {
   constructor(weapon, owner, power) {
     super(weapon);
     this.owner = owner;
 
-    this.bounceLeft = 3;
+    this.bounceLeft = ProjectileMaximumBounces;
     const ownerPosition = this.owner.sprite.position;
     const ownerRotation = this.owner.sprite.rotation;
 
@@ -96,12 +115,15 @@ class WeaponSlingshotFiredState extends WS.Lib.WeaponState {
       'weapon-slingshot-projectile'
     );
     projectileSprite.tint = this.owner.playerColor.tint;
-    projectileSprite.scale.setTo(0.3);
     WS.game.physics.p2.enable(projectileSprite, WS.Config.Debug);
-    projectileSprite.body.setCircle(10);
+    projectileSprite.scale.setTo(getProjectileSize(power) / ProjectileSpriteSizeRadio);
+    // log.debug(`projectile power ${power}`);
+    // log.debug(`projectile size ${this.getProjectileSize(power)}`);
+    // log.debug(`projectile speed ${this.getProjectileSpeed(power)}`);
+    projectileSprite.body.setCircle(getProjectileSize(power));
     projectileSprite.body.fixedRotation = true;
     projectileSprite.body.rotation = ownerRotation;
-    const projectileSpeed = this.getProjectileSpeed(power);
+    const projectileSpeed = getProjectileSpeed(power);
     projectileSprite.body.velocity.x = Math.cos(ownerRotation) * projectileSpeed;
     projectileSprite.body.velocity.y = Math.sin(ownerRotation) * projectileSpeed;
     projectileSprite.body.setMaterial(WS.Services.PhysicsManager.materials.WeaponSlingshot);
@@ -114,10 +136,6 @@ class WeaponSlingshotFiredState extends WS.Lib.WeaponState {
   cleanup() {
     this.projectileSprite.destroy();
   }
-  getProjectileSpeed(power) {
-    return power * (WS.Config.ArrowMaxSpeed - WS.Config.ArrowMinSpeed) / 100 + WS.Config.ArrowMinSpeed;
-  }
-
   projectileArenaHitHandler(projectileBody, bodyB, shapeA, shapeB, equation) {
       if (this.bounceLeft > 0) {
           this.bounceLeft--;
