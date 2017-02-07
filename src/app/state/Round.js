@@ -29,15 +29,15 @@ export default WS.State.Round = class Round extends Phaser.State {
           this[`assign${player.type}Player`](player.id);
         });
 
-        for (let i = 0; i < 10; i++) {
-          this.battle.stage.register(new WS.Components.WeaponSlingshot({
-            owner: null,
-            position: {
-              x: _.random(100, 300),
-              y: _.random(300, 400),
-            }
-          }));
-        }
+        // for (let i = 0; i < 10; i++) {
+        //   this.battle.stage.register(new WS.Components.WeaponSlingshot({
+        //     owner: null,
+        //     position: {
+        //       x: _.random(100, 300),
+        //       y: _.random(300, 400),
+        //     }
+        //   }));
+        // }
     }
     assignGamepadPlayer(playerNumber) {
       const player = this.createPlayer(playerNumber);

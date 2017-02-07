@@ -67,9 +67,13 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
     }
     // Actions
     pickupWeapon(weapon) {
-        log.debug(`Player ${this.playerNumber} picks up ${weapon.id}`);
-        this.weapon = weapon;
-        this.weapon.pickup(this);
+      if (!this.alive) {
+        log.warn(`Player ${this.playerNumber} is dead`);
+        return;
+      }
+      log.debug(`Player ${this.playerNumber} picks up ${weapon.id}`);
+      this.weapon = weapon;
+      this.weapon.pickup(this);
     }
     loadWeapon() {
       if (this.loadingWeapon) {
@@ -141,7 +145,5 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         // this.sprite.safedestroy = true;
         this.onKilledEvent.dispatch();
         WS.game.state.callbackContext.battle.notifyPlayerKilled(this.playerNumber);
-
-        this.fireWeapon = function () {};
     }
 };
