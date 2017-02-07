@@ -4,7 +4,7 @@ const log = require('misc/loglevel').getLogger('GamepadInput'); // eslint-disabl
 export default WS.Lib.Input.GamepadInput = class GamepadInput extends WS.Lib.Input.AbstractInput {
   constructor(options) {
     super({
-      movement: options.pad._rawpad,
+      movement: options.pad._rawPad,
       fireWeapon: options.pad.getButton(WS.Phaser.Gamepad.XBOX360_A),
       jump: options.pad.getButton(WS.Phaser.Gamepad.XBOX360_B),
       togglePauseMenu: options.pad.getButton(WS.Phaser.Gamepad.XBOX360_START),

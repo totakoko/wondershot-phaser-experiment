@@ -6,7 +6,10 @@ export default WS.Lib.Input.BotInput = class BotInput extends WS.Lib.Input.Abstr
   constructor(options) {
     super({});
     this.player = options.player;
-    this.movement = [0, 0];
+    this.axes = [0, 0];
+    this.movement = {
+      axes: this.axes
+    };
 
     this.player.onKilledEvent.add(this.shutdownBot, this);
     setTimeout(() => {
@@ -21,8 +24,8 @@ export default WS.Lib.Input.BotInput = class BotInput extends WS.Lib.Input.Abstr
     this.jumpRandomlyEvent.timer.remove(this.jumpRandomlyEvent);
   }
   updateBotDirection() {
-    this.movement[0] = _.random(-1, 1, true);
-    this.movement[1] = _.random(-1, 1, true);
+    this.axes[0] = _.random(-1, 1, true);
+    this.axes[1] = _.random(-1, 1, true);
     const nextActionDelay = _.random(500, 1500, true);
     this.updateBotDirectionEvent = WS.game.time.events.add(nextActionDelay, this.updateBotDirection, this);
   }
