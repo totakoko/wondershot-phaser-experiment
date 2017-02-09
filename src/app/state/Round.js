@@ -29,6 +29,17 @@ export default WS.State.Round = class Round extends Phaser.State {
           this[`assign${player.type}Player`](player.id);
         });
 
+        const letsFightText = WS.game.add.bitmapText(WS.game.world.centerX, WS.game.world.centerY, 'desyrel', "Let's fight!", 64);
+        letsFightText.anchor.x = 0.5;
+        letsFightText.anchor.y = 0.5;
+
+        // TODO gérer l'afficheage du text en slide horizontal avec un tween, il faudra alors ne pas mettre en pause
+        // les tweens existants, mais juste nettoyer ceux liés au stage
+        WS.Services.PhysicsManager.pause();
+        setTimeout(() => {
+          letsFightText.destroy();
+          WS.Services.PhysicsManager.resume();
+        }, 1000);
         // for (let i = 0; i < 10; i++) {
         //   this.battle.stage.register(new WS.Components.WeaponSlingshot({
         //     owner: null,

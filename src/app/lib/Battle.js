@@ -73,9 +73,7 @@ export default WS.Lib.Battle = class Battle {
   showScoreBoard() {
     this.stage.register(new WS.Components.ScoreBoard(this));
 
-    WS.game.physics.p2.pause();
-    WS.game.time.events.pause();
-    WS.game.tweens.pauseAll();
+    WS.Services.PhysicsManager.pause();
     // après 3 secondes on démarre un nouveau round
     setTimeout(() => {
       WS.game.state.start('round', true, false, {

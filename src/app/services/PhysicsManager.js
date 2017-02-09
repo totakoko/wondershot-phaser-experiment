@@ -8,9 +8,8 @@ export const PhysicsManager = WS.Services.PhysicsManager = class PhysicsManager 
     WS.game.time.advancedTiming = true;
 
     WS.game.physics.startSystem(Phaser.Physics.P2JS);
-    WS.game.physics.p2.resume();
-    WS.game.time.events.resume();
-    WS.game.tweens.resumeAll();
+
+    PhysicsManager.resume();
     WS.game.physics.p2.setImpactEvents(true); // http://phaser.io/docs/2.6.2/Phaser.Physics.P2.html#setImpactEvents
     // WS.game.physics.p2.applyGravity = false; // TODO pas encore besoin a priori
     //  4 trues = the 4 faces of the world in left, right, top, bottom order
@@ -109,6 +108,16 @@ export const PhysicsManager = WS.Services.PhysicsManager = class PhysicsManager 
       slingshotContactMaterial.frictionStiffness = 1e16; // Stiffness of the resulting FrictionEquation that this ContactMaterial generate.
       slingshotContactMaterial.frictionRelaxation = 0; // Relaxation of the resulting FrictionEquation that this ContactMaterial generate.
       slingshotContactMaterial.surfaceVelocity = 0; // Will add surface velocity to this material. If bodyA rests on top if bodyB, and the surface velocity is positive, bodyA will slide to the right.
+  }
+  static pause() {
+    WS.game.physics.p2.pause();
+    WS.game.time.events.pause();
+    WS.game.tweens.pauseAll();
+  }
+  static resume() {
+    WS.game.physics.p2.resume();
+    WS.game.time.events.resume();
+    WS.game.tweens.resumeAll();
   }
 };
 PhysicsManager.materials = {};
