@@ -1,8 +1,10 @@
+import _ from 'lodash';
 import WS from '../WS';
 const log = require('misc/loglevel').getLogger('WeaponSlingshot'); // eslint-disable-line no-unused-vars
 
 export default WS.Components.WeaponSlingshot = class WeaponSlingshot extends WS.Components.Weapon {
     static preload() {
+      WS.game.load.image('weapon-slingshot', 'assets/images/weapon-slingshot.png');
       WS.game.load.image('weapon-slingshot-projectile', 'assets/images/weapon-slingshot-projectile.png');
     }
     constructor(options) {
@@ -15,13 +17,16 @@ export default WS.Components.WeaponSlingshot = class WeaponSlingshot extends WS.
     pickup(owner) {
       this.changeState(new WeaponSlingshotCarriedState(this, owner));
     }
+    update() {
+      this.state.update();
+    }
 };
 
 const ProjectileMinimumSpeed = 500;
 const ProjectileMaximumSpeed = 1000;
 const ProjectileMinimumSize = 8;
 const ProjectileMaximumSize = 16;
-const ProjectileOnGroundSize = 10;
+const ProjectileOnGroundSize = 20;
 const ProjectileMaximumBounces = 3;
 const ProjectileSpriteSizeRadio = 24;
 
@@ -40,20 +45,14 @@ class WeaponSlingshotOnGroundState extends WS.Lib.WeaponState {
     const projectileSprite = this.projectileSprite = WS.game.Groups.Objects.create(
       position.x,
       position.y,
-      'weapon-slingshot-projectile'
+      'weapon-slingshot'
     );
-    // projectileSprite.visible = true;
-    projectileSprite.tint = WS.Config.PlayerColors.neutral.tint;
-    projectileSprite.scale.setTo(ProjectileOnGroundSize / ProjectileSpriteSizeRadio);
+    this.projectileSprite.angle = _.random(-180, 180);
     WS.game.physics.p2.enable(projectileSprite, WS.Config.Debug);
     projectileSprite.body.setCircle(ProjectileOnGroundSize);
-    projectileSprite.body.damping = 1; // Damping is specified as a value between 0 and 1, which is the proportion of velocity lost per second.
     projectileSprite.body.data.shapes[0].sensor = true;
     projectileSprite.body.fixedRotation = true;
 
-    // Impact event handling is disabled by default. Enable it before any impact events will be dispatched.
-    // In a busy world hundreds of impact events can be generated every step, so only enable this if you cannot do what you need via beginContact or collision masks.
-    // WS.game.physics.p2.setImpactEvents(false);
     const projectilePhysics = WS.Services.PhysicsManager.Objects;
     projectileSprite.body.setCollisionGroup(projectilePhysics.id);
     projectileSprite.body.collides(projectilePhysics.Players);
@@ -81,6 +80,9 @@ class WeaponSlingshotOnGroundState extends WS.Lib.WeaponState {
         contactBody.sprite.data.owner.pickupWeapon(this.weapon);
       }
     }
+  }
+  update() {
+    this.projectileSprite.angle += 1;
   }
 }
 

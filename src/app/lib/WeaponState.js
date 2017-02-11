@@ -8,4 +8,6 @@ export default WS.Lib.WeaponState = class WeaponState {
   }
   cleanup() {
   }
+  update() {
+  }
 };
