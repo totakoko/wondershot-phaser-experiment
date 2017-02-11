@@ -18,7 +18,9 @@ export default WS.Components.WeaponSlingshot = class WeaponSlingshot extends WS.
       this.changeState(new WeaponSlingshotCarriedState(this, owner));
     }
     update() {
-      this.state.update();
+      if (!WS.game.physics.p2.paused) {
+        this.state.update();
+      }
     }
 };
 
