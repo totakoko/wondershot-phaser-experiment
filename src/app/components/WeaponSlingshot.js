@@ -29,6 +29,7 @@ const ProjectileMaximumSize = 16;
 const ProjectileOnGroundSize = 20;
 const ProjectileMaximumBounces = 3;
 const ProjectileSpriteSizeRadio = 24;
+const WeaponCarriedDistance = 30;
 
 function getProjectileSpeed(power) {
   return power * (ProjectileMaximumSpeed - ProjectileMinimumSpeed) / 100 + ProjectileMinimumSpeed;
@@ -90,11 +91,27 @@ class WeaponSlingshotCarriedState extends WS.Lib.WeaponState {
   constructor(weapon, owner) {
     super(weapon);
     this.owner = owner;
+
+    this.sprite = WS.game.Groups.Objects.create(
+      this.owner.sprite.body.x,
+      this.owner.sprite.body.y,
+      'weapon-slingshot'
+    );
+    this.sprite.anchor.setTo(0.5);
   }
   fire(power) {
     log.debug('Firing weapon !');
-    // const power = Math.floor(Math.random() * 101);
     this.weapon.changeState(new WeaponSlingshotFiredState(this.weapon, this.owner, power));
+  }
+  update() {
+    // on place l'arme légèrement devant le joueur
+    const targetWeaponPositionRotation = this.owner.sprite.rotation + 0.2; // petit décalage pour ne pas être au milieu du joueur
+    this.sprite.x = this.owner.sprite.body.x + Math.cos(targetWeaponPositionRotation) * WeaponCarriedDistance;
+    this.sprite.y = this.owner.sprite.body.y + Math.sin(targetWeaponPositionRotation) * WeaponCarriedDistance;
+    this.sprite.angle = this.owner.sprite.angle + 90; // orientation par rapport à celle du joueur
+  }
+  cleanup() {
+    this.sprite.destroy();
   }
 }
 
