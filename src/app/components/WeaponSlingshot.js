@@ -105,6 +105,12 @@ class WeaponSlingshotCarriedState extends WS.Lib.WeaponState {
     );
     this.sprite.anchor.setTo(0.5);
 
+    // this.sprite.scale.setTo(1);
+    this.spawnAnimation = WS.game.add.tween(this.sprite.scale)
+      .to({x: 1.5, y: 1.5}, 150, WS.Phaser.Easing.Linear.None)
+      .to({x: 1, y: 1}, 200, WS.Phaser.Easing.Linear.None)
+      .start();
+
     this.owner.onKilledEvent.add(this.drop, this);
   }
   fire(power) {
@@ -127,6 +133,7 @@ class WeaponSlingshotCarriedState extends WS.Lib.WeaponState {
   cleanup() {
     this.sprite.destroy();
     this.owner.onKilledEvent.remove(this.drop, this);
+    this.spawnAnimation.manager.remove(this.spawnAnimation);
   }
 }
 
