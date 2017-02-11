@@ -59,9 +59,15 @@ class WeaponSlingshotOnGroundState extends WS.Lib.WeaponState {
     projectileSprite.body.collides(projectilePhysics.Players);
     projectileSprite.body.collides(projectilePhysics.Arena);
     projectileSprite.body.onBeginContact.add(this.onBeginContact, this);
+
+    projectileSprite.scale.setTo(0);
+    this.spawnAnimation = WS.game.add.tween(projectileSprite.scale)
+      .to({x: 1, y: 1}, 300, WS.Phaser.Easing.Linear.None)
+      .start();
   }
   cleanup() {
     this.projectileSprite.destroy();
+    this.spawnAnimation.manager.remove(this.spawnAnimation);
   }
   onBeginContact(contactBody, data, shapeA, shapeB, contactEquations) {
     log.debug(`weapon ${this.name} touches ${contactBody.sprite.key}`);
@@ -98,6 +104,8 @@ class WeaponSlingshotCarriedState extends WS.Lib.WeaponState {
       'weapon-slingshot'
     );
     this.sprite.anchor.setTo(0.5);
+
+    this.owner.onKilledEvent.add(this.drop, this);
   }
   fire(power) {
     log.debug('Firing weapon !');
@@ -110,8 +118,15 @@ class WeaponSlingshotCarriedState extends WS.Lib.WeaponState {
     this.sprite.y = this.owner.sprite.body.y + Math.sin(targetWeaponPositionRotation) * WeaponCarriedDistance;
     this.sprite.angle = this.owner.sprite.angle + 90; // orientation par rapport à celle du joueur
   }
+  drop() {
+    this.weapon.changeState(new WeaponSlingshotOnGroundState(this.weapon, {
+      x: this.owner.sprite.x,
+      y: this.owner.sprite.y,
+    }));
+  }
   cleanup() {
     this.sprite.destroy();
+    this.owner.onKilledEvent.remove(this.drop, this);
   }
 }
 
