@@ -40,15 +40,18 @@ export default WS.State.Round = class Round extends Phaser.State {
           letsFightText.destroy();
           WS.Services.PhysicsManager.resume();
         }, 1000);
-        // for (let i = 0; i < 10; i++) {
-        //   this.battle.stage.register(new WS.Components.WeaponSlingshot({
-        //     owner: null,
-        //     position: {
-        //       x: _.random(100, 300),
-        //       y: _.random(300, 400),
-        //     }
-        //   }));
-        // }
+        for (let i = 0; i < 4; i++) {
+          this.battle.stage.register(new WS.Components[this.getRandomWeapon()]({
+            owner: null,
+            position: {
+              x: _.random(WS.Services.ScaleManager.xp(25), WS.Services.ScaleManager.xp(75)),
+              y: _.random(WS.Services.ScaleManager.yp(45), WS.Services.ScaleManager.yp(55)),
+            }
+          }));
+        }
+    }
+    getRandomWeapon() {
+      return (_.random(0, 2) % 2 === 0) ? 'WeaponSlingshot' : 'WeaponHammer';
     }
     assignGamepadPlayer(playerNumber) {
       const player = this.createPlayer(playerNumber);
@@ -72,7 +75,7 @@ export default WS.State.Round = class Round extends Phaser.State {
         color: WS.Config.PlayerColors[playerNumber],
         startLocation: this.getNextStartLocation(),
       });
-      const weapon = new WS.Components.WeaponSlingshot({
+      const weapon = new WS.Components[this.getRandomWeapon()]({
         owner: player,
       });
       player.pickupWeapon(weapon);
