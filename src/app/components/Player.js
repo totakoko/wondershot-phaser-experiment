@@ -108,7 +108,6 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         }
         log.debug(`Fire weapon ${this.weapon.constructor.name}`);
         this.weapon.fire(power);
-        this.weapon = null;
     }
     jump() {
       if (!this.alive) {

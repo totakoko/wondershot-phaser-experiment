@@ -118,6 +118,7 @@ class WeaponSlingshotCarriedState extends WS.Lib.WeaponState {
   fire(power) {
     log.debug('Firing weapon !');
     this.weapon.changeState(new WeaponSlingshotFiredState(this.weapon, this.owner, power));
+    this.owner.weapon = null;
   }
   update() {
     // on place l'arme légèrement devant le joueur
