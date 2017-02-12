@@ -43,7 +43,7 @@ export default WS.Lib.Battle = class Battle {
         }
         log.info(endOfRoundMessage);
 
-        const endOfRoundMessageText = WS.game.add.bitmapText(WS.game.world.centerX, WS.game.world.centerY, 'desyrel', endOfRoundMessage, 64);
+        const endOfRoundMessageText = WS.game.add.bitmapText(WS.game.world.centerX, WS.game.world.centerY, 'desyrel', endOfRoundMessage, 72);
         endOfRoundMessageText.anchor.x = 0.5;
         endOfRoundMessageText.anchor.y = 0.5;
 

@@ -22,9 +22,9 @@ export default WS.Components.ScoreBoard = class ScoreBoard extends WS.Lib.Entity
         for (const playerNumber in this.battle.score) {
           scoreTextMessage += `${WS.Config.PlayerColors[playerNumber].name} : ${this.battle.score[playerNumber]} \n`;
         }
-        const scoreText = WS.game.add.bitmapText(WS.game.world.centerX, 200, 'desyrel', 'Score', 48);
+        const scoreText = WS.game.add.bitmapText(WS.game.world.centerX, WS.Services.ScaleManager.yp(7), 'desyrel', 'Score', 96);
         scoreText.anchor.x = 0.5;
-        const scoreInfoText = WS.game.add.bitmapText(WS.game.world.centerX, 300, 'desyrel', scoreTextMessage, 48);
+        const scoreInfoText = WS.game.add.bitmapText(WS.game.world.centerX, WS.Services.ScaleManager.yp(30), 'desyrel', scoreTextMessage, 64);
         scoreInfoText.anchor.x = 0.5;
         // scoreText.anchor.y = 0.5;
     }
