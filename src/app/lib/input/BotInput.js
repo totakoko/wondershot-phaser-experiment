@@ -13,7 +13,7 @@ export default WS.Lib.Input.BotInput = class BotInput extends WS.Lib.Input.Abstr
 
     this.player.onKilledEvent.add(this.shutdownBot, this);
     setTimeout(() => {
-      this.updateBotDirectionEvent = this.updateBotDirection();
+      this.updateBotDirection();
     });
     this.fireRandomlyEvent = WS.game.time.events.add(WS.Phaser.Timer.SECOND * _.random(1, 5, true), this.fireRandomly, this);
     this.jumpRandomlyEvent = WS.game.time.events.add(WS.Phaser.Timer.SECOND * _.random(1, 5, true), this.jumpRandomly, this);
@@ -37,6 +37,6 @@ export default WS.Lib.Input.BotInput = class BotInput extends WS.Lib.Input.Abstr
   jumpRandomly() {
     this.player.jump();
     const nextActionDelay = _.random(1, 5, true);
-    this.jumpRandomlyEvent = WS.game.time.events.add(WS.Phaser.Timer.SECOND * nextActionDelay, this.fireRandomly, this);
+    this.jumpRandomlyEvent = WS.game.time.events.add(WS.Phaser.Timer.SECOND * nextActionDelay, this.jumpRandomly, this);
   }
 };
