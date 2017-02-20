@@ -71,9 +71,20 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         log.warn(`Player ${this.playerNumber} is dead`);
         return;
       }
+      if (this.weapon) {
+        log.warn(`Player ${this.playerNumber} already carries a weapon`);
+        return;
+      }
       log.debug(`Player ${this.playerNumber} picks up ${weapon.id}`);
+      // this.dropWeapon();
       this.weapon = weapon;
       this.weapon.pickup(this);
+    }
+    dropWeapon() {
+      if (this.weapon) {
+        this.weapon.drop(this.sprite.body.position);
+        this.weapon = null;
+      }
     }
     loadWeapon() {
       if (this.loadingWeapon) {
@@ -141,7 +152,7 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         deathMarker.anchor.setTo(0.5);
         deathMarker.tint = this.playerColor.tint;
         this.sprite.destroy();
-        // this.sprite.safedestroy = true;
+        this.dropWeapon();
         this.onKilledEvent.dispatch();
         WS.game.state.callbackContext.battle.notifyPlayerKilled(this.playerNumber);
     }

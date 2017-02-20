@@ -4,6 +4,7 @@ export default {
   Components: {},
   Lib: {
     Input: {},
+    Weapon: {},
   },
   Services: {},
   State: {},

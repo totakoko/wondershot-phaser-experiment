@@ -11,6 +11,7 @@ export default WS.Lib.Stage = class Stage {
     entity.stage = this;
     entity.create();
     this.entities.push(entity);
+    return entity;
   }
 
   // permet de mettre à jour des choses pendant l'event loop

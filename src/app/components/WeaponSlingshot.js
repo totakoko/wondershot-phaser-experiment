@@ -1,26 +1,20 @@
-import _ from 'lodash';
 import WS from '../WS';
 const log = require('misc/loglevel').getLogger('WeaponSlingshot'); // eslint-disable-line no-unused-vars
 
-export default WS.Components.WeaponSlingshot = class WeaponSlingshot extends WS.Components.Weapon {
+export default WS.Components.WeaponSlingshot = class WeaponSlingshot extends WS.Lib.Weapon.Weapon {
     static preload() {
       WS.game.load.image('weapon-slingshot', 'assets/images/weapon-slingshot.png');
       WS.game.load.image('weapon-slingshot-projectile', 'assets/images/weapon-slingshot-projectile.png');
     }
     constructor(options) {
-      super(options);
-      this.state = new WeaponSlingshotOnGroundState(this, options.position || {x: 0, y: 0}); // par défaut au sol mais non accessible
-    }
-    fire(power) {
-      this.state.fire(power);
-    }
-    pickup(owner) {
-      this.changeState(new WeaponSlingshotCarriedState(this, owner));
-    }
-    update() {
-      if (!WS.game.physics.p2.paused) {
-        this.state.update();
-      }
+      super({
+        states: {
+          Carried: WeaponCarriedState,
+          Flying: WeaponFlyingState,
+          Ground: WeaponOnGroundState
+        },
+        startOptions: options
+      });
     }
 };
 
@@ -28,97 +22,34 @@ const ProjectileMinimumSpeed = 500;
 const ProjectileMaximumSpeed = 1000;
 const ProjectileMinimumSize = 8;
 const ProjectileMaximumSize = 16;
-const ProjectileOnGroundSize = 20;
 const ProjectileMaximumBounces = 3;
 const ProjectileSpriteSizeRadio = 24;
 const WeaponCarriedDistance = 30;
 
-function getProjectileSpeed(power) {
-  return power * (ProjectileMaximumSpeed - ProjectileMinimumSpeed) / 100 + ProjectileMinimumSpeed;
-}
-function getProjectileSize(power) {
-  return 20 - power * (ProjectileMaximumSize - ProjectileMinimumSize) / 100;
-}
-
-class WeaponSlingshotOnGroundState extends WS.Lib.WeaponState {
-  constructor(weapon, position) {
-    super(weapon);
-    log.debug(`${this.weapon.id} > Changing state to ${this.constructor.name}`);
-
-    const projectileSprite = this.projectileSprite = WS.game.Groups.Objects.create(
-      position.x,
-      position.y,
-      'weapon-slingshot'
-    );
-    this.projectileSprite.angle = _.random(-180, 180);
-    WS.game.physics.p2.enable(projectileSprite, WS.Config.Debug);
-    projectileSprite.body.setCircle(ProjectileOnGroundSize);
-    projectileSprite.body.data.shapes[0].sensor = true;
-    projectileSprite.body.fixedRotation = true;
-
-    const projectilePhysics = WS.Services.PhysicsManager.Objects;
-    projectileSprite.body.setCollisionGroup(projectilePhysics.id);
-    projectileSprite.body.collides(projectilePhysics.Players);
-    projectileSprite.body.collides(projectilePhysics.Arena);
-    projectileSprite.body.onBeginContact.add(this.onBeginContact, this);
-
-    projectileSprite.scale.setTo(0);
-    this.spawnAnimation = WS.game.add.tween(projectileSprite.scale)
-      .to({x: 1, y: 1}, 300, WS.Phaser.Easing.Linear.None)
-      .start();
-  }
-  cleanup() {
-    this.projectileSprite.destroy();
-    this.spawnAnimation.manager.remove(this.spawnAnimation);
-  }
-  onBeginContact(contactBody, data, shapeA, shapeB, contactEquations) {
-    log.debug(`weapon ${this.name} touches ${contactBody.sprite.key}`);
-    // on fait bouger l'arme si un mur la pousse
-    if (contactBody.sprite.key === 'wall') {
-      const movement = {
-        x: contactBody.sprite.position.x - contactBody.sprite.previousPosition.x,
-        y: contactBody.sprite.position.y - contactBody.sprite.previousPosition.y,
-      };
-      log.debug(`diff = {${movement.x}, ${movement.y} }`);
-      this.projectileSprite.body.x += movement.x * 2; // MAGIC NUMBER !!
-      this.projectileSprite.body.y += movement.y * 2;
-    } else
-    // un joueur n'ayant pas d'arme prend l'arme au sol
-    if (contactBody.sprite.key === 'player') {
-      if (contactBody.sprite.data.owner.weapon === null) {
-        contactBody.sprite.data.owner.pickupWeapon(this.weapon);
-      }
-    }
-  }
-  update() {
-    this.projectileSprite.angle += 1;
+class WeaponOnGroundState extends WS.Lib.Weapon.WeaponOnGroundState {
+  constructor(weapon, options) {
+    super(weapon, {
+      position: options.position,
+      spriteName: 'weapon-slingshot'
+    });
   }
 }
 
-class WeaponSlingshotCarriedState extends WS.Lib.WeaponState {
-  constructor(weapon, owner) {
-    super(weapon);
-    this.owner = owner;
-
-    this.sprite = WS.game.Groups.Objects.create(
-      this.owner.sprite.body.x,
-      this.owner.sprite.body.y,
-      'weapon-slingshot'
-    );
-    this.sprite.anchor.setTo(0.5);
-
-    this.spawnAnimation = WS.game.add.tween(this.sprite.scale)
-      .to({x: 1.5, y: 1.5}, 150, WS.Phaser.Easing.Linear.None)
-      .to({x: 1, y: 1}, 200, WS.Phaser.Easing.Linear.None)
-      .start();
-
-    this.owner.onKilledEvent.add(this.drop, this);
+class WeaponCarriedState extends WS.Lib.Weapon.WeaponCarriedState {
+  constructor(weapon, options) {
+    super(weapon, {
+      owner: options.owner,
+      spriteName: 'weapon-slingshot'
+    });
 
     this.update();
   }
   fire(power) {
     log.debug('Firing weapon !');
-    this.weapon.changeState(new WeaponSlingshotFiredState(this.weapon, this.owner, power));
+    this.weapon.changeStateToFlying({
+      owner: this.owner,
+      power: power
+    });
     this.owner.weapon = null;
   }
   update() {
@@ -128,15 +59,8 @@ class WeaponSlingshotCarriedState extends WS.Lib.WeaponState {
     this.sprite.y = this.owner.sprite.body.y + Math.sin(targetWeaponPositionRotation) * WeaponCarriedDistance;
     this.sprite.angle = this.owner.sprite.angle + 90; // orientation par rapport à celle du joueur
   }
-  drop() {
-    this.weapon.changeState(new WeaponSlingshotOnGroundState(this.weapon, {
-      x: this.owner.sprite.x,
-      y: this.owner.sprite.y,
-    }));
-  }
   cleanup() {
     this.sprite.destroy();
-    this.owner.onKilledEvent.remove(this.drop, this);
     this.spawnAnimation.manager.remove(this.spawnAnimation);
   }
 }
@@ -145,55 +69,50 @@ class WeaponSlingshotCarriedState extends WS.Lib.WeaponState {
 En fonction de la puissance power [0, 100]
 On fait varier la vitesse de 500 à 1000 et la taille de 20 à 8
 */
-class WeaponSlingshotFiredState extends WS.Lib.WeaponState {
-  constructor(weapon, owner, power) {
-    super(weapon);
-    this.owner = owner;
+class WeaponFlyingState extends WS.Lib.Weapon.WeaponFlyingState {
+  constructor(weapon, options) {
+    super(weapon, {
+      owner: options.owner,
+      power: options.power,
+      spriteName: 'weapon-slingshot-projectile',
+      projectileOffset: WS.Config.RockProjectileOffset,
+    });
+
+    const projectileSize = getProjectileSize(this.power);
+    this.sprite.scale.setTo(projectileSize / ProjectileSpriteSizeRadio);
+    this.sprite.body.setCircle(projectileSize);
+    const ownerRotation = this.owner.sprite.rotation;
+    const projectileSpeed = getProjectileSpeed(this.power);
+    this.sprite.body.rotation = ownerRotation;
+    this.sprite.body.velocity.x = Math.cos(ownerRotation) * projectileSpeed;
+    this.sprite.body.velocity.y = Math.sin(ownerRotation) * projectileSpeed;
+    this.sprite.body.setMaterial(WS.Services.PhysicsManager.materials.WeaponSlingshot);
 
     this.bounceLeft = ProjectileMaximumBounces;
-    const ownerPosition = this.owner.sprite.position;
-    const ownerRotation = this.owner.sprite.rotation;
-
-    const projectileSprite = this.projectileSprite = WS.game.Groups.Projectiles.create(
-      ownerPosition.x + Math.cos(ownerRotation) * WS.Config.RockProjectileOffset,
-      ownerPosition.y + Math.sin(ownerRotation) * WS.Config.RockProjectileOffset,
-      'weapon-slingshot-projectile'
-    );
-    projectileSprite.tint = this.owner.playerColor.tint;
-    WS.game.physics.p2.enable(projectileSprite, WS.Config.Debug);
-    projectileSprite.scale.setTo(getProjectileSize(power) / ProjectileSpriteSizeRadio);
-    // log.debug(`projectile power ${power}`);
-    // log.debug(`projectile size ${this.getProjectileSize(power)}`);
-    // log.debug(`projectile speed ${this.getProjectileSpeed(power)}`);
-    projectileSprite.body.setCircle(getProjectileSize(power));
-    projectileSprite.body.fixedRotation = true;
-    projectileSprite.body.rotation = ownerRotation;
-    const projectileSpeed = getProjectileSpeed(power);
-    projectileSprite.body.velocity.x = Math.cos(ownerRotation) * projectileSpeed;
-    projectileSprite.body.velocity.y = Math.sin(ownerRotation) * projectileSpeed;
-    projectileSprite.body.setMaterial(WS.Services.PhysicsManager.materials.WeaponSlingshot);
-
-    const projectilePhysics = WS.Services.PhysicsManager[`Projectile${this.owner.playerNumber}`];
-    projectileSprite.body.setCollisionGroup(projectilePhysics.id);
-    projectileSprite.body.collides(projectilePhysics.Arena, this.projectileArenaHitHandler, this);
-    projectileSprite.body.collides(projectilePhysics.OtherPlayers, this.projectilePlayerHitHandler, this);
-  }
-  cleanup() {
-    this.projectileSprite.destroy();
+    this.setupImpactHandlers();
   }
   projectileArenaHitHandler(projectileBody, bodyB, shapeA, shapeB, equation) {
       if (this.bounceLeft > 0) {
           this.bounceLeft--;
           return;
       }
-      this.weapon.changeState(new WeaponSlingshotOnGroundState(this.weapon, {
-        x: projectileBody.x,
-        y: projectileBody.y,
-      }));
+      this.weapon.changeStateToGround({
+        position: {
+          x: projectileBody.x,
+          y: projectileBody.y,
+        }
+      });
   }
   projectilePlayerHitHandler(projectileBody, playerBody, shapeA, shapeB, equation) {
       log.info(`Player ${this.owner.playerNumber} just hit ${playerBody.sprite.data.owner.playerNumber}`);
       playerBody.sprite.data.owner.kill();
       this.owner.pickupWeapon(this.weapon); // rechargement de l'arme
   }
+}
+
+function getProjectileSpeed(power) {
+  return power * (ProjectileMaximumSpeed - ProjectileMinimumSpeed) / 100 + ProjectileMinimumSpeed;
+}
+function getProjectileSize(power) {
+  return 20 - power * (ProjectileMaximumSize - ProjectileMinimumSize) / 100;
 }

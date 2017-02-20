@@ -47,13 +47,11 @@ export default WS.State.Round = class Round extends Phaser.State {
           WS.Services.PhysicsManager.resume();
         }, 1600);
         for (let i = 0; i < 4; i++) {
-          this.battle.stage.register(new WS.Components[this.getRandomWeapon()]({
-            owner: null,
-            position: {
-              x: _.random(WS.Services.ScaleManager.xp(25), WS.Services.ScaleManager.xp(75)),
-              y: _.random(WS.Services.ScaleManager.yp(45), WS.Services.ScaleManager.yp(55)),
-            }
-          }));
+          const weapon = this.battle.stage.register(new WS.Components[this.getRandomWeapon()]());
+          weapon.drop({
+            x: _.random(WS.Services.ScaleManager.xp(25), WS.Services.ScaleManager.xp(75)),
+            y: _.random(WS.Services.ScaleManager.yp(45), WS.Services.ScaleManager.yp(55)),
+          });
         }
     }
     getRandomWeapon() {
