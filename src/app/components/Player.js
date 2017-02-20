@@ -45,6 +45,10 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         options.fireWeapon.onUp.removeAll();
         options.fireWeapon.onUp.add(this.releaseWeapon, this);
       }
+      if (options.dropWeapon) {
+        options.dropWeapon.onDown.removeAll();
+        options.dropWeapon.onDown.add(this.dropWeapon, this);
+      }
       if (options.jump) {
         options.jump.onDown.removeAll();
         options.jump.onDown.add(_.throttle(this.jump, 3000, {trailing: false}), this);
@@ -75,6 +79,10 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         log.warn(`Player ${this.playerNumber} already carries a weapon`);
         return;
       }
+      if (this.previousWeapon === weapon) {
+        log.warn(`Player ${this.playerNumber} is on top of his previous weapon`);
+        return;
+      }
       log.debug(`Player ${this.playerNumber} picks up ${weapon.id}`);
       // this.dropWeapon();
       this.weapon = weapon;
@@ -83,7 +91,11 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
     dropWeapon() {
       if (this.weapon) {
         this.weapon.drop(this.sprite.body); // utilisé pour les propriétés x et y
+        this.previousWeapon = this.weapon; // on garde une référence de l'arme pour ne pas la reprendre directement au sol
         this.weapon = null;
+        setTimeout(() => {
+          this.previousWeapon = null;
+        }, 100);
       }
     }
     loadWeapon() {

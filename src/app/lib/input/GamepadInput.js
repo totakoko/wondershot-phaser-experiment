@@ -6,6 +6,7 @@ export default WS.Lib.Input.GamepadInput = class GamepadInput extends WS.Lib.Inp
     super({
       movement: options.pad._rawPad,
       fireWeapon: options.pad.getButton(WS.Phaser.Gamepad.XBOX360_A),
+      dropWeapon: options.pad.getButton(WS.Phaser.Gamepad.XBOX360_Y),
       jump: options.pad.getButton(WS.Phaser.Gamepad.XBOX360_B),
       togglePauseMenu: options.pad.getButton(WS.Phaser.Gamepad.XBOX360_START),
     });

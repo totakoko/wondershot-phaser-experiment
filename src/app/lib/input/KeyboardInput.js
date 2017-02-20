@@ -5,6 +5,7 @@ export default WS.Lib.Input.KeyboardInput = class KeyboardInput extends WS.Lib.I
   constructor(options) {
     super({
       fireWeapon: WS.game.input.keyboard.addKey(WS.Phaser.Keyboard.SPACEBAR),
+      dropWeapon: WS.game.input.keyboard.addKey(WS.Phaser.Keyboard.SHIFT),
       jump: WS.game.input.keyboard.addKey(WS.Phaser.Keyboard.CONTROL),
       togglePauseMenu: WS.game.input.keyboard.addKey(WS.Phaser.Gamepad.ENTER),
     });
