@@ -160,9 +160,7 @@ class WeaponCarriedState extends WS.Lib.Weapon.WeaponCarriedState {
     this.sprite.rotation = this.owner.sprite.rotation + this.attackAnimationData.weaponAngle; // orientation par rapport à celle du joueur
   }
   cleanup() {
-    this.sprite.destroy();
-    this.owner.onKilledEvent.remove(this.drop, this);
-    this.spawnAnimation.manager.remove(this.spawnAnimation);
+    super.cleanup();
     this.spawnAnimation.manager.remove(this.attackAnimation);
   }
 }

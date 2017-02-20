@@ -39,8 +39,6 @@ export default WS.Lib.Weapon.WeaponCarriedState = class WeaponCarriedState exten
   }
   cleanup() {
     this.sprite.destroy();
-    // this.owner.onKilledEvent.remove(this.drop, this);
     this.spawnAnimation.manager.remove(this.spawnAnimation);
-    this.spawnAnimation.manager.remove(this.attackAnimation);
   }
 };

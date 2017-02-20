@@ -82,7 +82,7 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
     }
     dropWeapon() {
       if (this.weapon) {
-        this.weapon.drop(this.sprite.body.position);
+        this.weapon.drop(this.sprite.body); // utilisé pour les propriétés x et y
         this.weapon = null;
       }
     }
@@ -151,8 +151,8 @@ export default WS.Components.Player = class Player extends WS.Lib.Entity {
         const deathMarker = WS.game.Groups.Arena.create(this.sprite.x, this.sprite.y, 'player-death-marker');
         deathMarker.anchor.setTo(0.5);
         deathMarker.tint = this.playerColor.tint;
-        this.sprite.destroy();
         this.dropWeapon();
+        this.sprite.destroy();
         this.onKilledEvent.dispatch();
         WS.game.state.callbackContext.battle.notifyPlayerKilled(this.playerNumber);
     }
