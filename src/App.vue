@@ -1,25 +1,26 @@
-<template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+<template lang="pug">
+canvas.canvas(ref="canvas")
 </template>
-<style lang="stylus">
-#app
-  font-family 'Avenir', Helvetica, Arial, sans-serif
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
-  text-align center
-  color #2c3e50
 
-#nav
-  padding 30px
-  a
-    font-weight bold
-    color #2c3e50
-    &.router-link-exact-active
-      color #42b983
+<script>
+import Game from '@/game'
+
+export default {
+  name: 'Home',
+  mounted () {
+    this.game = new Game({
+      canvas: this.$refs.canvas
+    })
+  }
+}
+</script>
+
+<style lang="stylus">
+body
+  text-align center
+  // margin 0 auto
+.canvas
+  // overrides GameScalePlugin
+  // see https://github.com/samme/phaser-plugin-game-scale/blob/c7783c6c8075963f5ee9ae0d228efffa7c1fdac4/src/main.js#L29
+  transform-origin center 0 !important
 </style>
