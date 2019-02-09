@@ -1,19 +1,18 @@
 import logger from 'loglevel'
+import config from '@/game/config.js'
+import Weapon from '@/game/lib/weapon/Weapon.js'
+import WeaponOnGroundState from '@/game/lib/weapon/WeaponOnGroundState.js'
+import WeaponCarriedState from '@/game/lib/weapon/WeaponCarriedState.js'
+import WeaponFlyingState from '@/game/lib/weapon/WeaponFlyingState.js'
 const log = logger.getLogger('WeaponSlingshot') // eslint-disable-line no-unused-vars
 
-import Weapon from '@/game/lib/weapon/Weapon.js'
-
 export default class WeaponSlingshot extends Weapon {
-  static preload () {
-    WS.game.load.image('weapon-slingshot', 'assets/images/weapon-slingshot.png')
-    WS.game.load.image('weapon-slingshot-projectile', 'assets/images/weapon-slingshot-projectile.png')
-  }
   constructor (options) {
     super({
       states: {
-        Carried: WeaponCarriedState,
-        Flying: WeaponFlyingState,
-        Ground: WeaponOnGroundState
+        Carried: CarriedState,
+        Flying: FlyingState,
+        Ground: OnGroundState
       },
       startOptions: options
     })
@@ -28,7 +27,7 @@ const ProjectileMaximumBounces = 3
 const ProjectileSpriteSizeRadio = 24
 const WeaponCarriedDistance = 30
 
-class WeaponOnGroundState extends WS.Lib.Weapon.WeaponOnGroundState {
+class OnGroundState extends WeaponOnGroundState {
   constructor (weapon, options) {
     super(weapon, {
       position: options.position,
@@ -37,7 +36,7 @@ class WeaponOnGroundState extends WS.Lib.Weapon.WeaponOnGroundState {
   }
 }
 
-class WeaponCarriedState extends WS.Lib.Weapon.WeaponCarriedState {
+class CarriedState extends WeaponCarriedState {
   constructor (weapon, options) {
     super(weapon, {
       owner: options.owner,
@@ -67,13 +66,13 @@ class WeaponCarriedState extends WS.Lib.Weapon.WeaponCarriedState {
 En fonction de la puissance power [0, 100]
 On fait varier la vitesse de 500 à 1000 et la taille de 20 à 8
 */
-class WeaponFlyingState extends WS.Lib.Weapon.WeaponFlyingState {
+class FlyingState extends WeaponFlyingState {
   constructor (weapon, options) {
     super(weapon, {
       owner: options.owner,
       power: options.power,
       spriteName: 'weapon-slingshot-projectile',
-      projectileOffset: WS.Config.RockProjectileOffset
+      projectileOffset: config.RockProjectileOffset
     })
 
     const projectileSize = getProjectileSize(this.power)
@@ -84,7 +83,7 @@ class WeaponFlyingState extends WS.Lib.Weapon.WeaponFlyingState {
     this.sprite.body.rotation = ownerRotation
     this.sprite.body.velocity.x = Math.cos(ownerRotation) * projectileSpeed
     this.sprite.body.velocity.y = Math.sin(ownerRotation) * projectileSpeed
-    this.sprite.body.setMaterial(WS.Services.PhysicsManager.materials.WeaponSlingshot)
+    // this.sprite.body.setMaterial(WS.Services.PhysicsManager.materials.WeaponSlingshot)
 
     this.bounceLeft = ProjectileMaximumBounces
     this.setupImpactHandlers()

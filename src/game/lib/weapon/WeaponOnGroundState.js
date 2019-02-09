@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import WS from '../../WS'
 import logger from 'loglevel'
+import WeaponState from './WeaponState.js'
 const log = logger.getLogger('WeaponOnGroundState') // eslint-disable-line no-unused-vars
 
 const ProjectileOnGroundSize = 20
@@ -10,10 +10,10 @@ Etat des armes au sol avec en commun :
 - l'animation de spawn (constructor)
 - l'animation de l'icone (update)
 - la détection de collision avec un joueur
-- la détection de collision avec le décors
+- la détection de collision avec le décor
 - le pickup par un joueur et cleanup
 */
-export default WS.Lib.Weapon.WeaponOnGroundState = class WeaponOnGroundState extends WS.Lib.Weapon.WeaponState {
+export default class WeaponOnGroundState extends WeaponState {
   /*
   options = {
     spriteName

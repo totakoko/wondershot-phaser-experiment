@@ -1,8 +1,9 @@
-const Config = {
+const config = {
   Debug: true,
-  ArenaWidth: 600,
-  // ArenaHeight: 600,
-  ArenaHeight: 300,
+  ArenaWidth: 1024,
+  ArenaHeight: 768,
+  ArenaBordersWidth: 30,
+  PlayerSpeed: 3,
   RoundsVictory: 5,
   HighPrecisionMovements: true,
   RockProjectileOffset: 30,
@@ -31,7 +32,24 @@ const Config = {
       tint: 0x8e8e8e,
       hex: '#8e8e8e'
     }
+  },
+
+  get centerX () {
+    return this.ArenaWidth / 2
+  },
+
+  get centerY () {
+    return this.ArenaHeight / 2
+  },
+
+  xp (percentage) {
+    return percentage * this.ArenaWidth / 100
+  },
+
+  yp (percentage) {
+    return percentage * this.ArenaHeight / 100
   }
+
 }
 
-export default Config
+export default config

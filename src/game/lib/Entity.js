@@ -2,8 +2,9 @@ import logger from 'loglevel'
 const log = logger.getLogger('Entity') // eslint-disable-line no-unused-vars
 
 export default class Entity {
-  constructor () {
-    this.game = WS.game
+  constructor (options = {}) {
+    this.game = options.game
+    this.scene = options.scene
     this.components = []
     this.id = `${this.constructor.name}-${Entity.nextEntityId++}`
   }
@@ -29,4 +30,4 @@ export default class Entity {
   render () {
   }
 }
-WS.Lib.Entity.nextEntityId = 1
+Entity.nextEntityId = 1

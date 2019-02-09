@@ -1,8 +1,7 @@
-import WS from '../../WS'
 import logger from 'loglevel'
 const log = logger.getLogger('WeaponState') // eslint-disable-line no-unused-vars
 
-export default WS.Lib.Weapon.WeaponState = class WeaponState {
+export default class WeaponState {
   constructor (weapon) {
     this.weapon = weapon
     log.debug(`${this.weapon.id} > Changing state to ${this.constructor.name}`)

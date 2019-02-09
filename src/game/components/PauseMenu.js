@@ -1,46 +1,65 @@
 import Phaser from 'phaser'
 import logger from 'loglevel'
+import Entity from '@/game/lib/Entity.js'
+import config from '@/game/config.js'
 const log = logger.getLogger('PauseMenu') // eslint-disable-line no-unused-vars
 
-export default class PauseMenu extends WS.Lib.Entity {
-  static preload () {
-    WS.game.load.script('filterX', 'https://cdn.rawgit.com/photonstorm/phaser/c298a45d1fc0e90618736ade3782ee82a39f7108/v2/filters/BlurX.js')
-    WS.game.load.script('filterY', 'https://cdn.rawgit.com/photonstorm/phaser/c298a45d1fc0e90618736ade3782ee82a39f7108/v2/filters/BlurY.js')
+export default class PauseMenu extends Entity {
+  constructor (options) {
+    super(options)
+    this.paused = false
   }
-  static create () {
-    this.blurX = WS.game.add.filter('BlurX')
-    this.blurY = WS.game.add.filter('BlurY')
-    this.blurX.setResolution(800, 600)
-    this.blurY.setResolution(800, 600)
-    this.pauseBar = WS.game.Groups.Menus.add(new Phaser.Graphics(WS.game))
-    this.pauseBar.beginFill(0x000000, 0.2)
-    this.pauseBar.drawRect(0, WS.game.world.height / 2 - 50, WS.game.world.width, 100)
-    this.pauseText = WS.game.Groups.Menus.add(new Phaser.Text(WS.game, 0, 0, 'PAUSE', {
+  create () {
+    this.pauseOverlay = this.scene.add.rectangle(0, 0, config.ArenaWidth, config.ArenaHeight, 0x000000, 0.2).setOrigin(0)
+    this.scene.Groups.Menus.add(this.pauseOverlay)
+    this.pauseBar = this.scene.add.rectangle(0, config.centerY - 50, config.ArenaWidth, 100, 0x000000, 0.2).setOrigin(0)
+    this.scene.Groups.Menus.add(this.pauseBar)
+
+    this.pauseText = this.scene.add.text(config.centerX, config.centerY, 'PAUSE', {
       font: 'bold 32px Arial',
       fill: '#fff',
       boundsAlignH: 'center',
       boundsAlignV: 'middle'
-    }))
-    this.pauseText.setTextBounds(0, WS.game.world.height / 2 - 50, WS.game.world.width, 100)
-    this.paused = false
-    this.update()
+    }).setOrigin()
+    this.scene.Groups.Menus.add(this.pauseText)
+    this.updateVisibility()
+
+    this.scene.events.on('togglePause', this.togglePause, this)
   }
-  static update () {
+  updateVisibility () {
     if (this.paused) {
-      WS.game.Groups.Game.filters = [this.blurX, this.blurY]
+      this.pauseOverlay.setPipeline('Blur')
+      this.pauseText.setPipeline('Blur')
+      // this.scene.Groups.Game.setPipeline('Blur')
+      // this.scene.Groups.Game.filters = [this.blurX, this.blurY]
+      this.pauseOverlay.visible = true
       this.pauseBar.visible = true
       this.pauseText.visible = true
     } else {
-      WS.game.Groups.Game.filters = null
+      this.pauseOverlay.resetPipeline()
+      this.pauseText.resetPipeline()
+      // this.scene.Groups.Game.resetPipeline()
+      // this.scene.Groups.Game.filters = null
+      this.pauseOverlay.visible = false
       this.pauseBar.visible = false
       this.pauseText.visible = false
     }
   }
   // actions
-  static togglePause () {
-    this.paused = WS.game.paused = !this.paused
-    WS.game.input.gamepad.pad1._buttons[Phaser.Gamepad.XBOX360_START].isDown = false
-    this.update()
+  togglePause () {
+    log.info('pause')
+    this.paused = !this.paused
+    if (this.paused) {
+      this.scene.scene.pause()
+      // this.scene.scene.launch('PauseMenu')
+      // this.scene.matter.pause()
+    } else {
+      this.scene.scene.resume()
+      // TODO la touche échap ne permet plus de unpause
+      // this.scene.scene.resume('RoundScene')
+      // this.scene.matter.resume()
+    }
+    // this.scene.input.gamepad.pad1._buttons[Phaser.Gamepad.XBOX360_START].isDown = false
+    this.updateVisibility()
   }
 }
-WS.Components.PauseMenu.paused = false

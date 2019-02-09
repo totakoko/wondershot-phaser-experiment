@@ -1,3 +1,5 @@
+import * as dat from 'dat.gui'
+import Phaser from 'phaser'
 import logger from 'loglevel'
 import AbstractInput from './AbstractInput'
 
@@ -6,42 +8,68 @@ const log = logger.getLogger('KeyboardInput') // eslint-disable-line no-unused-v
 export default class KeyboardInput extends AbstractInput {
   constructor (options) {
     super({
-      fireWeapon: WS.game.input.keyboard.addKey(WS.Phaser.Keyboard.SPACEBAR),
-      dropWeapon: WS.game.input.keyboard.addKey(WS.Phaser.Keyboard.SHIFT),
-      jump: WS.game.input.keyboard.addKey(WS.Phaser.Keyboard.CONTROL),
-      togglePauseMenu: WS.game.input.keyboard.addKey(WS.Phaser.Gamepad.ENTER)
+      scene: options.scene,
+      fireWeapon: options.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
+      dropWeapon: options.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT),
+      jump: options.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL),
+      togglePauseMenu: options.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
     })
     this.axes = [0, 0]
     this.movement = {
       axes: this.axes
     }
 
+    const gui = new dat.GUI()
+    gui.add(this.movement.axes, 0).listen()
+    gui.add(this.movement.axes, 1).listen()
+
+    const scene = options.scene
     // onDown : on ajoute un mouvement dans la direction de la touche
-    WS.game.input.keyboard.addKey(WS.Phaser.Keyboard.LEFT).onDown.add(() => {
-      this.axes[0] -= 1
-    })
-    WS.game.input.keyboard.addKey(WS.Phaser.Keyboard.RIGHT).onDown.add(() => {
-      this.axes[0] += 1
-    })
-    WS.game.input.keyboard.addKey(WS.Phaser.Keyboard.UP).onDown.add(() => {
-      this.axes[1] -= 1
-    })
-    WS.game.input.keyboard.addKey(WS.Phaser.Keyboard.DOWN).onDown.add(() => {
-      this.axes[1] += 1
-    })
+    scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT)
+      .on('down', () => {
+        console.log('left down')
+        this.axes[0] -= 1
+      })
+      .on('up', () => {
+        console.log('left up')
+        this.axes[0] += 1
+      })
+    scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT)
+      .on('down', () => {
+        console.log('right down')
+        this.axes[0] += 1
+      })
+      .on('up', () => {
+        console.log('right up')
+        this.axes[0] -= 1
+      })
+    scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP)
+      .on('down', () => {
+        this.axes[1] -= 1
+      })
+      .on('up', () => {
+        this.axes[1] += 1
+      })
+    scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN)
+      .on('down', () => {
+        this.axes[1] += 1
+      })
+      .on('up', () => {
+        this.axes[1] -= 1
+      })
 
     // onUp : on supprime le mouvement dans la direction de la touche
-    WS.game.input.keyboard.addKey(WS.Phaser.Keyboard.LEFT).onUp.add(() => {
-      this.axes[0] += 1
-    })
-    WS.game.input.keyboard.addKey(WS.Phaser.Keyboard.RIGHT).onUp.add(() => {
-      this.axes[0] -= 1
-    })
-    WS.game.input.keyboard.addKey(WS.Phaser.Keyboard.UP).onUp.add(() => {
-      this.axes[1] += 1
-    })
-    WS.game.input.keyboard.addKey(WS.Phaser.Keyboard.DOWN).onUp.add(() => {
-      this.axes[1] -= 1
-    })
+    // scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT).onUp.on('down', () => {
+    //   this.axes[0] += 1
+    // })
+    // scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT).onUp.on('down', () => {
+    //   this.axes[0] -= 1
+    // })
+    // scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP).onUp.on('down', () => {
+    //   this.axes[1] += 1
+    // })
+    // scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN).onUp.on('down', () => {
+    //   this.axes[1] -= 1
+    // })
   }
 }

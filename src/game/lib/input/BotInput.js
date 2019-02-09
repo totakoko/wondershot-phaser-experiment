@@ -1,23 +1,33 @@
-import _ from 'lodash'
-import WS from '../../WS'
 import logger from 'loglevel'
+import AbstractInput from './AbstractInput.js'
+import * as _ from '@/util'
 const log = logger.getLogger('BotInput') // eslint-disable-line no-unused-vars
 
-export default WS.Lib.Input.BotInput = class BotInput extends WS.Lib.Input.AbstractInput {
+export default class BotInput extends AbstractInput {
   constructor (options) {
-    super({})
+    super(options)
     this.player = options.player
     this.axes = [0, 0]
     this.movement = {
       axes: this.axes
     }
 
-    this.player.onKilledEvent.add(this.shutdownBot, this)
+    // this.player.onKilledEvent.add(this.shutdownBot, this)
+    // this.player.on('killed', () => this.shutdownBot)
     setTimeout(() => {
       this.updateBotDirection()
     })
-    this.fireRandomlyEvent = WS.game.time.events.add(WS.Phaser.Timer.SECOND * _.random(1, 5, true), this.fireRandomly, this)
-    this.jumpRandomlyEvent = WS.game.time.events.add(WS.Phaser.Timer.SECOND * _.random(1, 5, true), this.jumpRandomly, this)
+    // this.time.delayedCall(3000, onEvent, [], this)
+    // this.fireRandomlyEvent = this.scene.time.addEvent({
+    //   delay: util.getRandomNumber(1000, 5000, true),
+    //   callback: this.fireRandomly,
+    //   callbackScope: this
+    // })
+    this.jumpRandomlyEvent = this.scene.time.addEvent({
+      delay: _.getRandomNumber(1000, 5000, true),
+      callback: this.jumpRandomly,
+      callbackScope: this
+    })
   }
   shutdownBot () {
     this.updateBotDirectionEvent.timer.remove(this.updateBotDirectionEvent)
@@ -25,19 +35,31 @@ export default WS.Lib.Input.BotInput = class BotInput extends WS.Lib.Input.Abstr
     this.jumpRandomlyEvent.timer.remove(this.jumpRandomlyEvent)
   }
   updateBotDirection () {
-    this.axes[0] = _.random(-1, 1, true)
-    this.axes[1] = _.random(-1, 1, true)
-    const nextActionDelay = _.random(500, 1500, true)
-    this.updateBotDirectionEvent = WS.game.time.events.add(nextActionDelay, this.updateBotDirection, this)
+    this.axes[0] = _.getRandomNumber(-1, 1, true)
+    this.axes[1] = _.getRandomNumber(-1, 1, true)
+    const nextActionDelay = _.getRandomNumber(500, 1500, true)
+    this.updateBotDirectionEvent = this.scene.time.addEvent({
+      delay: nextActionDelay,
+      callback: this.updateBotDirection,
+      callbackScope: this
+    })
   }
   fireRandomly () {
-    this.player.fireWeapon(_.random(0, 100))
-    const nextActionDelay = _.random(1, 5, true)
-    this.fireRandomlyEvent = WS.game.time.events.add(WS.Phaser.Timer.SECOND * nextActionDelay, this.fireRandomly, this)
+    this.player.fireWeapon(_.getRandomNumber(0, 100))
+    const nextActionDelay = _.getRandomNumber(1000, 5000, true)
+    this.fireRandomlyEvent = this.scene.time.addEvent({
+      delay: nextActionDelay,
+      callback: this.fireRandomly,
+      callbackScope: this
+    })
   }
   jumpRandomly () {
     this.player.jump()
-    const nextActionDelay = _.random(1, 5, true)
-    this.jumpRandomlyEvent = WS.game.time.events.add(WS.Phaser.Timer.SECOND * nextActionDelay, this.jumpRandomly, this)
+    const nextActionDelay = _.getRandomNumber(1000, 5000, true)
+    this.jumpRandomlyEvent = this.scene.time.addEvent({
+      delay: nextActionDelay,
+      callback: this.jumpRandomly,
+      callbackScope: this
+    })
   }
 }

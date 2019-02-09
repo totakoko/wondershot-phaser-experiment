@@ -1,8 +1,16 @@
 import Phaser from 'phaser'
 import logger from 'loglevel'
+import Battle from '@/game/lib/Battle.js'
+import config from '@/game/config.js'
+import { BlurPipeline } from '@/game/Pipelines.js'
 const log = logger.getLogger('Preload') // eslint-disable-line no-unused-vars
 
 export default class PreloadScene extends Phaser.Scene {
+  constructor () {
+    super({
+      key: 'PreloadScene'
+    })
+  }
   preload () {
     const progress = this.add.graphics()
     this.load.on('progress', function (value) {
@@ -11,53 +19,48 @@ export default class PreloadScene extends Phaser.Scene {
       progress.fillRect(0, 270, 800 * value, 60)
     })
     this.load.on('complete', function () {
-      setTimeout(() => {
-        progress.destroy()
-      }, 2000)
+      // setTimeout(() => {
+      progress.destroy()
+      // }, 2000)
     })
 
     this.load.bitmapFont('desyrel', 'assets/fonts/bitmapFonts/desyrel.png', 'assets/fonts/bitmapFonts/desyrel.xml')
-
-    // this.preloadBar = this.add.sprite(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 'preload-bar')
-    // this.preloadBar = this.add.sprite(this.world.centerX, this.world.centerY, 'preload-bar')
-    // this.preloadBar.anchor.setTo(0.5, 0.5)
-    // this.load.setPreloadSprite(this.preloadBar)
 
     // Arena
     this.load.image('wall', 'assets/images/wall.png')
 
     // Player
     this.load.image('player', 'assets/images/player.png')
-    this.load.spritesheet('controller-indicator', 'assets/images/controller-indicator.png', 16, 16)
     this.load.image('player-death-marker', 'assets/images/player-death-marker.png')
-    this.preloadBar = this.add.sprite(this.sys.canvas.width / 2, this.sys.canvas.height / 2, 'player')
+    this.load.spritesheet('controller-indicator', 'assets/images/controller-indicator.png', {
+      frameWidth: 16,
+      frameHeight: 16
+    })
 
-    // for (const entityName of Object.keys(WS.Components)) {
-    //   log.info(`preloading ${entityName}`)
-    //   WS.Components[entityName].preload()
-    // }
+    // Weapons
+    this.load.image('weapon-hammer', 'assets/images/weapon-hammer.png')
+    this.load.image('weapon-slingshot', 'assets/images/weapon-slingshot.png')
+    this.load.image('weapon-slingshot-projectile', 'assets/images/weapon-slingshot-projectile.png')
+
+    const blurPipeline = this.game.renderer.addPipeline('Blur', new BlurPipeline(this.game))
+    blurPipeline.setFloat1('uBlur', 1 / 512)
   }
+
   create () {
-    // WS.Services.PadManager.init()
-    // this.state.start('main');
+    this.input.mouse.disableContextMenu()
+    // this.scene.start('MenuScene')
 
     // DEBUG
-    // this.scene.start('round', true, false, {
-    //   battle: new WS.Lib.Battle({
-    //     players: [{
-    //       id: 1,
-    //       type: 'Keyboard'
-    //     }, {
-    //       id: 2,
-    //       type: 'Bot'
-    //     }, {
-    //       id: 3,
-    //       type: 'Bot'
-    //     }, {
-    //       id: 4,
-    //       type: 'Bot'
-    //     }]
-    //   })
-    // })
+    this.scene.start('RoundScene', {
+      battle: new Battle({
+        players: [{
+          id: 1,
+          type: 'Keyboard'
+        }, {
+          id: 2,
+          type: 'Bot'
+        }]
+      })
+    })
   }
 }

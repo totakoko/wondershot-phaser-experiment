@@ -10,6 +10,8 @@ Vue.config.productionTip = false
 
 log.setLevel('info')
 log.setLevel('debug')
+log.getLogger('Player').setLevel('warn')
+log.getLogger('Arena').setLevel('warn')
 
 new Vue({
   store,

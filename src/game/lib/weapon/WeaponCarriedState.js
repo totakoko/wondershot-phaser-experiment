@@ -1,5 +1,5 @@
-import WS from '../../WS'
 import logger from 'loglevel'
+import WeaponState from './WeaponState.js'
 const log = logger.getLogger('WeaponCarriedState') // eslint-disable-line no-unused-vars
 
 /*
@@ -10,7 +10,7 @@ Etat des armes portées par un joueur avec en commun :
 - la détection de collision avec un joueur
 - le tir de projectile
 */
-export default WS.Lib.Weapon.WeaponCarriedState = class WeaponCarriedState extends WS.Lib.Weapon.WeaponState {
+export default class WeaponCarriedState extends WeaponState {
   /*
   options = {
     spriteName

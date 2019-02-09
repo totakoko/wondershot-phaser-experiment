@@ -1,93 +1,88 @@
-import _ from 'lodash'
-import Entity from '@/game/lib/Entity.js'
 import logger from 'loglevel'
+import Entity from '@/game/lib/Entity.js'
+import config from '@/game/config.js'
 const log = logger.getLogger('Arena') // eslint-disable-line no-unused-vars
 
 export default class Arena extends Entity {
-  static preload () {
-    WS.game.load.image('wall', 'assets/images/wall.png')
-  }
-  constructor () {
-    super()
-    this.arenaBordersWidth = 30
+  // static preload () {
+  //   this.scene.load.image('wall', 'assets/images/wall.png')
+  // }
+  constructor (options) {
+    super(options)
     this.startLines = []
     this.startLocations = [
-      { x: WS.Services.ScaleManager.xp(15), y: WS.Services.ScaleManager.yp(15) },
-      { x: WS.Services.ScaleManager.xp(85), y: WS.Services.ScaleManager.yp(15) },
-      { x: WS.Services.ScaleManager.xp(15), y: WS.Services.ScaleManager.yp(85) },
-      { x: WS.Services.ScaleManager.xp(85), y: WS.Services.ScaleManager.yp(85) }
+      { x: config.xp(15), y: config.yp(15) },
+      { x: config.xp(85), y: config.yp(15) },
+      { x: config.xp(15), y: config.yp(85) },
+      { x: config.xp(85), y: config.yp(85) }
     ]
-    this.lines = []
+    // this.lines = []
+
+    this.outerWalls = [
+      { x: 0, y: 0, width: config.ArenaWidth, height: config.ArenaBordersWidth },
+      { x: 0, y: 0, width: config.ArenaBordersWidth, height: config.ArenaHeight },
+      { x: 0, y: config.ArenaHeight - config.ArenaBordersWidth, width: config.ArenaWidth, height: config.ArenaBordersWidth },
+      { x: config.ArenaWidth - config.ArenaBordersWidth, y: 0, width: config.ArenaBordersWidth, height: config.ArenaHeight }
+    ]
+
+    this.movingBlocks = [
+      { // haut-gauche
+        from: {
+          x: config.xp(22),
+          y: config.yp(35)
+        },
+        to: {
+          x: config.xp(40),
+          y: config.yp(35)
+        }
+      },
+      { // haut-droite
+        from: {
+          x: config.xp(78),
+          y: config.yp(35)
+        },
+        to: {
+          x: config.xp(60),
+          y: config.yp(35)
+        }
+      },
+      { // bas-gauche
+        from: {
+          x: config.xp(40),
+          y: config.yp(65)
+        },
+        to: {
+          x: config.xp(22),
+          y: config.yp(65)
+        }
+      },
+      { // bas-droite
+        from: {
+          x: config.xp(60),
+          y: config.yp(65)
+        },
+        to: {
+          x: config.xp(78),
+          y: config.yp(65)
+        }
+      }
+    ]
   }
   getStartPositions () {
     return this.startLocations
   }
   create () {
-    WS.game.stage.backgroundColor = '#91d49c'
+    this.scene.cameras.main.setBackgroundColor('#91d49c')
     // pas besoin pour faire sortir les projectiles ?
-    // WS.game.physics.p2.updateBoundsCollisionGroup();
-    const verticalHeight = WS.game.world.height - 2 * this.arenaBordersWidth
-    // Define a block using bitmap data rather than an image sprite
-    const horizontalLimitBitmap = WS.game.add.bitmapData(WS.game.world.width, this.arenaBordersWidth)
-    const verticalLimitBitmap = WS.game.add.bitmapData(this.arenaBordersWidth, verticalHeight)
-    // bar de 200px en haut
-    horizontalLimitBitmap.ctx.rect(0, 0, WS.game.world.width, this.arenaBordersWidth)
-    horizontalLimitBitmap.ctx.fillStyle = '#fff'
-    horizontalLimitBitmap.ctx.fill()
-    verticalLimitBitmap.ctx.rect(0, 0, this.arenaBordersWidth, verticalHeight)
-    verticalLimitBitmap.ctx.fillStyle = '#fff'
-    verticalLimitBitmap.ctx.fill()
-    // Create a new sprite using the bitmap data
-    const limitTop = WS.game.Groups.Arena.create(WS.game.world.width / 2, this.arenaBordersWidth / 2, horizontalLimitBitmap)
-    const limitBottom = WS.game.Groups.Arena.create(WS.game.world.width / 2, WS.game.world.height - this.arenaBordersWidth / 2, horizontalLimitBitmap)
-    const verticalLimitPos = this.arenaBordersWidth + verticalHeight / 2
-    const limitLeft = WS.game.Groups.Objects.create(this.arenaBordersWidth / 2, verticalLimitPos, verticalLimitBitmap)
-    const limitRight = WS.game.Groups.Objects.create(WS.game.world.width - this.arenaBordersWidth / 2, verticalLimitPos, verticalLimitBitmap);
-    [limitTop, limitBottom, limitLeft, limitRight].forEach(this.setArenaCollisionGroup)
+    // this.scene.physics.p2.updateBoundsCollisionGroup();
 
-    const walls = [
-      { // haut-gauche
-        from: {
-          x: WS.Services.ScaleManager.xp(22),
-          y: WS.Services.ScaleManager.yp(35)
-        },
-        to: {
-          x: WS.Services.ScaleManager.xp(40),
-          y: WS.Services.ScaleManager.yp(35)
-        }
-      },
-      { // haut-droite
-        from: {
-          x: WS.Services.ScaleManager.xp(78),
-          y: WS.Services.ScaleManager.yp(35)
-        },
-        to: {
-          x: WS.Services.ScaleManager.xp(60),
-          y: WS.Services.ScaleManager.yp(35)
-        }
-      },
-      { // bas-gauche
-        from: {
-          x: WS.Services.ScaleManager.xp(40),
-          y: WS.Services.ScaleManager.yp(65)
-        },
-        to: {
-          x: WS.Services.ScaleManager.xp(22),
-          y: WS.Services.ScaleManager.yp(65)
-        }
-      },
-      { // bas-droite
-        from: {
-          x: WS.Services.ScaleManager.xp(60),
-          y: WS.Services.ScaleManager.yp(65)
-        },
-        to: {
-          x: WS.Services.ScaleManager.xp(78),
-          y: WS.Services.ScaleManager.yp(65)
-        }
-      }
-    ]
-    walls.forEach(wallCoords => {
+    const wallColor = 0x505050
+    this.outerWalls.forEach(outerWall => {
+      this.scene.add.rectangle(outerWall.x, outerWall.y, outerWall.width, outerWall.height, wallColor).setOrigin(0)
+    })
+    // [limitTop, limitBottom, limitLeft, limitRight].forEach(this.setArenaCollisionGroup)
+
+    this.movingBlocks.forEach(wallCoords => {
       this.createMovingWall(wallCoords.from, wallCoords.to)
     })
   }
@@ -95,42 +90,44 @@ export default class Arena extends Entity {
   }
 
   setArenaCollisionGroup (entity) {
-    WS.game.physics.p2.enable(entity, WS.Config.Debug)
+    this.scene.physics.p2.enable(entity, this.Config.Debug)
     entity.body.static = true
-    entity.body.setMaterial(WS.Services.PhysicsManager.materials.Arena)
-    entity.body.setCollisionGroup(WS.Services.PhysicsManager.Arena.id)
-    entity.body.collides(WS.Services.PhysicsManager.Arena.All)
+    entity.body.setMaterial(this.Services.PhysicsManager.materials.Arena)
+    entity.body.setCollisionGroup(this.Services.PhysicsManager.Arena.id)
+    entity.body.collides(this.Services.PhysicsManager.Arena.All)
   }
 
   createMovingWall (from, to) {
     log.info(`Creating moving wall (${from.x},${from.y}) -> (${to.x},${to.y})`)
-    const wall = WS.game.Groups.Objects.create(from.x, from.y, 'wall')
-    this.setArenaCollisionGroup(wall)
+    // const wall = this.scene.Groups.Objects.create(from.x, from.y, 'wall')
+    const wall = this.scene.matter.add.image(from.x, from.y, 'wall')
+    this.scene.Groups.Objects.add(wall)
+    // this.setArenaCollisionGroup(wall)
 
-    const line = new WS.Phaser.Line(from.x, from.y, to.x, to.y)
-    this.lines.push(line)
-    /*
-       * @method Phaser.Tween#to
-       * @param {object} properties - An object containing the properties you want to tween, such as `Sprite.x` or `Sound.volume`. Given as a JavaScript object.
-       * @param {number} [duration=1000] - Duration of this tween in ms. Or if `Tween.frameBased` is true this represents the number of frames that should elapse.
-       * @param {function|string} [ease=null] - Easing function. If not set it will default to Phaser.Easing.Default, which is Phaser.Easing.Linear.None by default but can be over-ridden.
-       * @param {boolean} [autoStart=false] - Set to `true` to allow this tween to start automatically. Otherwise call Tween.start().
-       * @param {number} [delay=0] - Delay before this tween will start in milliseconds. Defaults to 0, no delay.
-       * @param {number} [repeat=0] - Should the tween automatically restart once complete? If you want it to run forever set as -1. This only effects this individual tween, not any chained tweens.
-       * @param {boolean} [yoyo=false] - A tween that yoyos will reverse itself and play backwards automatically. A yoyo'd tween doesn't fire the Tween.onComplete event, so listen for Tween.onLoop instead.
-       * @return {Phaser.Tween} This Tween object.
-       */
-    WS.game.add.tween(wall.body)
-      .to(to, 1000, WS.Phaser.Easing.Linear.None, false, 2000)
-      .to(from, 1000, WS.Phaser.Easing.Linear.None, false, 2000)
-      .loop()
-      .start()
-  }
-  render () {
-    _.each(this.lines, line => {
-      WS.game.debug.geom(line, 'black')
+    // const line = new Phaser.Geom.Line(from.x, from.y, to.x, to.y)
+    // this.lines.push(line)
+
+    this.scene.tweens.timeline({
+      targets: wall,
+      loop: -1,
+      loopDelay: 2000,
+      tweens: [{
+        ease: 'Linear',
+        duration: 2000,
+        delay: 2000,
+        ...to
+      }, {
+        ease: 'Linear',
+        duration: 2000,
+        ...from
+      }]
     })
   }
+  // render () {
+  //   _.each(this.lines, line => {
+  //     this.scene.debug.geom(line, 'black')
+  //   })
+  // }
 }
 /*
 éléments de l'arène

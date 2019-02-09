@@ -1,26 +1,30 @@
+import Phaser from 'phaser'
 import logger from 'loglevel'
+import Weapon from '@/game/lib/weapon/Weapon.js'
+import WeaponOnGroundState from '@/game/lib/weapon/WeaponOnGroundState.js'
+import WeaponCarriedState from '@/game/lib/weapon/WeaponCarriedState.js'
 const log = logger.getLogger('WeaponHammer') // eslint-disable-line no-unused-vars
 
 /*
 Arme marteau :
 
 */
-export default class WeaponHammer extends WS.Lib.Weapon.Weapon {
-  static preload () {
-    WS.game.load.image('weapon-hammer', 'assets/images/weapon-hammer.png')
-  }
+export default class WeaponHammer extends Weapon {
+  // static preload () {
+  //   WS.game.load.image('weapon-hammer', 'assets/images/weapon-hammer.png')
+  // }
   constructor (options) {
     super({
       states: {
-        Carried: WeaponCarriedState,
-        Ground: WeaponOnGroundState
+        Carried: CarriedState,
+        Ground: OnGroundState
       },
       startOptions: options
     })
   }
 }
 
-class WeaponOnGroundState extends WS.Lib.Weapon.WeaponOnGroundState {
+class OnGroundState extends WeaponOnGroundState {
   constructor (weapon, options) {
     super(weapon, {
       position: options.position,
@@ -40,7 +44,7 @@ const WeaponHitAreaDistance = 50
 const LongAttackHitAreaDistance = 100
 const WeaponHitAreaSize = 25
 
-class WeaponCarriedState extends WS.Lib.Weapon.WeaponCarriedState {
+class CarriedState extends WeaponCarriedState {
   constructor (weapon, options) {
     super(weapon, {
       owner: options.owner,
@@ -121,13 +125,13 @@ class WeaponCarriedState extends WS.Lib.Weapon.WeaponCarriedState {
         weaponAngle: AttackAnimationEndAngle,
         weaponAttachmentAngle: WeaponAttachmentEndAngle,
         weaponAttachmentDistance: LongAttackWeaponAttachmentDistance
-      }, 100, WS.Phaser.Easing.Linear.None)
+      }, 100, Phaser.Easing.Linear.None)
     this.reloadAnimation = WS.game.add.tween(this.attackAnimationData)
       .to({
         weaponAngle: AttackAnimationIdleAngle,
         weaponAttachmentAngle: WeaponAttachmentIdleAngle,
         weaponAttachmentDistance: WeaponAttachmentIdleDistance
-      }, 100, WS.Phaser.Easing.Linear.None)
+      }, 100, Phaser.Easing.Linear.None)
 
     this.attackAnimation.chain(this.reloadAnimation).start()
     this.attackAnimation.onComplete.add(() => {

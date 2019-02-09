@@ -1,8 +1,8 @@
-import WS from '../../WS'
 import logger from 'loglevel'
+import Entity from '@/game/lib/Entity.js'
 const log = logger.getLogger('Weapon') // eslint-disable-line no-unused-vars
 
-export default WS.Lib.Weapon.Weapon = class Weapon extends WS.Lib.Entity {
+export default class Weapon extends Entity {
   constructor (options) {
     super()
     this.states = options.states
@@ -24,9 +24,9 @@ export default WS.Lib.Weapon.Weapon = class Weapon extends WS.Lib.Entity {
     this.state.fire(power)
   }
   update () {
-    if (!WS.game.physics.p2.paused) {
-      this.state.update()
-    }
+    // if (!WS.game.physics.p2.paused) {
+    //   this.state.update()
+    // }
   }
 
   changeStateToGround (options) {
