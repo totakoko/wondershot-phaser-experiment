@@ -48,16 +48,31 @@ export default class PreloadScene extends Phaser.Scene {
 
   create () {
     this.input.mouse.disableContextMenu()
-    // this.scene.start('MenuScene')
+    this.input.gamepad.refreshPads()
 
-    // DEBUG
+    if (this.input.gamepad.total === 0) {
+      // wait for a gamepad input to continue
+      this.input.gamepad.on('down', (pad) => {
+        // pad.setAxisThreshold(0.3) ??
+        this.startGame()
+      })
+      this.add.bitmapText(config.centerX, config.centerY, 'desyrel', 'Press a gamepad button...', 36).setOrigin()
+    } else {
+      this.startGame()
+    }
+  }
+  startGame () {
+    // this.scene.start('MenuScene')
     this.scene.start('RoundScene', {
       battle: new Battle({
         players: [{
           id: 1,
-          type: 'Keyboard'
+          type: 'Gamepad'
         }, {
           id: 2,
+          type: 'Keyboard'
+        }, {
+          id: 3,
           type: 'Bot'
         }]
       })

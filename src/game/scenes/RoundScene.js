@@ -32,8 +32,7 @@ export default class RoundScene extends Phaser.Scene {
     }
   }
   create () {
-    // WS.Services.PhysicsManager.init()
-    // this.matter.world.setBounds(0, 0, config.ArenaWidth, config.ArenaHeight, 32, true, true, false, true)
+    this.input.gamepad.refreshPads()
     this.matter.world.setBounds(
       config.ArenaBordersWidth,
       config.ArenaBordersWidth,
@@ -42,7 +41,6 @@ export default class RoundScene extends Phaser.Scene {
     )
     this.matter.add.mouseSpring()
 
-    // PhysicsManager.init()
     this.setupGroups()
 
     this.battle.reset()
@@ -73,25 +71,20 @@ export default class RoundScene extends Phaser.Scene {
       targets: letsFightText,
       tweens: [{
         x: config.centerX,
-        ease: 'Linear',
+        ease: v => Phaser.Math.Easing.Elastic.Out(v, 0.1, 0.8),
         duration: 500,
         delay: 300
       }, {
         x: 3 * config.centerX,
-        ease: 'Linear',
+        ease: v => Phaser.Math.Easing.Elastic.In(v, 0.1, 0.8),
         duration: 500,
         delay: 1000
       }]
     })
-    // this.textAnimation = this.add.tween(letsFightText)
-    //   .to({
-    //     x: this.world.centerX
-    //   }, 500, Phaser.Easing.Elastic.Out, false, 300)
-    //   .to({
-    //     x: 3 * this.world.centerX
-    //   }, 500, Phaser.Easing.Elastic.In, false, 300)
-    //   .start()
 
+    this.fps = this.add.text(config.ArenaWidth - 25, 10, '', {
+      color: '#0f0'
+    })
     // WS.Services.PhysicsManager.pause()
     // setTimeout(() => {
     //   letsFightText.destroy()
@@ -149,13 +142,22 @@ export default class RoundScene extends Phaser.Scene {
       let input
       switch (playerConfig.type) {
         case 'Bot':
-          input = new BotInput({ scene: this, player })
+          input = new BotInput({
+            scene: this,
+            player
+          })
           break
         case 'Keyboard':
-          input = new KeyboardInput({ scene: this })
+          input = new KeyboardInput({
+            scene: this
+          })
           break
         case 'Gamepad':
-          input = new GamepadInput({ scene: this })
+          // debugger
+          input = new GamepadInput({
+            scene: this,
+            pad: this.input.gamepad[`pad${playerConfig.id}`]
+          })
           break
         default:
           throw new Error(`unknown player type '${playerConfig.type}'`)
@@ -211,17 +213,13 @@ export default class RoundScene extends Phaser.Scene {
     return this.startLocations.splice(0, 1)[0]
   }
   update () {
+    this.input.gamepad.refreshPads() // manual refresh is needed for chrome
     this.battle.stage.update()
 
-    // this.scene.game.loop.actualFps
+    this.fps.setText(Math.round(this.game.loop.actualFps))
   }
   pauseUpdate () {
     this.battle.stage.pauseUpdate()
-  }
-  render () {
-    this.battle.stage.render()
-    // FPS
-    this.debug.text(this.time.fps, this.world.width - 25, 14, '#f00')
   }
   shutdown () {
     log.info('shutdown')

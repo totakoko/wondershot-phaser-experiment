@@ -1,4 +1,4 @@
-import Phaser from 'phaser'
+// import Phaser from 'phaser'
 import logger from 'loglevel'
 import Entity from '@/game/lib/Entity.js'
 import config from '@/game/config.js'

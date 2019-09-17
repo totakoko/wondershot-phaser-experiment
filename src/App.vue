@@ -18,6 +18,7 @@ export default {
 <style lang="stylus">
 body
   text-align center
+  margin 0
   // margin 0 auto
 .canvas
   // overrides GameScalePlugin

@@ -1,4 +1,4 @@
-import * as dat from 'dat.gui'
+// import * as dat from 'dat.gui'
 import Phaser from 'phaser'
 import logger from 'loglevel'
 import AbstractInput from './AbstractInput'
@@ -19,9 +19,9 @@ export default class KeyboardInput extends AbstractInput {
       axes: this.axes
     }
 
-    const gui = new dat.GUI()
-    gui.add(this.movement.axes, 0).listen()
-    gui.add(this.movement.axes, 1).listen()
+    // const gui = new dat.GUI()
+    // gui.add(this.movement.axes, 0).listen()
+    // gui.add(this.movement.axes, 1).listen()
 
     const scene = options.scene
     // onDown : on ajoute un mouvement dans la direction de la touche

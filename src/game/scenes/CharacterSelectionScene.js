@@ -15,8 +15,8 @@ export default class CharacterSelectionScene extends Phaser.Scene {
     this.add.text(config.centerX, 42, 'Character Selection', { font: '42px Arial', fill: '#000' }).setOrigin()
 
     this.activePlayers = {}
-    const padManager = new PadManager(this.input.gamepad)
-    padManager.setPadsCallback(padNumber => {
+
+    PadManager.setPadsCallback(padNumber => {
       this.activePlayers[padNumber] = !this.activePlayers[padNumber]
       log.info(`P${padNumber} ${this.activePlayers[padNumber]}`)
     })

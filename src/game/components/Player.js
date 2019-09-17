@@ -38,38 +38,53 @@ export default class Player extends Entity {
     // this.sprite.body.collides(physics.Objects)
 
     // this.onKilledEvent = new Phaser.Signal() // eslint-disable-line babel/new-cap
+    // this.jump = _.throttle(this.jump, 3000)
   }
   setInput (options) {
     if (options.movement) {
       this.movement = options.movement
     }
-    // if (options.fireWeapon) {
-    //   options.fireWeapon.onDown.removeAll()
-    //   options.fireWeapon.onDown.add(this.loadWeapon, this)
-    //   options.fireWeapon.onUp.removeAll()
-    //   options.fireWeapon.onUp.add(this.releaseWeapon, this)
-    // }
-    // if (options.dropWeapon) {
-    //   options.dropWeapon.onDown.removeAll()
-    //   options.dropWeapon.onDown.add(this.dropWeapon, this)
-    // }
-    // if (options.jump) {
-    //   options.jump.onDown.removeAll()
-    //   options.jump.onDown.add(_.throttle(this.jump, 3000, { trailing: false }), this)
-    // }
+    if (options.fireWeapon) {
+      options.fireWeapon.removeAllListeners()
+      options.fireWeapon.on('down', this.loadWeapon, this)
+      options.fireWeapon.on('up', this.releaseWeapon, this)
+    }
+    if (options.dropWeapon) {
+      options.dropWeapon.removeAllListeners()
+      options.dropWeapon.on('down', this.dropWeapon, this)
+    }
+    if (options.jump) {
+      options.jump.removeAllListeners()
+      options.jump.on('down', _.throttle(this.jump, 3000), this)
+    }
     if (options.togglePauseMenu) {
-      // options.togglePauseMenu.onDown.removeAll()
-      // options.togglePauseMenu.onDown.add(_.throttle(this.Components.PauseMenu.togglePause, 500, { trailing: false }), this.Components.PauseMenu)
       options.togglePauseMenu.removeAllListeners()
       options.togglePauseMenu.on('down', _.throttle(() => this.scene.events.emit('togglePause'), 500))
     }
   }
+  /*
+  Le mouvement ne se fait que dans le update mais pourrait se faire ailleurs
+  En fait, chaque axe doit être rafraichit, donc autant le mettre dans le update.
+
+  Concernant les actions, il n'y a pas besoin de les mettre dans le update, mais il faut pouvoir les déclencher via un événement.
+
+  Soit le Player assigne automatiquement l'input.jump => player.jump
+  Soit c'est l'input qui s'ocucpe de faire ça, et le player n'a aucune information sur l'input, à part pour le mouvement.
+
+  */
   update () {
     // if (this.sprite.alive && this.movement && !this.jumping && !this.scene.physics.p2.paused) {
     if (this.alive && this.movement && !this.jumping) {
       const moveX = this.movement.axes[0]
       const moveY = this.movement.axes[1]
+      // if (this.playerNumber === 1) {
+      //   console.log('move player 1', moveX, moveY)
+      // }
       this.sprite.setVelocity(moveX * config.PlayerSpeed, moveY * config.PlayerSpeed)
+      // if (this.playerNumber === 1) {
+      //   console.log('velocity', this.sprite)
+      //   debugger
+      // }
       if (moveX || moveY) {
         this.sprite.rotation = Math.atan2(moveY, moveX)
         // this.sprite.body.x += moveX * PlayerSpeed
@@ -165,22 +180,22 @@ export default class Player extends Entity {
     //   .to({ x: xForce, y: yForce }, 100, Phaser.Easing.Linear.None)
     //   .to({ x: xForce / 10, y: yForce / 10 }, 150, Phaser.Easing.Linear.None)
     //   .start()
+
     // this.scene.tweens.timeline({
-    //   targets: wall,
-    //   loop: -1,
-    //   loopDelay: 2000,
+    //   targets: this.sprite.body.force,
     //   tweens: [{
     //     ease: 'Linear',
-    //     duration: 2000,
-    //     delay: 2000,
+    //     duration: 100,
     //     x: xForce,
-    //     y: yForce,
+    //     y: yForce
     //   }, {
     //     ease: 'Linear',
-    //     duration: 2000,
-    //     ...from
+    //     duration: 150,
+    //     x: xForce / 10,
+    //     y: yForce / 10
     //   }]
     // })
+
     // jumpingTween.onComplete.add(() => {
     //   log.debug('Jump tween complete')
     //   this.jumping = false

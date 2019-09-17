@@ -10,13 +10,12 @@ export default class Game extends Phaser.Game {
   constructor (options) {
     super(Object.assign({
       type: Phaser.WEBGL,
-      // width: Config.ArenaWidth,
-      // height: Config.ArenaHeight,
+      // width: config.ArenaWidth,
+      // height: config.ArenaHeight,
       backgroundColor: 0xffffff,
       roundPixels: true,
-      pixelArt: true,
+      // pixelArt: true,
       // transparent: false,
-      // enableDebug: true,
       banner: false,
       audio: {
         disableWebAudio: true
@@ -27,7 +26,7 @@ export default class Game extends Phaser.Game {
       physics: {
         default: 'matter',
         matter: {
-          enableSleeping: true,
+          // enableSleeping: true,
           gravity: {
             x: 0,
             y: 0

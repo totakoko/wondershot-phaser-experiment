@@ -101,6 +101,7 @@ export default class Arena extends Entity {
     log.info(`Creating moving wall (${from.x},${from.y}) -> (${to.x},${to.y})`)
     // const wall = this.scene.Groups.Objects.create(from.x, from.y, 'wall')
     const wall = this.scene.matter.add.image(from.x, from.y, 'wall')
+    wall.setMass(10000000)
     this.scene.Groups.Objects.add(wall)
     // this.setArenaCollisionGroup(wall)
 
