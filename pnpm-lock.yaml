@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@types/node': ^18.11.11
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.45.0
   eslint: ^8.28.0
@@ -19,6 +20,7 @@ dependencies:
   phaser: 3.55.2
 
 devDependencies:
+  '@types/node': 18.11.11
   '@typescript-eslint/eslint-plugin': 5.45.0_czs5uoqkd3podpy6vgtsxfc7au
   '@typescript-eslint/parser': 5.45.0_hsf322ms6xhhd4b5ne6lb74y4a
   eslint: 8.28.0
@@ -28,7 +30,7 @@ devDependencies:
   eslint-plugin-n: 15.5.1_eslint@8.28.0
   eslint-plugin-promise: 6.1.1_eslint@8.28.0
   typescript: 4.9.3
-  vite: 3.2.4
+  vite: 3.2.4_@types+node@18.11.11
 
 packages:
 
@@ -126,6 +128,10 @@ packages:
 
   /@types/json5/0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+    dev: true
+
+  /@types/node/18.11.11:
+    resolution: {integrity: sha512-KJ021B1nlQUBLopzZmPBVuGU9un7WJd/W4ya7Ih02B4Uwky5Nja0yGYav2EfYIk0RR2Q9oVhf60S2XR1BCWJ2g==}
     dev: true
 
   /@types/semver/7.3.13:
@@ -1907,7 +1913,7 @@ packages:
       inherits: 2.0.3
     dev: false
 
-  /vite/3.2.4:
+  /vite/3.2.4_@types+node@18.11.11:
     resolution: {integrity: sha512-Z2X6SRAffOUYTa+sLy3NQ7nlHFU100xwanq1WDwqaiFiCe+25zdxP1TfCS5ojPV2oDDcXudHIoPnI1Z/66B7Yw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -1932,6 +1938,7 @@ packages:
       terser:
         optional: true
     dependencies:
+      '@types/node': 18.11.11
       esbuild: 0.15.16
       postcss: 8.4.19
       resolve: 1.22.1
